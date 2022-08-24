@@ -1,4 +1,5 @@
 // ovdje se pisu kveriji =)
+const sanitize = require('mongo-sanitize');
 
 const dbConfig = require('./db.service');
 const generalConfig = require('../configs/general.config');
