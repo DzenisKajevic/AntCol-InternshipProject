@@ -4,6 +4,8 @@
 // cd node_modules\.bin
 // jshint ../../index.js
 
+// morgan -> used for logging http requests and errors
+
 const generalConfig = require('./configs/general.config');
 const dbConfig = require('./configs/db.config');
 const dbConnection = require('./services/db.service');
@@ -27,8 +29,7 @@ app.use('/api/v1/auth', usersAuthRoute);
 
 const start = async () => {
     try {
-        console.log(generalConfig.expressPort);
-        const port = generalConfig.expressPort || 3000;
+        const port = generalConfig.expressPort;
         app.listen(port, () => console.log(`Listening on port ${port}.`));
     } catch (error) {
         console.error(error);

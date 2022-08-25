@@ -2,8 +2,9 @@ const users = require('../services/usersAuth.service');
 
 const register = async (req, res) => {
     try {
-        //console.log(req.body);
-        res.status(201).send(await users.register(req.body));
+        const user = await users.register(req.body);
+        const token = user.createJWT();
+        res.status(201).send({ user, token });
     } catch (error) {
         res.status(error.status || 500);
         res.json({
@@ -25,7 +26,6 @@ const login = async (req, res) => {
         });
         console.error(error);
     }
-    //await res.send('login');
 }
 
 

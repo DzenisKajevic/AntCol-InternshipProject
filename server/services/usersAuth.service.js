@@ -1,20 +1,24 @@
-// ovdje se pisu kveriji =)
-const sanitize = require('mongo-sanitize');
-
-const dbConfig = require('./db.service');
-const generalConfig = require('../configs/general.config');
 const User = require('../models/User.js');
-const { user } = require('../configs/db.config');
+const { dbConfig } = require('../configs/db.config');
+const helperUtil = require('../utils/helper.util');
 
+// used to prevent SQL injection
+//const sanitize = require('mongo-sanitize');
+
+
+// not used yet
 async function getMultiple() { };
 
 async function register(user) {
     try {
-        const registeredUser = await User.create({
+        let registeredUser = await User.create({
+            //email: sanitize(user.email),
             username: user.username,
             email: user.email,
             password: user.password
         });
+        registeredUser.password = undefined;
+        delete (registeredUser.password);
         return registeredUser;
     }
     catch (error) {
@@ -24,12 +28,13 @@ async function register(user) {
 
 async function login(loginInfo) {
     try {
-        const loggedInUser = await User.find({
+        let loggedInUser = await User.find({
             email: loginInfo.email,
             password: loginInfo.password
         }).limit(1);
         if (loggedInUser.length) {
-            console.log(loggedInUser);
+            loggedInUser.password = undefined;
+            delete (loggedInUser.password);
             return loggedInUser;
         }
         else throw new Error('No such user found');

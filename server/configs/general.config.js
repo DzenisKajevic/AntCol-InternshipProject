@@ -1,8 +1,7 @@
 const generalConfig = {
-    expressPort: process.env.PORT,
-    //deepSanitize(value): {
-
-    //}
+    expressPort: process.env.PORT || 3000,
+    JWT_SECRET: process.env.JWT_SECRET || "adkn1032cxvbnn12314k1239fnua8s1032nkdkd441032nkdkmvxy4",
+    JWT_LIFETIME: process.env.JWT_LIFETIME || '1d'
 }
 
 // backend + frontend da se moze uploadovati pjesma 
