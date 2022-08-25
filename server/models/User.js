@@ -39,4 +39,8 @@ UserSchema.methods.createJWT = function () {
     return jwt.sign({ userId: this._id }, config.JWT_SECRET, { expiresIn: generalConfig.JWT_LIFETIME });
 }
 
+UserSchema.methods.comparePassword = async function (pass) {
+    return await bcryptjs.compare(pass, this.password);
+}
+
 module.exports = mongoose.model("User", UserSchema);

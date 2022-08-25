@@ -1,3 +1,5 @@
+//express service = php dao
+
 const User = require('../models/User.js');
 const { dbConfig } = require('../configs/db.config');
 const helperUtil = require('../utils/helper.util');
@@ -28,16 +30,21 @@ async function register(user) {
 
 async function login(loginInfo) {
     try {
-        let loggedInUser = await User.find({
-            email: loginInfo.email,
-            password: loginInfo.password
-        }).limit(1);
-        if (loggedInUser.length) {
-            loggedInUser.password = undefined;
-            delete (loggedInUser.password);
-            return loggedInUser;
+        let loginUser = await User.findOne({
+            email: loginInfo.email
+        }).select('+password');
+        if (!loginUser) {
+            throw new Error('No such user found');
         }
-        else throw new Error('No such user found');
+        else {
+            const passwordMatches = await loginUser.comparePassword(loginInfo.password);
+            if (!passwordMatches) {
+                throw new Error('Incorrect password');
+            }
+            loginUser.password = undefined;
+            delete (loginUser.password);
+            return loginUser;
+        }
     }
     catch (error) {
         throw new Error(error);
