@@ -8,6 +8,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^6.5.2",
+    "morgan": "^1.10.0",
+    "uuid": "^8.3.2",
     "validator": "^13.7.0"
   },
   "devDependencies": {

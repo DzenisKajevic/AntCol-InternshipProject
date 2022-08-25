@@ -1,0 +1,15 @@
+46c1db7e-8560-4746-8424-c9589ec1ed45 ::1 1.1 GET / 304 9.464
+80cba399-e081-4a2c-a4ea-9350cfcbcf12 Not Implemented Yet ::1 1.1 GET / 304 10.916
+1661415638557 4fb3155c-93dc-4ce0-9366-e7bd27f0eebf Not Implemented Yet ::1 1.1 GET / 304 10.238
+1661415661366 6b3f20ca-2182-429a-8ad5-281035aeab7f Not Implemented Yet ::1 1.1 GET / 304 10.311
+25/8/2022 @ 10:24:6 9c02b6de-b86e-4c44-8503-d9a26b1ecf99 Not Implemented Yet ::1 1.1 GET / 304 9.410
+25/8/2022 @ 10:24:6 caa1c9db-4ad0-4b2a-8294-c16a1853411f Not Implemented Yet ::1 1.1 GET / 304 2.297
+25/8/2022 @ 10:24:15 4648bd51-84aa-486e-bb01-8e3eee7d4c5c Not Implemented Yet ::1 1.1 GET / 304 2.236
+25/8/2022-10:25:10  c6aecdbd-06d3-4061-84a6-6996a444e429 Not Implemented Yet ::1 1.1 GET / 304 7.568
+25/8/2022-10:26:1  "reqId:" 11d02b44-dcc7-4da1-85df-a2a57ffcfe5e Not Implemented Yet ::1 1.1 GET / 304 8.143
+25/8/2022-10:26:20  reqId: 96a3556a-309f-416e-b64a-f2cdc470918a Not Implemented Yet ::1 1.1 GET / 304 8.880
+25/8/2022-10:28:5  reqId: b2b5ed8b-9136-48ed-bbf7-7c10353ddfe4 userToken: Not Implemented Yet ::1 1.1 GET / 304 10.009
+25/8/2022-10:31:7  reqId: f66481ab-6e5c-4532-bfd9-e4e6b163b5b6 userToken: Not Implemented Yet ::1 1.1 POST /api/v1/auth/register 500 175.326
+25/8/2022-10:31:14  reqId: f9d8e853-1c74-450c-b51c-28b7f8ff7dbf userToken: Not Implemented Yet ::1 1.1 POST /api/v1/auth/register 201 92.815
+25/8/2022-10:31:21  reqId: 14c58e62-ba51-4e07-82cc-e61e40b83c71 userToken: Not Implemented Yet ::1 1.1 POST /api/v1/auth/login 500 22.847
+25/8/2022-10:31:34  reqId: 45471832-2649-463a-9a71-012c6428f1cc userToken: Not Implemented Yet ::1 1.1 POST /api/v1/auth/login 500 6.208

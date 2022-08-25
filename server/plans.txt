@@ -1,0 +1,20 @@
+# IMPORTANT TASKS
+
+- finish JWT implementation - passwords do not match due to random hashing
+- figure out how to keep the web app reactive while using
+JWT to prevent unathorized access to frontend routes
+- find out how to save audio files to mongo
+    + save as binary files (?)
+    + upload files somewhere, save url for it (?)
+
+
+# ADDITIONAL TASKS
+
+- find out how to prevent sql injection,
+while also hashing passwords with bcrypt
+    + mongo-sanitize deletes input that contains $ in it,
+    conflicts with hashing
+    + mongo-sanitize is currently disabled
+    + password hasing is currently enabled
+- fetch user JWT Token for morgan logger (index.js)
+using morgan token
