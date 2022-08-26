@@ -1,20 +1,40 @@
 # IMPORTANT TASKS
 
-- finish JWT implementation - passwords do not match due to random hashing
-- figure out how to keep the web app reactive while using
-JWT to prevent unathorized access to frontend routes
-- find out how to save audio files to mongo
-    + save as binary files (?)
-    + upload files somewhere, save url for it (?)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!    - if a huge file gets uploaded, it will first be added to the db, then deleted afterwards...     !!!!
+!!!    The middleware function can't filter it in time since the file size is unknown at that point     !!!!
+!!!    There must be a way to solve this...                                                             !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+- check if valid file id before deletion of file
+- add route for file deletion
+- fix structure of audio routes, controllers, etc. to match the rest of the project
+- change random names for files saved in the db into song_artist.ext to prevent multiples from being uploaded (remove crypt)
+
 
 
 # ADDITIONAL TASKS
 
-- find out how to prevent sql injection,
-while also hashing passwords with bcrypt
-    + mongo-sanitize deletes input that contains $ in it,
-    conflicts with hashing
-    + mongo-sanitize is currently disabled
-    + password hasing is currently enabled
 - fetch user JWT Token for morgan logger (index.js)
 using morgan token
+- improve error logging >> access.log
+- move morgan initialization to a separate file [helper.util.js(?)]
+
+
+
+# USEFUL LINKS
+
+https://www.atlassian.com/git/tutorials/using-branches/git-merge
+
+
+
+# NOTES
+
+- enctype="multipart/form-data" is required for uploading files:
+<form action="/upload" method="POST" enctype="multipart/form-data"></form>
+
+- From a browser compatibility standpoint, .MP3 and .MP4 are the best audio file formats for use on the Web. 
+All modern browsers support this format, including IE9. Other formats that are supported by most browsers include OGG, WebM, AAC, and WAV.
+
+- Impossible to prevent users from downloading audio files through dev tools (?)
+https://stackoverflow.com/questions/34530925/web-audio-api-and-audio-download-and-protection

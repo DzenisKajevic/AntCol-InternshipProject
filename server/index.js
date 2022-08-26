@@ -6,12 +6,12 @@
 const generalConfig = require('./configs/general.config');
 const dbConnection = require('./services/db.service');
 const usersAuthRoute = require('./routes/usersAuth.route');
+const audioFilesRouter = require('./routes/audioFiles.route');
 const morgan = require('morgan');
 const { v4: uuidv4 } = require('uuid');
 const bodyParser = require("body-parser");
 const fs = require('fs');
 const path = require('path');
-
 const express = require('express');
 const app = express();
 app.use(express.json());
@@ -55,7 +55,9 @@ app.get('/', (req, res) => {
     res.send("Welcome");
 });
 
+// route middleware
 app.use('/api/v1/auth', usersAuthRoute);
+app.use('/api/v1/audioFiles', audioFilesRouter);
 
 function assignId(req, res, next) {
     req.id = uuidv4();
@@ -73,6 +75,8 @@ const start = async () => {
 
     try {
         await dbConnection.connect();
+        // used for file uploads / downloads... 
+        await dbConnection.setupStorageEngine();
     }
     catch (error) {
         console.log(error);
