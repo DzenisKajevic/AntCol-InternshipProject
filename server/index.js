@@ -77,6 +77,13 @@ const start = async () => {
         await dbConnection.connect();
         // used for file uploads / downloads... 
         await dbConnection.setupStorageEngine();
+        /* console.log(dbConnection.collectionName);
+        //console.log(dbConnection.connectionInstance);
+        console.log(dbConnection.getConnectionInstance());
+        console.log(dbConnection.dbURI);
+        console.log(dbConnection.gfs);
+        console.log(dbConnection.storage); */
+
     }
     catch (error) {
         console.log(error);

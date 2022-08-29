@@ -6,10 +6,8 @@
 !!!    There must be a way to solve this...                                                             !!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-- check if valid file id before deletion of file
-- add route for file deletion
+- fix route for file deletion
 - fix structure of audio routes, controllers, etc. to match the rest of the project
-- change random names for files saved in the db into song_artist.ext to prevent multiples from being uploaded (remove crypt)
 
 
 
