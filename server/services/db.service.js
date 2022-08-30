@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const dbConfig = require('../configs/db.config');
 const GridFsStorage = require('multer-gridfs-storage').GridFsStorage;
-const crypto = require('crypto');
+//const crypto = require('crypto');
 const path = require('path');
 
 
@@ -110,6 +110,9 @@ const dbService = {
 
     getConnectionInstance: () => {
         return dbService.dbConnection;
+    },
+    getGfs: () => {
+        return dbService.gfs;
     }
 }
 
@@ -117,11 +120,12 @@ module.exports = {
     //dbService: dbService,
     connect: dbService.connectDB,
     getConnectionInstance: dbService.getConnectionInstance,
+    getGfs: dbService.getGfs,
     //connectionInstance: dbService.dbConnection, // undefined in other files for some reason
     dbURI: dbService.dbURI,
     setupStorageEngine: dbService.setupStorageEngine,
     uploadMiddleware: dbService.uploadMiddleware,
-    gfs: dbService.gfs,
+    //gfs: dbService.gfs,
     storage: dbService.storage,
     collectionName: dbService.bucketName
 }
