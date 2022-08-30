@@ -7,6 +7,7 @@ const generalConfig = require('./configs/general.config');
 const dbConnection = require('./services/db.service');
 const usersAuthRoute = require('./routes/usersAuth.route');
 const audioFilesRouter = require('./routes/audioFiles.route');
+const middleware = require('./middleware/middleware');
 const morgan = require('morgan');
 const { v4: uuidv4 } = require('uuid');
 const bodyParser = require("body-parser");
@@ -58,6 +59,9 @@ app.get('/', (req, res) => {
 // route middleware
 app.use('/api/v1/auth', usersAuthRoute);
 app.use('/api/v1/audioFiles', audioFilesRouter);
+
+// error handler middleware
+app.use(middleware.handleErrors);
 
 function assignId(req, res, next) {
     req.id = uuidv4();

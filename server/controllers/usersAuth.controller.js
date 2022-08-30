@@ -2,40 +2,25 @@
 
 const users = require('../services/usersAuth.service');
 
-const register = async (req, res) => {
+async function register(req, res, next) {
     try {
-        const user = await users.register(req.body);
-        const token = user.createJWT();
-        res.status(201).send({ user, token });
-    } catch (error) {
-        res.status(error.status || 500);
-        res.json({
-            message: error.message,
-            error: error
-        });
-        console.error(error);
+        res.status(201).send(await users.register(req.body));
+    } catch (err) {
+        console.error(`Error while registering user\n`, err.message);
+        next(err);
     }
 }
 
-const login = async (req, res) => {
+async function login(req, res, next) {
     try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            res.status(500).send({ msg: "All credentials have to be provided" });
-        }
-        const user = await users.login(req.body);
-        const token = user.createJWT();
-        res.status(200).send({ user, token });
-    } catch (error) {
-        res.status(error.status || 500);
-        res.json({
-            message: error.message,
-            error: error
-        });
-        console.error(error);
+        res.status(200).send(await users.login(req.body));
+    } catch (err) {
+        console.error(`Error while logging in\n`, err.message);
+        next(err);
     }
 }
 
-module.exports.register = register;
-module.exports.login = login;
+module.exports = {
+    register,
+    login
+};

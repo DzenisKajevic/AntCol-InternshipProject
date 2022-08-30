@@ -6,9 +6,8 @@
 !!!    There must be a way to solve this...                                                             !!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-- fix route for file deletion
 - fix structure of audio routes, controllers, etc. to match the rest of the project
-
+- add authorization middleware to backend routes
 
 
 # ADDITIONAL TASKS
