@@ -2,14 +2,14 @@ const express = require('express');
 const { default: mongoose } = require('mongoose');
 const router = express.Router();
 const audioFileController = require('../controllers/audioFile.controller');
-const db = require('../services/db.service');
+const middleware = require('../middleware/middleware');
 
 
 // deletes a specific file
 router.delete('/deleteFile', audioFileController.deleteFile);
 
 // uploads a file
-router.post('/uploadFile', db.uploadMiddleware, audioFileController.uploadFile);
+router.post('/uploadFile', middleware.uploadMiddleware, audioFileController.uploadFile);
 
 // returns a specific file, ready for playback
 router.get('/getFile/:id', audioFileController.getFile);

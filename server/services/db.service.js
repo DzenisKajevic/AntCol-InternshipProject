@@ -16,6 +16,7 @@ checkFileType = (file, cb) => {
 };
 
 const dbService = {
+    store: null,
     bucketName: 'audioFiles',
     storage: null, // all of these variables are in use, 
     gfs: null, // VSC shows them as "unused" for some reason
@@ -82,7 +83,7 @@ const dbService = {
                         }  */
         });
 
-        store = multer(
+        dbService.store = multer(
             {
                 storage: dbService.storage,
                 //limits: { fileSize: 20000000 }, // limits file to 20MB, but it doesn't prevent the file from being uploaded before checking
@@ -94,20 +95,10 @@ const dbService = {
             });
     },
 
-    uploadMiddleware: (req, res, next) => {
-        // accepts a single file and stores it in req.file
-        // the file must be passed with the key: "audioFile", otherwise the request will fail
-        const upload = store.single('audioFile');
 
-        upload(req, res, function (err) {
-            if (err) {
-                console.log(err);
-                return res.status(400).send(err);
-            }
-            next();
-        });
+    getStore: () => {
+        return dbService.store;
     },
-
     getConnectionInstance: () => {
         return dbService.dbConnection;
     },
@@ -118,13 +109,13 @@ const dbService = {
 
 module.exports = {
     //dbService: dbService,
+    getStore: dbService.getStore,
     connect: dbService.connectDB,
     getConnectionInstance: dbService.getConnectionInstance,
     getGfs: dbService.getGfs,
     //connectionInstance: dbService.dbConnection, // undefined in other files for some reason
     dbURI: dbService.dbURI,
     setupStorageEngine: dbService.setupStorageEngine,
-    uploadMiddleware: dbService.uploadMiddleware,
     //gfs: dbService.gfs,
     storage: dbService.storage,
     collectionName: dbService.bucketName

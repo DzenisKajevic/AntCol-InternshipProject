@@ -52,6 +52,8 @@ morgan.token('timestamp', function getTimestamp(req) {
 });
 app.use(assignId);
 
+app.all('*', middleware.JWTAuth);
+
 app.get('/', (req, res) => {
     res.send("Welcome");
 });

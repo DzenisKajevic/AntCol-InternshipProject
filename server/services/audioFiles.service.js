@@ -25,7 +25,7 @@ async function deleteFile(fileId) {
         return "Successfully deleted the file";
     }
     catch (err) {
-        console.log(err);
+        //console.log(err);
         throw new StatusError('Could not delete the file', 500);
     }
 };
@@ -33,10 +33,9 @@ async function deleteFile(fileId) {
 async function uploadFile(author, file) {
     try {
         const maxFileSize = 50000000; // 50 MB
-
-        //console.log(reqBody);
         const filter = { _id: file.id };
         const update = { author: author };
+
         if (file.size > maxFileSize) {
             await deleteFileHelper(file.id);
             console.log(`The file can't be larger than ${maxFileSize / 1000000}MB`);
@@ -50,35 +49,35 @@ async function uploadFile(author, file) {
         return file.id;
     }
     catch (err) {
-        console.log(err);
+        //console.log(err);
         throw new StatusError('Could not upload the file', 500);
     }
 };
 
 async function getFile(fileId, res) {
     try {
-        if (!fileId || fileId === 'undefined') throw new StatusError('The file id was not provided', 422);
+        if (!fileId || fileId === 'undefined') res.status(422).send('The file id was not provided', 422);
 
         const _id = new mongoose.Types.ObjectId(fileId);
         await db.getGfs().find({ _id }).toArray((err, files) => {
-            if (!files || files.length === 0) throw new StatusError('A file with that id was not found', 500);
+            if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
             db.getGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
         });
     }
     catch (err) {
-        console.log(err);
+        //console.log(err);
         throw new StatusError('Could not fetch the file', 500);
     }
 };
 
 async function getFileInfo(fileId) {
     try {
-        if (!fileId || fileId === 'undefined') throw new StatusError('File id was not provided', 400);
+        if (!fileId || fileId === 'undefined') res.status(400).send('File id was not provided');
         const result = await AudioFile.findOne({ _id: fileId });
         return result;
     }
     catch (err) {
-        console.log(err);
+        //console.log(err);
         throw new StatusError('Could not fetch the file info', 500);
 
     }
@@ -98,7 +97,7 @@ async function getFiles(res, callback) {
         });
     }
     catch (err) {
-        console.log(err);
+        //console.log(err);
         throw new StatusError('Error fetching files', 500);
     }
 };
