@@ -16,6 +16,7 @@ function JWTAuth(req, res, next) {
     //console.log(req.body);
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
+        req.err = "Missing authorization";
         console.log('Missing authorization');
         return res.status(401).send("Missing authorization");
     }
@@ -24,6 +25,7 @@ function JWTAuth(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1];
     jwt.verify(token, generalConfig.JWT_SECRET, (err, user) => {
         if (err) {
+            req.err = "Error: Access Denied";
             console.log('JWT ERROR: ' + err);
             return res.status(401).send("Error: Access Denied");
         }

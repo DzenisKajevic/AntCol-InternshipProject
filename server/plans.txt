@@ -6,17 +6,11 @@
 !!!    There must be a way to solve this...                                                             !!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-- add authorization middleware to backend routes
 - add roles to users (role: 'admin' or role: 'member')
-
+- add playlists
 
 # ADDITIONAL TASKS
 
-- fetch user JWT Token for morgan logger (index.js)
-using morgan token
-- improve error logging >> access.log
-- move morgan initialization to a separate file [helper.util.js(?)]
-- maybe add refresh tokens for JWT (not necessary at the moment)
 
 
 # USEFUL LINKS
