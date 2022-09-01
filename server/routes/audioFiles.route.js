@@ -18,6 +18,12 @@ router.get('/getFile/:id', audioFileController.getFile);
 router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 
 // lists info on all available files
-router.get('/getFiles', audioFileController.getFiles);
+router.get('/getAllFiles', audioFileController.getAllFiles);
+
+// lists info on all files from a certain genre
+router.get('/getFilesByGenre', audioFileController.getFilesByGenre);
+
+// lists info on all files from a certain author
+router.get('/getFilesByAuthor', audioFileController.getFilesByAuthor);
 
 module.exports = router;

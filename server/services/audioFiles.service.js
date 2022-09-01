@@ -14,11 +14,6 @@ async function deleteFileHelper(id) {
 async function deleteFile(fileId) {
     try {
         const file = await AudioFile.findOne({ _id: fileId })
-
-        //if (post.user != req.user.id) {
-        // res.status(401).send("Invalid credentials");
-        //}
-
         const obj_id = new mongoose.Types.ObjectId(fileId);
         await db.getGfs().delete(obj_id);
         await file.remove();
@@ -30,12 +25,13 @@ async function deleteFile(fileId) {
     }
 };
 
-async function uploadFile(author, file) {
+async function uploadFile(reqBody, file) {
     try {
         const maxFileSize = 50000000; // 50 MB
         const filter = { _id: file.id };
-        const update = { author: author };
+        const update = { author: reqBody.author, genre: reqBody.genre };
 
+        console.log(update);
         if (file.size > maxFileSize) {
             await deleteFileHelper(file.id);
             console.log(`The file can't be larger than ${maxFileSize / 1000000}MB`);
@@ -83,9 +79,8 @@ async function getFileInfo(fileId) {
     }
 };
 
-async function getFiles(res, callback) {
+async function getAllFiles(callback) {
     try {
-        let result = [];
         db.getGfs().find().toArray((err, files) => {
             // Check if files exist
             if (!files || files.length === 0) {
@@ -93,7 +88,7 @@ async function getFiles(res, callback) {
             }
             // nothing returns without a callback
             // await / then / catch don't return anything either
-            callback(null, files);
+            else callback(null, files);
         });
     }
     catch (err) {
@@ -102,22 +97,83 @@ async function getFiles(res, callback) {
     }
 };
 
-
-/* async function getFiles(res) {
+async function getFilesByGenre(genre, callback) {
     try {
-        let result = db.getGfs().find();
-        return result;
+        db.getGfs().find({ 'genre': genre }).toArray((err, files) => {
+            if (!files || files.length === 0) {
+                callback(new StatusError('No files available', 404));
+            }
+            else callback(null, files);
+        });
     }
     catch (err) {
-        console.log(err);
         throw new StatusError('Error fetching files', 500);
     }
 };
- */
+
+async function getFilesByAuthor(author, callback) {
+    try {
+        db.getGfs().find({ 'author': author }).toArray((err, files) => {
+            if (!files || files.length === 0) {
+                callback(new StatusError('No files available', 404));
+            }
+            else callback(null, files);
+        });
+    }
+    catch (err) {
+        throw new StatusError('Error fetching files', 500);
+    }
+};
+
+
+
 module.exports = {
     deleteFile,
     uploadFile,
     getFile,
     getFileInfo,
-    getFiles
+    getAllFiles,
+    getFilesByGenre,
+    getFilesByAuthor
 }
+
+
+// potential pagination 
+/*
+exports.getAllPosts = async (req, res) => {
+    try {
+      let query = Post.find();
+  
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.limit) || 4;
+      const skip = (page - 1) * pageSize;
+      const total = await Post.countDocuments();
+  
+      const pages = Math.ceil(total / pageSize);
+  
+      query = query.skip(skip).limit(pageSize);
+  
+      if (page > pages) {
+        return res.status(404).json({
+          status: "fail",
+          message: "No page found",
+        });
+      }
+  
+      const result = await query;
+  
+      res.status(200).json({
+        status: "success",
+        count: result.length,
+        page,
+        pages,
+        data: result,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        status: "error",
+        message: "Server Error",
+      });
+    }
+  };*/

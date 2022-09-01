@@ -20,6 +20,9 @@ const AudioFileSchema = new mongoose.Schema({
     },
     author: {
         type: String
+    },
+    genre: {
+        type: String
     }
 });
 

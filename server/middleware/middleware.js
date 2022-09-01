@@ -4,6 +4,7 @@ const generalConfig = require('../configs/general.config');
 const db = require('../services/db.service');
 
 function handleErrors(err, req, res, next) {
+    req.err = err.message;
     res.status(err.statusCode || 500);
     res.send(err.message);
     return;
@@ -41,6 +42,7 @@ function uploadMiddleware(req, res, next) {
 
     upload(req, res, function (err) {
         if (err) {
+            req.err(err.message);
             console.log(err);
             return res.status(400).send(err);
         }
