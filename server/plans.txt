@@ -15,8 +15,8 @@
 
 # USEFUL LINKS
 
-https://www.atlassian.com/git/tutorials/using-branches/git-merge
-
+- https://www.atlassian.com/git/tutorials/using-branches/git-merge
+- https://github.com/LloydJanseVanRensburg/mern-pagination/blob/master/controllers/postControllers.js
 
 
 # NOTES

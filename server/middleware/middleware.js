@@ -4,9 +4,18 @@ const generalConfig = require('../configs/general.config');
 const db = require('../services/db.service');
 
 function handleErrors(err, req, res, next) {
-    req.err = err.message;
+
+    // for some reason, err.message is not null, but "null", even though null is passed...
+    /* 
+    console.log(typeof (null));
+    console.log(typeof (err.message));
+    console.log(err.message === null);
+    console.log(err.message ?? err.additionalMessage);
+    req.err = err.message || err.additionalMessage; */
+    if ((err.message != "null") || (!err.message)) req.err = err.message;
+    else req.err = err.additionalMessage;
     res.status(err.statusCode || 500);
-    res.send(err.message);
+    res.send(err.additionalMessage || err.message);
     return;
 };
 
@@ -26,10 +35,11 @@ function JWTAuth(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1];
     jwt.verify(token, generalConfig.JWT_SECRET, (err, user) => {
         if (err) {
-            req.err = "Error: Access Denied";
+            req.err = "Error: Invalid JWT token";
             console.log('JWT ERROR: ' + err);
             return res.status(401).send("Error: Access Denied");
         }
+        //console.log(user);
         req.user = user;
         next();
     });

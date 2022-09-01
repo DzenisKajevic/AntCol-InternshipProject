@@ -1,10 +1,12 @@
 // file for additional helper functions and classes
 const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
+const generalConfig = require('../configs/general.config');
 
 class StatusError extends Error {
-    constructor(message, statusCode) {
-        super(message);
+    constructor(originalMessage, additionalMessage, statusCode) {
+        super(originalMessage);
+        this.additionalMessage = additionalMessage;
         this.name = this.constructor.name;
         this.statusCode = statusCode;
     }
@@ -49,7 +51,17 @@ morgan.token('timestamp', function getTimestamp(req) {
     return datetime;
 });
 
+async function extractUserIdFromJWT(req) {
+    const authHeader = req.headers['authorization'];
+    // authorization has already passed (middleware), no need to check again
+    const token = authHeader && authHeader.split(' ')[1];
+    return jwt.verify(token, generalConfig.JWT_SECRET, (err, user) => {
+        return user.userId;
+    });
+}
+
 module.exports = {
     StatusError,
-    morgan
+    morgan,
+    extractUserIdFromJWT
 };

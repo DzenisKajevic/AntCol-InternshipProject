@@ -26,4 +26,10 @@ router.get('/getFilesByGenre', audioFileController.getFilesByGenre);
 // lists info on all files from a certain author
 router.get('/getFilesByAuthor', audioFileController.getFilesByAuthor);
 
+// adds a file to the user's fav list
+router.post('/addFileToFavourites', audioFileController.addFileToFavourites);
+
+// retrieves the user's fav files
+router.get('/favouriteFiles', audioFileController.getFavouriteFiles);
+
 module.exports = router;

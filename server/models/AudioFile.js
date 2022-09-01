@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
-const generalConfig = require('../configs/general.config');
 
 const AudioFileSchema = new mongoose.Schema({
     length: {
@@ -13,7 +11,8 @@ const AudioFileSchema = new mongoose.Schema({
         type: Date
     },
     filename: {
-        type: String
+        type: String,
+        //unique: true // this doesn't prevent GridFS from uploading files with the same name...
     },
     contentType: {
         type: String

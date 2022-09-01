@@ -15,6 +15,9 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+
+mongoose.set('debug', true);
 app.use(express.json());
 
 // creates a file for logs

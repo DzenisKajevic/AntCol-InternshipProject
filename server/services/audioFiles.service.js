@@ -1,5 +1,6 @@
 const db = require('./db.service');
 const AudioFile = require('../models/AudioFile');
+const FavouriteFile = require('../models/FavouriteFile');
 const { StatusError } = require('../utils/helper.util');
 const mongoose = require('mongoose');
 
@@ -12,124 +13,112 @@ async function deleteFileHelper(id) {
 };
 
 async function deleteFile(fileId) {
-    try {
-        const file = await AudioFile.findOne({ _id: fileId })
-        const obj_id = new mongoose.Types.ObjectId(fileId);
-        await db.getGfs().delete(obj_id);
-        await file.remove();
-        return "Successfully deleted the file";
-    }
-    catch (err) {
-        //console.log(err);
-        throw new StatusError('Could not delete the file', 500);
-    }
+    const file = await AudioFile.findOne({ _id: fileId })
+    const obj_id = new mongoose.Types.ObjectId(fileId);
+    await db.getGfs().delete(obj_id);
+    await file.remove();
+    return "Successfully deleted the file";
 };
 
 async function uploadFile(reqBody, file) {
-    try {
-        const maxFileSize = 50000000; // 50 MB
-        const filter = { _id: file.id };
-        const update = { author: reqBody.author, genre: reqBody.genre };
+    const maxFileSize = 50000000; // 50 MB
+    const filter = { _id: file.id };
+    const update = { author: reqBody.author, genre: reqBody.genre };
 
-        console.log(update);
-        if (file.size > maxFileSize) {
-            await deleteFileHelper(file.id);
-            console.log(`The file can't be larger than ${maxFileSize / 1000000}MB`);
-            return `The file can't exceed ${maxFileSize / 1000000}MB`;
-        }
-
-        const result = await AudioFile.findOneAndUpdate(
-            filter, update, { upsert: true, useFindAndModify: false, new: true });
-
-        console.log(result);
-        return file.id;
+    //console.log(update);
+    if (file.size > maxFileSize) {
+        await deleteFileHelper(file.id);
+        console.log(`The file can't be larger than ${maxFileSize / 1000000}MB`);
+        return `The file can't exceed ${maxFileSize / 1000000}MB`;
     }
-    catch (err) {
-        //console.log(err);
-        throw new StatusError('Could not upload the file', 500);
-    }
+
+    const result = await AudioFile.findOneAndUpdate(
+        filter, update, { upsert: true, useFindAndModify: false, new: true });
+
+    console.log(result);
+    return file.id;
 };
 
-async function getFile(fileId, res) {
-    try {
-        if (!fileId || fileId === 'undefined') res.status(422).send('The file id was not provided', 422);
+async function addFileToFavourites(reqBody, next) {
+    console.log(reqBody);
+    let favouriteFile = await FavouriteFile.create({
+        userId: reqBody.userId,
+        fileId: reqBody.fileId
+    });
+    return favouriteFile;
+}
 
-        const _id = new mongoose.Types.ObjectId(fileId);
-        await db.getGfs().find({ _id }).toArray((err, files) => {
-            if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
-            db.getGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
-        });
-    }
-    catch (err) {
-        //console.log(err);
-        throw new StatusError('Could not fetch the file', 500);
-    }
+async function getFile(fileId, res) {
+    if (!fileId || fileId === 'undefined') throw new StatusError('File id was not provided', 422);
+
+    const _id = new mongoose.Types.ObjectId(fileId);
+    await db.getGfs().find({ _id }).toArray((err, files) => {
+        if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
+        db.getGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
+    });
 };
 
 async function getFileInfo(fileId) {
-    try {
-        if (!fileId || fileId === 'undefined') res.status(400).send('File id was not provided');
-        const result = await AudioFile.findOne({ _id: fileId });
-        return result;
-    }
-    catch (err) {
-        //console.log(err);
-        throw new StatusError('Could not fetch the file info', 500);
-
-    }
+    if (!fileId || fileId === 'undefined') throw new StatusError(null, 'File id was not provided', 422);
+    const result = await AudioFile.findOne({ _id: fileId });
+    return result;
 };
 
 async function getAllFiles(callback) {
-    try {
-        db.getGfs().find().toArray((err, files) => {
-            // Check if files exist
-            if (!files || files.length === 0) {
-                callback(new StatusError('No files available', 404));
-            }
-            // nothing returns without a callback
-            // await / then / catch don't return anything either
-            else callback(null, files);
-        });
-    }
-    catch (err) {
-        //console.log(err);
-        throw new StatusError('Error fetching files', 500);
-    }
+    db.getGfs().find().toArray((err, files) => {
+        // Check if files exist
+        if (!files || files.length === 0) {
+            callback(new StatusError(null, 'No files available', 404));
+        }
+        // nothing returns without a callback
+        // await / then / catch don't return anything either
+        else callback(null, files);
+    });
 };
 
-async function getFilesByGenre(genre, callback) {
-    try {
-        db.getGfs().find({ 'genre': genre }).toArray((err, files) => {
-            if (!files || files.length === 0) {
-                callback(new StatusError('No files available', 404));
-            }
-            else callback(null, files);
-        });
-    }
-    catch (err) {
-        throw new StatusError('Error fetching files', 500);
-    }
+async function getFilesByGenre({ genre, page, pageSize }, callback) {
+    page = parseInt(page) || 1;
+    pageSize = parseInt(pageSize) || 4;
+    db.getGfs().find({ 'genre': genre }).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
+        if (!files || files.length === 0) {
+            callback(new StatusError(null, 'No files available', 404));
+        }
+        else callback(null, files);
+    });
 };
 
-async function getFilesByAuthor(author, callback) {
-    try {
-        db.getGfs().find({ 'author': author }).toArray((err, files) => {
-            if (!files || files.length === 0) {
-                callback(new StatusError('No files available', 404));
-            }
-            else callback(null, files);
-        });
-    }
-    catch (err) {
-        throw new StatusError('Error fetching files', 500);
-    }
+async function getFilesByAuthor({ author, page, pageSize }, callback) {
+    page = parseInt(page) || 1;
+    pageSize = parseInt(pageSize) || 4;
+    db.getGfs().find({ 'author': author }).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
+        if (err) callback(err);
+        if (!files || files.length === 0) {
+            callback(new StatusError(null, 'No files available', 404));
+        }
+        else callback(null, files);
+    });
 };
 
+async function getFavouriteFiles(userId, { page, pageSize }) {
+    page = parseInt(page) || 1;
+    pageSize = parseInt(pageSize) || 4;
 
+    // for now, this line is useless, since the userId is extracted from the JWT. Favourite files are private for now
+    if (!userId || userId === 'undefined') throw new StatusError(undefined, 'User ID was not provided', 422);
+    const files = await FavouriteFile.find({ 'userId': userId }).skip((page - 1) * pageSize).limit(pageSize);
+    if (!files || files.length === 0) {
+        throw new StatusError(null, 'No files available', 404);
+    }
+    return files;
+};
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzBkZTRhNTg0NGQzY2JjMmIzNzkyMmYiLCJpYXQiOjE2NjIwMzYxOTksImV4cCI6MTY2MjEyMjU5OX0.VeRFYL-8V--yw5LBp0E4FH3NjzBbYiju8y3r7HxcOWw
 
 module.exports = {
     deleteFile,
     uploadFile,
+    addFileToFavourites,
+    getFavouriteFiles,
     getFile,
     getFileInfo,
     getAllFiles,
