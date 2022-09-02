@@ -1,0 +1,86 @@
+.navbar-header {
+    /* background-color: #212329; */
+    /* background-color: rgba(33, 35, 41,0.9); */
+    /* background-color: rgba(0, 0, 0, 0.8); */
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    width: 95%;
+    height: 90px;
+}
+
+.music-app-logo {
+    width: 200px;
+    margin-top: 1rem;
+    margin-right: auto;
+}
+
+.login-button {
+    /* background-color: #212329; */
+    /* background-color: #191b1f; */
+    background-color: rgba(0, 0, 0, 0.8);
+    position: relative;
+    overflow: hidden;
+    color: var(--white-text);
+    border: none;
+    cursor: pointer;
+    width: 100px;
+    height: 50px;
+    font-family: var(--text-font1);
+    border-radius: 15px;
+    font-size: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+.login-button:hover {
+    background-color: #212429;
+    transition: all 0.3s ease-in-out;
+}
+
+.signup-button {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+    width: 100px;
+    height: 50px;
+    font-family: var(--text-font1);
+    border-radius: 15px;
+    color: black;
+    font-weight: 500;
+    font-size: 15px;
+    margin-left: 20px;
+    transition: all 0.5s ease-in-out;
+    background: var(--purple);
+    background: var(--linear-bg);
+    opacity: 0.8;
+    transition: all 0.5s ease-in-out;
+}
+
+.signup-button:hover {
+    transition: all 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.shine:after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    bottom: -50%;
+    left: -50%;
+    background: linear-gradient(to bottom, rgba(229, 172, 142, 0), rgba(255,255,255,0.5) 50%, rgba(229, 172, 142, 0));
+    transform: rotateZ(60deg) translate(-5em, 7.5em);
+}
+
+.shine:hover::after, button:focus::after {
+    animation: shine 1s forwards;
+}
+
+@keyframes shine {
+    100% {
+      transform: rotateZ(60deg) translate(1em, -9em);
+    }
+}

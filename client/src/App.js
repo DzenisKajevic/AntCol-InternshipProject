@@ -1,11 +1,11 @@
 import './App.css';
-
+import LandingPage from './View/LandingPage/LandingPage';
 
 function App() {
   return (
-    <div>
-
-    </div>
+    <>
+      <LandingPage />
+    </>
   );
 }
 

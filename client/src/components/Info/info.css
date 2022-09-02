@@ -1,0 +1,92 @@
+.info-title {
+    font-family: var(--title-font);
+    margin-left: 55%;
+    padding-top: 4rem;
+    /* max-width: 400px; */
+    font-size: 2rem;
+    background: var(--linear-bg);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.info-p {
+    color: var(--white-text);
+    font-family: var(--text-font1);
+    margin-left: 40%;
+    max-width: 600px;
+    padding-top: 4rem;
+    letter-spacing: 2px;
+    line-height: 25px;
+}
+
+.highlighted-text {
+    background: var(--linear-bg);
+    font-family: var(--title-font);
+    font-size: 1.2rem;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: underline;
+    position: relative;
+
+    /* text-underline-position: under; */
+    /* text-decoration-color: var(--linear-bg); */
+    /* text-decoration-color: red; */
+}
+
+.highlighted-text::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    left: 0;
+    height: 5px;
+    border-radius: 2px;
+    background: var(--linear-bg);
+}
+
+.subscribe-button {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+    width: 200px;
+    height: 50px;
+    font-family: var(--text-font1);
+    border-radius: 15px;
+    color: black;
+    font-weight: 500;
+    font-size: 15px;
+    margin-left: 20rem;
+    transition: all 0.5s ease-in-out;
+    background: var(--purple);
+    background: var(--linear-bg);
+    opacity: 0.8;
+    transition: all 0.5s ease-in-out;
+    margin-top: 4rem;
+}
+
+.subscribe-button:hover {
+    transition: all 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.shine:after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    bottom: -50%;
+    left: -50%;
+    background: linear-gradient(to bottom, rgba(229, 172, 142, 0), rgba(255,255,255,0.5) 50%, rgba(229, 172, 142, 0));
+    transform: rotateZ(60deg) translate(-5em, 7.5em);
+}
+
+.shine:hover::after, button:focus::after {
+    animation: shine 1s forwards;
+}
+
+@keyframes shine {
+    100% {
+      transform: rotateZ(60deg) translate(1em, -9em);
+    }
+}
