@@ -4,19 +4,20 @@ const FavouriteFile = require('../models/FavouriteFile');
 const { StatusError } = require('../utils/helper.util');
 const mongoose = require('mongoose');
 
-async function deleteFileHelper(id) {
+/* async function deleteFileHelper(id) {
     if (!id || id === 'undefined') return 'The file id was not provided';
     const _id = new mongoose.Types.ObjectId(id);
     await db.getGfs().delete(_id, err => {
         if (err) throw new StatusError('file deletion error', 500);
     });
-};
+}; */
 
 async function deleteFile(fileId) {
     const file = await AudioFile.findOne({ _id: fileId })
     const obj_id = new mongoose.Types.ObjectId(fileId);
     await db.getGfs().delete(obj_id);
     await file.remove();
+    await FavouriteFile.remove({ 'fileId': fileId })
     return "Successfully deleted the file";
 };
 
@@ -25,13 +26,6 @@ async function uploadFile(reqBody, file) {
     const filter = { _id: file.id };
     const update = { author: reqBody.author, genre: reqBody.genre };
 
-    //console.log(update);
-    if (file.size > maxFileSize) {
-        await deleteFileHelper(file.id);
-        console.log(`The file can't be larger than ${maxFileSize / 1000000}MB`);
-        return `The file can't exceed ${maxFileSize / 1000000}MB`;
-    }
-
     const result = await AudioFile.findOneAndUpdate(
         filter, update, { upsert: true, useFindAndModify: false, new: true });
 
@@ -39,14 +33,32 @@ async function uploadFile(reqBody, file) {
     return file.id;
 };
 
-async function addFileToFavourites(reqBody, next) {
-    console.log(reqBody);
+async function addFileToFavourites(userId, fileId) {
     let favouriteFile = await FavouriteFile.create({
-        userId: reqBody.userId,
-        fileId: reqBody.fileId
+        userId: userId,
+        fileId: fileId
     });
     return favouriteFile;
 }
+
+async function deleteFavouriteFile(userId, fileId) {
+    const file = await FavouriteFile.deleteOne({ 'userId': userId, 'fileId': fileId });
+    if (!file.deletedCount) throw new StatusError(null, 'Error: Nothing was deleted', 500);
+    return "Successfully deleted the file";
+};
+
+async function getFavouriteFiles(userId, { page, pageSize }) {
+    page = parseInt(page) || 1;
+    pageSize = parseInt(pageSize) || 4;
+
+    // for now, this line is useless, since the userId is extracted from the JWT. Favourite files are private for now
+    if (!userId || userId === 'undefined') throw new StatusError(undefined, 'User ID was not provided', 422);
+    const files = await FavouriteFile.find({ 'userId': userId }).skip((page - 1) * pageSize).limit(pageSize);
+    if (!files || files.length === 0) {
+        throw new StatusError(null, 'No files available', 404);
+    }
+    return files;
+};
 
 async function getFile(fileId, res) {
     if (!fileId || fileId === 'undefined') throw new StatusError('File id was not provided', 422);
@@ -99,26 +111,13 @@ async function getFilesByAuthor({ author, page, pageSize }, callback) {
     });
 };
 
-async function getFavouriteFiles(userId, { page, pageSize }) {
-    page = parseInt(page) || 1;
-    pageSize = parseInt(pageSize) || 4;
-
-    // for now, this line is useless, since the userId is extracted from the JWT. Favourite files are private for now
-    if (!userId || userId === 'undefined') throw new StatusError(undefined, 'User ID was not provided', 422);
-    const files = await FavouriteFile.find({ 'userId': userId }).skip((page - 1) * pageSize).limit(pageSize);
-    if (!files || files.length === 0) {
-        throw new StatusError(null, 'No files available', 404);
-    }
-    return files;
-};
-
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzBkZTRhNTg0NGQzY2JjMmIzNzkyMmYiLCJpYXQiOjE2NjIwMzYxOTksImV4cCI6MTY2MjEyMjU5OX0.VeRFYL-8V--yw5LBp0E4FH3NjzBbYiju8y3r7HxcOWw
 
 module.exports = {
     deleteFile,
     uploadFile,
     addFileToFavourites,
     getFavouriteFiles,
+    deleteFavouriteFile,
     getFile,
     getFileInfo,
     getAllFiles,

@@ -61,36 +61,14 @@ const dbService = {
                     resolve(fileInfo);
                 });
             }
-
-            // used for giving random names to files (not needed at the moment)
-            /*              (req, file) => {
-                            // this function runs every time a new file is created
-                            return new Promise((resolve, reject) => {
-                                // use the crypto package to generate a random name for the file
-                                // I'll probably remove this later
-                                crypto.randomBytes(16, (err, buf) => {
-                                    if (err) {
-                                        return reject(err);
-                                    }
-                                    const filename = buf.toString('hex') + path.extname(file.originalname);
-                                    const fileInfo = {
-                                        filename: filename,
-                                        bucketName: dbService.bucketName
-                                    };
-                                    resolve(fileInfo);
-                                });
-                            });
-                        }  */
         });
 
         dbService.store = multer(
             {
                 storage: dbService.storage,
-                //limits: { fileSize: 20000000 }, // limits file to 20MB, but it doesn't prevent the file from being uploaded before checking
+                limits: { fileSize: 50000000 }, // limits file to 50MB
                 fileFilter: function (req, file, cb) {
                     checkFileType(file, cb);
-                    //checkFileSize(file, cb); // can't put this here since the file size is unknown at this stage
-                    // I will probably end up using limits ^ API response is troublesome though..
                 }
             });
     },

@@ -14,7 +14,6 @@ async function deleteFile(req, res, next) {
 
 async function uploadFile(req, res, next) {
     try {
-        console.log(req.body);
         res.status(201).send(await audioFilesService.uploadFile(req.body, req.file));
     } catch (err) {
         console.error(`Error uploading file\n`, err);
@@ -24,7 +23,8 @@ async function uploadFile(req, res, next) {
 
 async function addFileToFavourites(req, res, next) {
     try {
-        res.status(201).send(await audioFilesService.addFileToFavourites(req.body));
+        const userId = await helperUtil.extractUserIdFromJWT(req);
+        res.status(201).send(await audioFilesService.addFileToFavourites(userId, req.body.fileId));
     } catch (err) {
         console.error(`Error adding file to favourites\n`, err);
         if (err.message.startsWith("E11000 duplicate key error")) next(new StatusError(err.message, `Selected file is already a favourite`, 500));
@@ -46,6 +46,20 @@ async function getFavouriteFiles(req, res, next) {
         next(new StatusError(err.message, `Error fetching favourite files`, 500));
     }
 }
+
+async function deleteFavouriteFile(req, res, next) {
+    try {
+        const userId = await helperUtil.extractUserIdFromJWT(req);
+        res.status(201).send(await audioFilesService.deleteFavouriteFile(userId, req.body.fileId));
+    } catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
+        console.error(`Error deleting favourite file\n`, err);
+        next(new StatusError(err.message, `Error deleting favourite file`, 500));
+    }
+};
 
 async function getFile(req, res, next) {
     try {
@@ -124,6 +138,7 @@ module.exports = {
     uploadFile,
     addFileToFavourites,
     getFavouriteFiles,
+    deleteFavouriteFile,
     getFile,
     getFileInfo,
     getAllFiles,

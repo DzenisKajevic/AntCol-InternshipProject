@@ -32,4 +32,7 @@ router.post('/addFileToFavourites', audioFileController.addFileToFavourites);
 // retrieves the user's fav files
 router.get('/favouriteFiles', audioFileController.getFavouriteFiles);
 
+// deletes a specific file
+router.delete('/deleteFavouriteFile', audioFileController.deleteFavouriteFile);
+
 module.exports = router;

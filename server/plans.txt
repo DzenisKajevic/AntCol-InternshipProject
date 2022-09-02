@@ -7,7 +7,6 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 - add roles to users (role: 'admin' or role: 'member')
-- add playlists
 
 # ADDITIONAL TASKS
 
