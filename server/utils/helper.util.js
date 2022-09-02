@@ -65,5 +65,5 @@ morgan.token('timestamp', function getTimestamp(req) {
 module.exports = {
     StatusError,
     morgan,
-    extractUserIdFromJWT
+    //extractUserIdFromJWT
 };
