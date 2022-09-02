@@ -21,7 +21,7 @@ function handleErrors(err, req, res, next) {
 
 function JWTAuth(req, res, next) {
     // Skip authorization checking on the following routes: 
-    if (req.path == '/' || req.path == '/api/v1/auth/login' || req.path == '/api/v1/auth/register') return next();
+    if (req.path === '/' || req.path === '/api/v1/auth/login' || req.path === '/api/v1/auth/register') return next();
 
     //console.log(req.body);
     const authHeader = req.headers['authorization'];
@@ -41,6 +41,13 @@ function JWTAuth(req, res, next) {
         }
         //console.log(user);
         req.user = user;
+        if (req.path === '/api/v1/auth/newUserCount' || req.path === '/api/v1/audioFiles/newFilesCount') {
+            if (user.role != "Admin") {
+                req.err = "Error: Admin role required";
+                console.error('JWT ERROR: ' + 'Admin role required');
+                return res.status(401).send("Error: Access Denied");
+            }
+        }
         next();
     });
 };

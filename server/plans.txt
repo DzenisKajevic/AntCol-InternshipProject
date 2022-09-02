@@ -1,16 +1,10 @@
 # IMPORTANT TASKS
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!    - if a huge file gets uploaded, it will first be added to the db, then deleted afterwards...     !!!!
-!!!    The middleware function can't filter it in time since the file size is unknown at that point     !!!!
-!!!    There must be a way to solve this...                                                             !!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-- add roles to users (role: 'admin' or role: 'member')
+- Limit users to only deleting their own files (admins can delete whatever)
 
 # ADDITIONAL TASKS
 
-
+- Admin panel: https://www.google.com/search?q=admin+panel&rlz=1C1CHBF_enDE905DE905&sxsrf=ALiCzsaNK3HR1j6PO9M8mlBqwxZJwYKU2A:1662114276260&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjKuYyY8vX5AhXvh4sKHdp7DtoQ_AUoAXoECAEQAw&biw=1536&bih=722&dpr=1.25#imgrc=Gi7TfDGj7KMVUM
 
 # USEFUL LINKS
 

@@ -39,7 +39,16 @@ async function login(loginInfo) {
     }
 }
 
+// admin
+async function getNewUsersCount() {
+    const date = new Date();
+    const fromDate = date.setDate(date.getDate() - 7);
+    userCount = await User.countDocuments({ 'createdAt': { $gte: fromDate } });
+    return ({ 'newUsers': userCount });
+}
+
 module.exports = {
     register: register,
-    login: login
+    login: login,
+    getNewUsersCount
 };

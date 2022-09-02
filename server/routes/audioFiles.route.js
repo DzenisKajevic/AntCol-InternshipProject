@@ -35,4 +35,7 @@ router.get('/favouriteFiles', audioFileController.getFavouriteFiles);
 // deletes a specific file
 router.delete('/deleteFavouriteFile', audioFileController.deleteFavouriteFile);
 
+// admin route: returns count of new audio files in the past 7 days
+router.get('/newFilesCount', audioFileController.getNewFilesCount);
+
 module.exports = router;

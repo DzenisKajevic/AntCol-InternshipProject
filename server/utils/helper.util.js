@@ -51,14 +51,16 @@ morgan.token('timestamp', function getTimestamp(req) {
     return datetime;
 });
 
-async function extractUserIdFromJWT(req) {
+// useless function at the moment. userID is saved in req.user.userId after authenticating anyways
+/* async function extractUserIdFromJWT(req) {
     const authHeader = req.headers['authorization'];
     // authorization has already passed (middleware), no need to check again
     const token = authHeader && authHeader.split(' ')[1];
     return jwt.verify(token, generalConfig.JWT_SECRET, (err, user) => {
+        //console.log(user); // edit JWT content in User.js
         return user.userId;
     });
-}
+} */
 
 module.exports = {
     StatusError,

@@ -13,11 +13,12 @@ const mongoose = require('mongoose');
 }; */
 
 async function deleteFile(fileId) {
+    //console.log(fileId);
     const file = await AudioFile.findOne({ _id: fileId })
     const obj_id = new mongoose.Types.ObjectId(fileId);
     await db.getGfs().delete(obj_id);
     await file.remove();
-    await FavouriteFile.remove({ 'fileId': fileId })
+    await FavouriteFile.deleteMany({ 'fileId': fileId })
     return "Successfully deleted the file";
 };
 
@@ -34,11 +35,15 @@ async function uploadFile(reqBody, file) {
 };
 
 async function addFileToFavourites(userId, fileId) {
-    let favouriteFile = await FavouriteFile.create({
-        userId: userId,
-        fileId: fileId
-    });
-    return favouriteFile;
+    const file = await AudioFile.findOne({ 'fileId': fileId });
+    if (file) {
+        let favouriteFile = await FavouriteFile.create({
+            userId: userId,
+            fileId: fileId
+        });
+        return favouriteFile;
+    }
+    throw new StatusError(null, 'Can\'t add non-existing file to favourites', 500);
 }
 
 async function deleteFavouriteFile(userId, fileId) {
@@ -111,6 +116,13 @@ async function getFilesByAuthor({ author, page, pageSize }, callback) {
     });
 };
 
+// admin
+async function getNewFilesCount() {
+    const date = new Date();
+    const fromDate = date.setDate(date.getDate() - 7);
+    fileCount = await AudioFile.countDocuments({ 'createdAt': { $gte: fromDate } });
+    return ({ 'newFiles': fileCount });
+}
 
 module.exports = {
     deleteFile,
@@ -122,7 +134,8 @@ module.exports = {
     getFileInfo,
     getAllFiles,
     getFilesByGenre,
-    getFilesByAuthor
+    getFilesByAuthor,
+    getNewFilesCount,
 }
 
 
