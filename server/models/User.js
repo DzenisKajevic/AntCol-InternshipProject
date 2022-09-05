@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('../configs/general.config');
 const generalConfig = require('../configs/general.config');
 
 const UserSchema = new mongoose.Schema({
@@ -27,16 +26,26 @@ const UserSchema = new mongoose.Schema({
         required: [true, 'Password can\'t be empty'],
         minlength: 6,
         select: false
+    },
+    role: {
+        type: String,
+        default: "Basic",
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        unique: true
     }
 });
 
 UserSchema.pre('save', async function () {
     const salt = await bcryptjs.genSalt(10);
     this.password = await bcryptjs.hash(this.password, salt);
+    this.createdAt = new Date().toISOString();
 });
 
 UserSchema.methods.createJWT = function () {
-    return jwt.sign({ userId: this._id }, config.JWT_SECRET, { expiresIn: generalConfig.JWT_LIFETIME });
+    return jwt.sign({ 'userId': this._id, 'role': this.role }, generalConfig.JWT_SECRET, { expiresIn: generalConfig.JWT_LIFETIME });
 }
 
 UserSchema.methods.comparePassword = async function (pass) {

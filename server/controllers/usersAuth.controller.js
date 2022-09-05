@@ -1,41 +1,38 @@
 //express controller = php service
-
 const users = require('../services/usersAuth.service');
+const { StatusError } = require('../utils/helper.util');
 
-const register = async (req, res) => {
+async function register(req, res, next) {
     try {
-        const user = await users.register(req.body);
-        const token = user.createJWT();
-        res.status(201).send({ user, token });
-    } catch (error) {
-        res.status(error.status || 500);
-        res.json({
-            message: error.message,
-            error: error
-        });
-        console.error(error);
+        res.status(201).send(await users.register(req.body));
+    } catch (err) {
+        if (err.message.startsWith("E11000 duplicate key error"))
+            next(new StatusError(err.message, `An account with that email already exists`, 500));
     }
 }
 
-const login = async (req, res) => {
+async function login(req, res, next) {
     try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            res.status(500).send({ msg: "All credentials have to be provided" });
-        }
-        const user = await users.login(req.body);
-        const token = user.createJWT();
-        res.status(200).send({ user, token });
-    } catch (error) {
-        res.status(error.status || 500);
-        res.json({
-            message: error.message,
-            error: error
-        });
-        console.error(error);
+        res.status(200).send(await users.login(req.body));
+    } catch (err) {
+        console.error(`Error while logging in\n`, err);
+        next(new StatusError(err.message, `Error while logging in`, err.statusCode || 500));
     }
 }
 
-module.exports.register = register;
-module.exports.login = login;
+// admin
+async function getNewUsersCount(req, res, next) {
+    try {
+        res.status(200).send(await users.getNewUserCount());
+    }
+    catch (err) {
+        console.error('Error fetching new users\n', err);
+        next(new StatusError(err.message, 'Error fetching new users\n', 500));
+    }
+}
+
+module.exports = {
+    register,
+    login,
+    getNewUsersCount
+};
