@@ -8,22 +8,24 @@ async function register(req, res, next) {
     } catch (err) {
         if (err.message.startsWith("E11000 duplicate key error"))
             next(new StatusError(err.message, `An account with that email already exists`, 500));
+        next(new StatusError(null, err.message, err.statusCode));
     }
 }
 
 async function login(req, res, next) {
     try {
+        console.log(req.body);
         res.status(200).send(await users.login(req.body));
     } catch (err) {
         console.error(`Error while logging in\n`, err);
-        next(new StatusError(err.message, `Error while logging in`, err.statusCode || 500));
+        next(new StatusError(null, err.message, err.statusCode || 500));
     }
 }
 
 // admin
 async function getNewUsersCount(req, res, next) {
     try {
-        res.status(200).send(await users.getNewUserCount());
+        res.status(200).send(await users.getNewUsersCount());
     }
     catch (err) {
         console.error('Error fetching new users\n', err);

@@ -16,6 +16,37 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
+
+const swaggerOptions = {
+    //explorer: true,
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info: {
+            //basePath: "/api/v1",
+            title: 'AntCol Music App API',
+            description: 'Developer API',
+            contact: {
+                name: "Dženis Kajević"
+            },
+            servers: {
+                url: 'http://localhost:3001/api/v1',
+                description: 'Development server',
+            }
+        },
+        host: `localhost:${generalConfig.expressPort}`, // Host (optional)
+        basePath: '/api/v1'
+    },
+    apis: ['.\\routes\\*.js', '.\\index.js']
+    //['./routes/*.js']
+    //apis: [`./routes/audioFiles.route.js`],
+};
+//console.log([__dirname] + '\\routes\\audioFiles.route.js');
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+//explorer = search bar
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs, { explorer: true }));
 
 mongoose.set('debug', true);
 app.use(express.json());
@@ -34,6 +65,25 @@ app.use(assignId);
 
 app.all('*', middleware.JWTAuth);
 
+/**
+ * @swagger
+ * components:
+ *  securitySchemes:
+ *      bearerAuth: # arbitrary name for the security scheme
+ *          type: http
+ *          scheme: bearer
+ *          bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     description: Returns the homepage
+ *     responses:
+ *       200:
+ *         description: hello world
+ */
 app.get('/', (req, res) => {
     res.send("Welcome");
 });

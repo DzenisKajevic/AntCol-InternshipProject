@@ -14,7 +14,7 @@ async function deleteFile(req, res, next) {
 
 async function uploadFile(req, res, next) {
     try {
-        res.status(201).send(await audioFilesService.uploadFile(req.body, req.file));
+        res.status(201).send({ "fileId": await audioFilesService.uploadFile(req.body, req.file) });
     } catch (err) {
         console.error(`Error uploading file\n`, err);
         next(new StatusError(err.message, `Error uploading file`, 500));
@@ -71,10 +71,10 @@ async function getFile(req, res, next) {
 
 async function getFileInfo(req, res, next) {
     try {
-        res.status(201).send(await audioFilesService.getFileInfo(req.params.id));
+        res.status(200).send(await audioFilesService.getFileInfo(req.params.id));
     } catch (err) {
         console.error(`Error fetching file info\n`, err);
-        next(new StatusError(err.message, `Error fetching file info`, 500));
+        next(new StatusError(err.message, `Error fetching file info`, err.statusCode));
     }
 };
 

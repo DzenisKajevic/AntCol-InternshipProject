@@ -71,6 +71,8 @@ async function getFile(fileId, res) {
     const _id = new mongoose.Types.ObjectId(fileId);
     await db.getGfs().find({ _id }).toArray((err, files) => {
         if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
+        res.setHeader('Content-Disposition', 'attachment');
+        res.setHeader('Content-Type', 'audio/mpeg');
         db.getGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
     });
 };
@@ -78,6 +80,7 @@ async function getFile(fileId, res) {
 async function getFileInfo(fileId) {
     if (!fileId || fileId === 'undefined') throw new StatusError(null, 'File id was not provided', 422);
     const result = await AudioFile.findOne({ _id: fileId });
+    if (!result) throw new StatusError(null, 'No such file exists', 404);
     return result;
 };
 

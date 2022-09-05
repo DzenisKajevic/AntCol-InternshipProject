@@ -21,7 +21,7 @@ function handleErrors(err, req, res, next) {
 
 function JWTAuth(req, res, next) {
     // Skip authorization checking on the following routes: 
-    if (req.path === '/' || req.path === '/api/v1/auth/login' || req.path === '/api/v1/auth/register') return next();
+    if (req.path === '/' || req.path === '/api/v1/auth/login' || req.path === '/api/v1/auth/register' || req.path === '/api-docs') return next();
 
     //console.log(req.body);
     const authHeader = req.headers['authorization'];

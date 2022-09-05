@@ -1,7 +1,9 @@
 # IMPORTANT TASKS
 
 - Limit users to only deleting their own files (admins can delete whatever)
-
+- Disable the possibility to add non-existing files to favourites
+- Add links on the upload route on swagger
+- Separate routes into groups on swagger
 
 # ADDITIONAL TASKS
 
