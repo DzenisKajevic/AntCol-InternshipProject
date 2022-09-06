@@ -80,7 +80,7 @@ async function getFileInfo(req, res, next) {
 
 async function getAllFiles(req, res, next) {
     try {
-        await audioFilesService.getAllFiles((err, files) => {
+        await audioFilesService.getAllFiles(req.query, (err, files) => {
             if (err) {
                 next(err);
             }
@@ -94,42 +94,6 @@ async function getAllFiles(req, res, next) {
         next(new StatusError(err.message, `Error fetching files`, err.statusCode || 500));
     }
 };
-
-async function getFilesByGenre(req, res, next) {
-    try {
-        await audioFilesService.getFilesByGenre(req.query, (err, files) => {
-            if (err) {
-                next(err);
-            }
-            else if (!err) {
-                console.log(files);
-                res.send(files);
-            }
-        });
-    } catch (err) {
-        console.error(`Error fetching files\n`, err);
-        next(new StatusError(err.message, `Error fetching files`, err.statusCode || 500));
-    }
-};
-
-async function getFilesByAuthor(req, res, next) {
-    try {
-        await audioFilesService.getFilesByAuthor(req.query, (err, files) => {
-            if (err) {
-                console.log(err);
-                next(err);
-            }
-            else if (!err) {
-                console.log(files);
-                res.send(files);
-            }
-        });
-    } catch (err) {
-        console.error(`Error fetching files\n`, err);
-        next(new StatusError(err.message, `Error fetching files`, err.statusCode || 500));
-    }
-};
-
 // admin
 async function getNewFilesCount(req, res, next) {
     try {
@@ -150,7 +114,5 @@ module.exports = {
     getFile,
     getFileInfo,
     getAllFiles,
-    getFilesByGenre,
-    getFilesByAuthor,
     getNewFilesCount
 }

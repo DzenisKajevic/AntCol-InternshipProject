@@ -175,10 +175,29 @@ router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 *   get: 
 *    tags:
 *      - file uploads
-*    operationId: getAllFiles
+*    operationId: getAllAudioFiles
 *    security:
 *       - bearerAuth: []
 *    description: Use to request information on all files from the database
+*    parameters:
+*      - in: query
+*        name: filters
+*        required: false
+*        schema:
+*          type: object
+*          example:
+*            genre: Something
+*            author: Someone
+*            other parameter: To search by
+*            if invalid: Is ignored
+*      - in: query
+*        name: pagination
+*        required: false
+*        schema:
+*          type: object
+*          example:
+*            page: 1
+*            pageSize: 4
 *    responses: 
 *      200: 
 *          description: Successful response
@@ -188,71 +207,6 @@ router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 *          description: No files available
 */
 router.get('/getAllFiles', audioFileController.getAllFiles);
-
-// lists info on all files from a certain genre
-/** 
-* @swagger
-*  /api/v1/audioFiles/getFilesByGenre: 
-*   get: 
-*    tags:
-*      - file uploads
-*    operationId: getFilesByGenre
-*    security:
-*       - bearerAuth: []
-*    description: Use to request information on all files from a certain genre
-*    parameters:
-*       - in: query
-*         name: genre
-*         schema:
-*           type: string
-*           example: Something
-*       - in: query
-*         name: page
-*         schema:
-*           type: integer
-*           example: 1
-*    responses: 
-*      200: 
-*          description: Successful response
-*      401: 
-*          description: Missing authorization
-*      404:
-*          description: No files available
-*/
-router.get('/getFilesByGenre', audioFileController.getFilesByGenre);
-
-// lists info on all files from a certain author
-/** 
-* @swagger
-*  /api/v1/audioFiles/getFilesByAuthor: 
-*   get: 
-*    tags:
-*      - file uploads
-*    operationId: getFilesByAuthor
-*    security:
-*       - bearerAuth: []
-*    description: Use to request information on all files from a certain author
-*    parameters:
-*       - in: query
-*         name: author
-*         schema:
-*           type: string
-*           example: Someone
-*       - in: query
-*         name: page
-*         schema:
-*           type: integer
-*           example: 1
-*    responses: 
-*      200: 
-*          description: Successful response
-*      401: 
-*          description: Missing authorization
-*      404:
-*          description: No files available
-*/
-router.get('/getFilesByAuthor', audioFileController.getFilesByAuthor);
-
 
 // retrieves the user's fav files
 /** 

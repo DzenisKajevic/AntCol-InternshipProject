@@ -3,6 +3,7 @@ const AudioFile = require('../models/AudioFile');
 const FavouriteFile = require('../models/FavouriteFile');
 const { StatusError } = require('../utils/helper.util');
 const mongoose = require('mongoose');
+const util = require('../utils/helper.util');
 
 /* async function deleteFileHelper(id) {
     if (!id || id === 'undefined') return 'The file id was not provided';
@@ -69,10 +70,12 @@ async function getFile(fileId, res) {
     if (!fileId || fileId === 'undefined') throw new StatusError('File id was not provided', 422);
 
     const _id = new mongoose.Types.ObjectId(fileId);
-    await db.getGfs().find({ _id }).toArray((err, files) => {
+    await db.getGfs().find({ _id }).limit(1).toArray((err, files) => {
         if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
         res.setHeader('Content-Disposition', 'attachment');
-        res.setHeader('Content-Type', 'audio/mpeg');
+        res.setHeader('Content-Type', files[0].contentType);
+        // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
+        // open download stream start stop: could be used for buffering(?)
         db.getGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
     });
 };
@@ -84,34 +87,19 @@ async function getFileInfo(fileId) {
     return result;
 };
 
-async function getAllFiles(callback) {
-    db.getGfs().find().toArray((err, files) => {
-        // Check if files exist
-        if (!files || files.length === 0) {
-            callback(new StatusError(null, 'No files available', 404));
-        }
-        // nothing returns without a callback
-        // await / then / catch don't return anything either
-        else callback(null, files);
+// Added filters, removed 2 routes
+async function getAllFiles(queryParams, callback) {
+    //{ genre, page, pageSize }
+    let filters = {};
+    filters['contentType'] = "audio/mpeg";
+    Object.keys(queryParams).forEach(key => {
+        if (key in util.fileSearchFilters) filters[key] = queryParams[key];
     });
-};
-
-async function getFilesByGenre({ genre, page, pageSize }, callback) {
-    page = parseInt(page) || 1;
-    pageSize = parseInt(pageSize) || 4;
-    db.getGfs().find({ 'genre': genre }).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
-        if (!files || files.length === 0) {
-            callback(new StatusError(null, 'No files available', 404));
-        }
-        else callback(null, files);
-    });
-};
-
-async function getFilesByAuthor({ author, page, pageSize }, callback) {
-    page = parseInt(page) || 1;
-    pageSize = parseInt(pageSize) || 4;
-    db.getGfs().find({ 'author': author }).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
-        if (err) callback(err);
+    console.log(filters);
+    //console.log(typeof (keys));
+    let page = parseInt(queryParams.page) || 1;
+    let pageSize = parseInt(queryParams.pageSize) || 4;
+    db.getGfs().find(filters).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
         if (!files || files.length === 0) {
             callback(new StatusError(null, 'No files available', 404));
         }
@@ -133,11 +121,9 @@ module.exports = {
     addFileToFavourites,
     getFavouriteFiles,
     deleteFavouriteFile,
+    getAllFiles,
     getFile,
     getFileInfo,
-    getAllFiles,
-    getFilesByGenre,
-    getFilesByAuthor,
     getNewFilesCount,
 }
 

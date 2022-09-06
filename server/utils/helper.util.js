@@ -3,6 +3,15 @@ const morgan = require('morgan');
 const jwt = require('jsonwebtoken');
 const generalConfig = require('../configs/general.config');
 
+// object for possible filters (getFiles route)
+fileSearchFilters = {};
+fileSearchFilters["genre"] = true;
+fileSearchFilters["artist"] = true;
+
+paginationOptions = {};
+paginationOptions["page"] = true;
+paginationOptions["pageSize"] = true;
+
 class StatusError extends Error {
     constructor(originalMessage, additionalMessage, statusCode) {
         super(originalMessage);
@@ -65,5 +74,7 @@ morgan.token('timestamp', function getTimestamp(req) {
 module.exports = {
     StatusError,
     morgan,
+    fileSearchFilters,
+    paginationOptions
     //extractUserIdFromJWT
 };
