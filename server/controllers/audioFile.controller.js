@@ -14,7 +14,7 @@ async function deleteFile(req, res, next) {
 
 async function uploadFile(req, res, next) {
     try {
-        res.status(201).send({ "fileId": await audioFilesService.uploadFile(req.body, req.file) });
+        res.status(201).send({ "fileId": await audioFilesService.uploadFile(req.user, req.body, req.file) });
     } catch (err) {
         console.error(`Error uploading file\n`, err);
         next(new StatusError(err.message, `Error uploading file`, 500));
@@ -62,7 +62,7 @@ async function deleteFavouriteFile(req, res, next) {
 async function getFile(req, res, next) {
     try {
         // res is required for the .pipe(res) on the DownloadStream
-        await audioFilesService.getFile(req.params.id, res);
+        await audioFilesService.getFile(req.user, req.params.id, res);
     } catch (err) {
         console.error(`Error fetching file\n`, err);
         next(new StatusError(err.message, `Error fetching file`, 500));

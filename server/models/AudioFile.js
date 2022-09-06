@@ -22,6 +22,15 @@ const AudioFileSchema = new mongoose.Schema({
     },
     genre: {
         type: String
+    },
+    reviewed: {
+        type: Boolean
+    },
+    songName: {
+        type: String
+    },
+    uploadedBy: {
+        type: mongoose.Schema.Types.ObjectId
     }
 });
 

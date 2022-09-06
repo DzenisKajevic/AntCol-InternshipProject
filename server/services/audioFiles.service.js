@@ -1,17 +1,18 @@
 const db = require('./db.service');
 const AudioFile = require('../models/AudioFile');
 const FavouriteFile = require('../models/FavouriteFile');
+const FileReview = require('../models/FileReview');
 const { StatusError } = require('../utils/helper.util');
 const mongoose = require('mongoose');
 const util = require('../utils/helper.util');
 
-/* async function deleteFileHelper(id) {
+async function deleteFileHelper(id) {
     if (!id || id === 'undefined') return 'The file id was not provided';
     const _id = new mongoose.Types.ObjectId(id);
     await db.getGfs().delete(_id, err => {
         if (err) throw new StatusError('file deletion error', 500);
     });
-}; */
+};
 
 async function deleteFile(fileId) {
     //console.log(fileId);
@@ -23,20 +24,36 @@ async function deleteFile(fileId) {
     return "Successfully deleted the file";
 };
 
-async function uploadFile(reqBody, file) {
-    const maxFileSize = 50000000; // 50 MB
+async function uploadFile(user, reqBody, file) {
     const filter = { _id: file.id };
-    const update = { author: reqBody.author, genre: reqBody.genre };
-
+    const update = {
+        reviewed: false, author: reqBody.author, genre: reqBody.genre,
+        album: reqBody.album, songName: reqBody.songName, uploadedBy: user.userId
+    };
     const result = await AudioFile.findOneAndUpdate(
         filter, update, { upsert: true, useFindAndModify: false, new: true });
 
+    const reviewInformation = {
+        fileId: result._id, filename: result.filename, contentType: result.contentType,
+        uploadDate: result.uploadDate, author: reqBody.author, genre: reqBody.genre, songName: reqBody.songName,
+        uploadedBy: user.userId, reviewStatus: "Needs to be reviewed", underReviewBy: null, reviewTerminationDate: null
+    };
+
+    try {
+        const review = await FileReview.create(reviewInformation);
+    }
+    catch (err) {
+        console.log(err);
+        await deleteFileHelper(file.id);
+        throw new StatusError(null, 'Error adding file to reviews, deleting file', 500);
+    }
+    /* console.log(review);
     console.log(result);
-    return file.id;
+     */return file.id;
 };
 
 async function addFileToFavourites(userId, fileId) {
-    const file = await AudioFile.findOne({ 'fileId': fileId });
+    const file = await AudioFile.findOne({ 'fileId': fileId, 'reviewed': true });
     if (file) {
         let favouriteFile = await FavouriteFile.create({
             userId: userId,
@@ -66,23 +83,33 @@ async function getFavouriteFiles(userId, { page, pageSize }) {
     return files;
 };
 
-async function getFile(fileId, res) {
+async function getFile(user, fileId, res) {
     if (!fileId || fileId === 'undefined') throw new StatusError('File id was not provided', 422);
 
-    const _id = new mongoose.Types.ObjectId(fileId);
-    await db.getGfs().find({ _id }).limit(1).toArray((err, files) => {
+    console.log(user.role != 'Admin');
+    const _id = mongoose.Types.ObjectId(fileId);
+    filters = {};
+    filters['_id'] = _id;
+    console.log(filters);
+
+    // only admins get to see non-reviewed files
+    if (user.role != 'Admin') filters['reviewed'] = true;
+
+    await db.getGfs().find(filters).limit(1).toArray((err, files) => {
         if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
-        res.setHeader('Content-Disposition', 'attachment');
-        res.setHeader('Content-Type', files[0].contentType);
-        // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
-        // open download stream start stop: could be used for buffering(?)
-        db.getGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
+        else {
+            res.setHeader('Content-Disposition', 'attachment');
+            res.setHeader('Content-Type', files[0].contentType);
+            // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
+            // open download stream start stop: could be used for buffering(?)
+            db.getGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
+        }
     });
 };
 
 async function getFileInfo(fileId) {
     if (!fileId || fileId === 'undefined') throw new StatusError(null, 'File id was not provided', 422);
-    const result = await AudioFile.findOne({ _id: fileId });
+    const result = await AudioFile.findOne({ _id: new mongoose.Types.ObjectId(fileId), reviewed: true });
     if (!result) throw new StatusError(null, 'No such file exists', 404);
     return result;
 };
@@ -92,6 +119,7 @@ async function getAllFiles(queryParams, callback) {
     //{ genre, page, pageSize }
     let filters = {};
     filters['contentType'] = "audio/mpeg";
+    filters['reviewed'] = true;
     Object.keys(queryParams).forEach(key => {
         if (key in util.fileSearchFilters) filters[key] = queryParams[key];
     });
