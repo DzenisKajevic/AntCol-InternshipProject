@@ -2,50 +2,6 @@ const express = require('express');
 const router = express.Router();
 const usersAuthController = require('../controllers/usersAuth.controller');
 
-// registers a new user
-
-
-/** 
- * @swagger
- * /api/v1/auth/register:
- *   post:
- *     operationId: Register
- *     description: Register an account
- *     produces:
- *       - application/json
- *     requestBody:
- *      content:
- *       application/x-www-form-urlencoded:
- *        schema:
- *          type: object
- *          properties:
- *           email:
- *            example: email@gmail.com
- *            description: User's password.
- *            required: true
- *            type: string
- *           password:
- *            example: pass123
- *            description: User's password.
- *            required: true
- *            type: string
- *           username:
- *            example: tempUser
- *            description: User's desired username
- *            required: true
- *            type: string
- *     responses:
- *       201:
- *         description: Registration successful
- *         content:
- *          application/json:
- *           schema:
- *            type: object
- *            $ref: '#/components/schemas/User'
- *       500:
- *         description: An account with that email already exists
- */
-router.route('/register').post(usersAuthController.register);
 
 // user schema
 /**
@@ -85,11 +41,59 @@ router.route('/register').post(usersAuthController.register);
  *      createdAt: 2022-09-02T10:44:51.516Z
  * */
 
+// registers a new user
+
+/** 
+ * @swagger
+ * /api/v1/auth/register:
+ *   post:
+ *     tags:
+ *      - auth
+ *     operationId: Register
+ *     description: Register an account
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *      content:
+ *       application/x-www-form-urlencoded:
+ *        schema:
+ *          type: object
+ *          properties:
+ *           email:
+ *            example: email@gmail.com
+ *            description: User's password.
+ *            required: true
+ *            type: string
+ *           password:
+ *            example: pass123
+ *            description: User's password.
+ *            required: true
+ *            type: string
+ *           username:
+ *            example: tempUser
+ *            description: User's desired username
+ *            required: true
+ *            type: string
+ *     responses:
+ *       201:
+ *         description: Registration successful
+ *         content:
+ *          application/json:
+ *           schema:
+ *            type: object
+ *            $ref: '#/components/schemas/User'
+ *       500:
+ *         description: An account with that email already exists
+ */
+router.route('/register').post(usersAuthController.register);
+
 // logs an existing user in
 /** 
  * @swagger
  * /api/v1/auth/login:
  *   post:
+ *     tags:
+ *      - auth
  *     operationId: Login
  *     description: Login to the application
  *     produces:
@@ -135,6 +139,8 @@ router.route('/login').post(usersAuthController.login);
  * @swagger
  * /api/v1/auth/newUsersCount:
  *   get:
+ *     tags:
+ *      - admin
  *     operationId: newUsersCount
  *     description: Returns the number of new registered users in the last 7 days
  *     produces:

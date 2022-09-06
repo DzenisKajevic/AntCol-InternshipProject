@@ -5,41 +5,45 @@ const audioFileController = require('../controllers/audioFile.controller');
 const middleware = require('../middleware/middleware');
 
 
-// deletes a specific file
+// adds a file to the user's fav list
 /** 
-* @swagger
-*  /api/v1/audioFiles/deleteFile: 
-*   delete: 
-*    operationId: deleteFile
-*    security:
-*       - bearerAuth: []
-*    description: Used to delete a file from the database
-*    requestBody:
-*     content:
-*      application/x-www-form-urlencoded:
-*       schema:
-*         type: object
-*         properties:
-*          fileId:
-*           example: 6311f239d67a5113d40edd4c
-*           description: ID of the requested file
-*           required: true
-*           type: string
-*    responses: 
-*      200: 
-*          description: Successful deletion
-*      401: 
-*          description: Missing authorization
-*      500:
-*          description: No file was deleted
-*/
-router.delete('/deleteFile', audioFileController.deleteFile);
+ * @swagger
+ * /api/v1/audioFiles/addFileToFavourites:
+ *   post:
+ *     tags:
+ *      - favourite files
+ *     operationId: addFileToFavourites
+ *     description: Add a file to your list of favourite files
+ *     security:
+ *       - bearerAuth: []
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *      content:
+ *       application/x-www-form-urlencoded:
+ *        schema:
+ *          type: object
+ *          properties:
+ *           fileId:
+ *            example: 6311f239d67a5113d40edd4c
+ *            description: ID of the requested file
+ *            required: true
+ *            type: string
+ *     responses:
+ *       201:
+ *         description: File successfully added to favourites
+ *       500:
+ *         description: Selected file is already a favourite || Error adding file to favourites
+ */
+router.post('/addFileToFavourites', audioFileController.addFileToFavourites);
 
 // uploads a file
 /**
 * @swagger
 * /api/v1/audioFiles/uploadFile:
 *   post:
+*     tags:
+*      - file uploads
 *     description: Upload a file to the database
 *     operationId: uploadFile
 *     security:
@@ -69,6 +73,28 @@ router.delete('/deleteFile', audioFileController.deleteFile);
 *     responses:
 *       201:
 *         description: File successfully uploaded to the database
+*         links:
+*           GetFileById:
+*             operationId: getFile
+*             parameters:
+*               fileId: '$response.body#/fileId'
+*             description: >
+*               The `fileId` value returned in the response can be used as
+*               the `fileId` parameter in `GET /api/v1/audioFiles/addFileToFavourites`.
+*           AddFileToFavourites:
+*             operationId: addFileToFavourites
+*             parameters:
+*               fileId: '$response.body#/fileId'
+*             description: >
+*               The `fileId` value returned in the response can be used as
+*               the `fileId` parameter in `POST /api/v1/audioFiles/addFileToFavourites`.
+*           DeleteFileById:
+*             operationId: deleteFile
+*             parameters:
+*               fileId: '$response.body#/fileId'
+*             description: >
+*               The `fileId` value returned in the response can be used as
+*               the `fileId` parameter in `DELETE /api/v1/audioFiles/deleteFile`.
 *       400:
 *         description: Unsupported file type || File too large
 *       401: 
@@ -83,6 +109,8 @@ router.post('/uploadFile', middleware.uploadMiddleware, audioFileController.uplo
 * @swagger
 *  /api/v1/audioFiles/getFile/{fileId}: 
 *   get: 
+*    tags:
+*      - file uploads
 *    operationId: getFile
 *    produces:
 *       - audio/mp3
@@ -116,6 +144,8 @@ router.get('/getFile/:id', audioFileController.getFile);
 * @swagger
 *  /api/v1/audioFiles/getFileInfo/{fileId}: 
 *   get: 
+*    tags:
+*      - file uploads
 *    operationId: getFileInfo
 *    security:
 *       - bearerAuth: []
@@ -143,6 +173,8 @@ router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 * @swagger
 *  /api/v1/audioFiles/getAllFiles: 
 *   get: 
+*    tags:
+*      - file uploads
 *    operationId: getAllFiles
 *    security:
 *       - bearerAuth: []
@@ -162,6 +194,8 @@ router.get('/getAllFiles', audioFileController.getAllFiles);
 * @swagger
 *  /api/v1/audioFiles/getFilesByGenre: 
 *   get: 
+*    tags:
+*      - file uploads
 *    operationId: getFilesByGenre
 *    security:
 *       - bearerAuth: []
@@ -192,6 +226,8 @@ router.get('/getFilesByGenre', audioFileController.getFilesByGenre);
 * @swagger
 *  /api/v1/audioFiles/getFilesByAuthor: 
 *   get: 
+*    tags:
+*      - file uploads
 *    operationId: getFilesByAuthor
 *    security:
 *       - bearerAuth: []
@@ -217,41 +253,14 @@ router.get('/getFilesByGenre', audioFileController.getFilesByGenre);
 */
 router.get('/getFilesByAuthor', audioFileController.getFilesByAuthor);
 
-// adds a file to the user's fav list
-/** 
- * @swagger
- * /api/v1/audioFiles/addFileToFavourites:
- *   post:
- *     operationId: addFileToFavourites
- *     description: Add a file to your list of favourite files
- *     security:
- *       - bearerAuth: []
- *     produces:
- *       - application/json
- *     requestBody:
- *      content:
- *       application/x-www-form-urlencoded:
- *        schema:
- *          type: object
- *          properties:
- *           fileId:
- *            example: 6311f239d67a5113d40edd4c
- *            description: ID of the requested file
- *            required: true
- *            type: string
- *     responses:
- *       201:
- *         description: File successfully added to favourites
- *       500:
- *         description: Selected file is already a favourite || Error adding file to favourites
- */
-router.post('/addFileToFavourites', audioFileController.addFileToFavourites);
 
 // retrieves the user's fav files
 /** 
 * @swagger
 *  /api/v1/audioFiles/getFavouriteFiles: 
 *   get: 
+*    tags:
+*      - favourite files
 *    operationId: getFavouriteFiles
 *    security:
 *       - bearerAuth: []
@@ -277,11 +286,46 @@ router.post('/addFileToFavourites', audioFileController.addFileToFavourites);
 */
 router.get('/getFavouriteFiles', audioFileController.getFavouriteFiles);
 
+// deletes a specific file
+/** 
+* @swagger
+*  /api/v1/audioFiles/deleteFile: 
+*   delete: 
+*    tags:
+*      - file uploads
+*    operationId: deleteFile
+*    security:
+*       - bearerAuth: []
+*    description: Used to delete a file from the database
+*    requestBody:
+*     content:
+*      application/x-www-form-urlencoded:
+*       schema:
+*         type: object
+*         properties:
+*          fileId:
+*           example: 6311f239d67a5113d40edd4c
+*           description: ID of the requested file
+*           required: true
+*           type: string
+*    responses: 
+*      200: 
+*          description: Successful deletion
+*      401: 
+*          description: Missing authorization
+*      500:
+*          description: No file was deleted
+*/
+router.delete('/deleteFile', audioFileController.deleteFile);
+
+
 // deletes a favourite file based on the provided id
 /** 
 * @swagger
 *  /api/v1/audioFiles/deleteFavouriteFile: 
 *   delete: 
+*    tags:
+*      - favourite files
 *    operationId: deleteFavouriteFile
 *    security:
 *       - bearerAuth: []
@@ -312,6 +356,8 @@ router.delete('/deleteFavouriteFile', audioFileController.deleteFavouriteFile);
  * @swagger
  * /api/v1/audioFiles/newFilesCount:
  *   get:
+ *     tags:
+ *      - admin
  *     operationId: newFilesCount
  *     description: Returns the number of new uploaded files in the last 7 days
  *     produces:
