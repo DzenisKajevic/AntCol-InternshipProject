@@ -14,14 +14,18 @@ async function deleteFileHelper(id) {
     });
 };
 
-async function deleteFile(fileId) {
-    //console.log(fileId);
+async function deleteFile(user, fileId) {
     const file = await AudioFile.findOne({ _id: fileId })
-    const obj_id = new mongoose.Types.ObjectId(fileId);
-    await db.getGfs().delete(obj_id);
-    await file.remove();
-    await FavouriteFile.deleteMany({ 'fileId': fileId })
-    return "Successfully deleted the file";
+    if ((user.userId === file.uploadedBy) || (user.role === 'Admin')) {
+        const obj_id = new mongoose.Types.ObjectId(fileId);
+        await db.getGfs().delete(obj_id);
+        await file.remove();
+        await FavouriteFile.deleteMany({ 'fileId': fileId })
+        return "Successfully deleted the file";
+    }
+    else {
+        throw new StatusError(null, "Insufficient permissions", 403);
+    }
 };
 
 async function uploadFile(user, reqBody, file) {
@@ -171,11 +175,9 @@ async function handleFileReview(user, fileId, status, description = '') {
     if (status === "Accepted") {
         console.log("Accepted");
         const date = new Date;
+        update['reviewed'] = true;
         update['reviewTerminationDate'] = date.toISOString();
         const filter = { '_id': fileId };
-        const update = {
-            reviewed: true
-        };
         await AudioFile.findOneAndUpdate(
             filter, update, { upsert: true, useFindAndModify: false, new: true });
     }
@@ -199,7 +201,7 @@ async function handleFileReview(user, fileId, status, description = '') {
 
     const result = await FileReview.findOneAndUpdate(
         filter, update, { upsert: true, useFindAndModify: false, new: true });
-
+    console.log(result);
     return result;
 }
 

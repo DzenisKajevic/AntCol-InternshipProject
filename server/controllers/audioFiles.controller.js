@@ -5,7 +5,7 @@ const helperUtil = require('../utils/helper.util');
 
 async function deleteFile(req, res, next) {
     try {
-        res.status(201).send(await audioFilesService.deleteFile(req.body.fileId));
+        res.status(201).send(await audioFilesService.deleteFile(req.user, req.body.fileId));
     } catch (err) {
         console.error(`Error deleting file\n`, err);
         next(new StatusError(err.message, `Error deleting file`, 500));

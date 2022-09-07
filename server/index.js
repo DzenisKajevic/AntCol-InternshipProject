@@ -7,6 +7,7 @@ const generalConfig = require('./configs/general.config');
 const dbConnection = require('./services/db.service');
 const usersAuthRoute = require('./routes/usersAuth.route');
 const audioFilesRouter = require('./routes/audioFiles.route');
+const playlistsRouter = require('./routes/playlists.route');
 const middleware = require('./middleware/middleware');
 const { morgan } = require('./utils/helper.util');
 const { v4: uuidv4 } = require('uuid');
@@ -91,6 +92,7 @@ app.get('/', (req, res) => {
 // route middleware
 app.use('/api/v1/auth', usersAuthRoute);
 app.use('/api/v1/audioFiles', audioFilesRouter);
+app.use('/api/v1/playlists', playlistsRouter);
 
 // error handler middleware
 app.use(middleware.handleErrors);

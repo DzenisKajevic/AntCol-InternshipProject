@@ -1,8 +1,5 @@
 # IMPORTANT TASKS
 
-- Add pseudo-public playlists -> users create, set visibility to private / public 
-- Limit users to only deleting their own files (admins can delete whatever)
-- Disable the possibility to add non-existing files to favourites
 - Add mp4 for subscribed users (or visualizer, not sure yet)
 - Add a notification to the user who uploaded the file when it gets 
 accepted / denied during admin review
@@ -10,6 +7,10 @@ accepted / denied during admin review
 
 # ADDITIONAL TASKS
 
+- Add Swagger docs for playlists
+- Separate favourites into their own files (project structure)
+- Allow users to add multiple files to a playlist (should be easy)
+- Implement public / private feature for playlists (placeholder for now)
 - Rename audioFiles collection (Music?)
 - Allow addition of multiple genres per song
 - Admin panel: https://www.google.com/search?q=admin+panel&rlz=1C1CHBF_enDE905DE905&sxsrf=ALiCzsaNK3HR1j6PO9M8mlBqwxZJwYKU2A:1662114276260&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjKuYyY8vX5AhXvh4sKHdp7DtoQ_AUoAXoECAEQAw&biw=1536&bih=722&dpr=1.25#imgrc=Gi7TfDGj7KMVUM
