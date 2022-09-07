@@ -27,7 +27,7 @@ const FileReviewSchema = new mongoose.Schema({
         required: true
     },
     uploadedBy: {
-        type: String,
+        type: mongoose.Types.ObjectId,
         required: true
     },
     uploadDate: {
@@ -38,13 +38,17 @@ const FileReviewSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    underReviewBy: {
+    adminId: {
         type: mongoose.Types.ObjectId,
-        //required: true
+    },
+    adminName: {
+        type: String,
     },
     reviewTerminationDate: {
         type: Date,
-        //required: true
+    },
+    description: {
+        type: String
     }
 });
 

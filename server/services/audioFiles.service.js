@@ -36,7 +36,7 @@ async function uploadFile(user, reqBody, file) {
     const reviewInformation = {
         fileId: result._id, filename: result.filename, contentType: result.contentType,
         uploadDate: result.uploadDate, author: reqBody.author, genre: reqBody.genre, songName: reqBody.songName,
-        uploadedBy: user.userId, reviewStatus: "Needs to be reviewed", underReviewBy: null, reviewTerminationDate: null
+        uploadedBy: user.userId, reviewStatus: "Needs to be reviewed", adminId: null, adminName: null, reviewTerminationDate: null
     };
 
     try {
@@ -143,6 +143,66 @@ async function getNewFilesCount() {
     return ({ 'newFiles': fileCount });
 }
 
+//admin
+async function getFileReviews(queryParams) {
+    let filters = {};
+    Object.keys(queryParams).forEach(key => {
+        if (key in util.reviewSearchFilters) filters[key] = queryParams[key];
+    });
+    const page = parseInt(queryParams.page) || 1;
+    const pageSize = parseInt(queryParams.pageSize) || 4;
+
+    const result = await FileReview.find(filters).skip((page - 1) * pageSize).limit(pageSize);
+    return result;
+};
+
+//admin
+async function handleFileReview(user, fileId, status, description = '') {
+    const filter = {};
+    filter['fileId'] = fileId;
+
+    const update = {
+        'reviewStatus': status,
+        'adminId': user.userId,
+        'adminName': user.username,
+        'description': description,
+    };
+
+    if (status === "Accepted") {
+        console.log("Accepted");
+        const date = new Date;
+        update['reviewTerminationDate'] = date.toISOString();
+        const filter = { '_id': fileId };
+        const update = {
+            reviewed: true
+        };
+        await AudioFile.findOneAndUpdate(
+            filter, update, { upsert: true, useFindAndModify: false, new: true });
+    }
+
+    else if (status === "Denied") {
+        console.log("Denied");
+        const date = new Date;
+        update['reviewTerminationDate'] = date.toISOString();
+        try {
+            await deleteFile(fileId);
+        }
+        catch {
+            // if file doesn't exist, just update the review (in case the description was forgotten)
+        }
+    }
+
+    else if (status === 'Pending') {
+        update['adminId'] = null;
+        update['adminName'] = null;
+    }
+
+    const result = await FileReview.findOneAndUpdate(
+        filter, update, { upsert: true, useFindAndModify: false, new: true });
+
+    return result;
+}
+
 module.exports = {
     deleteFile,
     uploadFile,
@@ -153,6 +213,8 @@ module.exports = {
     getFile,
     getFileInfo,
     getNewFilesCount,
+    getFileReviews,
+    handleFileReview,
 }
 
 

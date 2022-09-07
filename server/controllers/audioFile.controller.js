@@ -105,6 +105,28 @@ async function getNewFilesCount(req, res, next) {
     }
 }
 
+//admin
+async function getFileReviews(req, res, next) {
+    try {
+        res.status(200).send(await audioFilesService.getFileReviews(req.query));
+    }
+    catch (err) {
+        console.error('Could not fetch file reviews\n', err);
+        next(new StatusError(err.message, 'Could not fetch file reviews\n', 500));
+    }
+}
+
+//admin
+async function handleFileReview(req, res, next) {
+    try {
+        res.status(201).send(await audioFilesService.handleFileReview(req.user, req.body.fileId, req.body.status, req.body.description));
+    }
+    catch (err) {
+        console.error('Could not handle file review\n', err);
+        next(new StatusError(err.message, 'Could not handle file review\n', 500));
+    }
+}
+
 module.exports = {
     deleteFile,
     uploadFile,
@@ -114,5 +136,7 @@ module.exports = {
     getFile,
     getFileInfo,
     getAllFiles,
-    getNewFilesCount
+    getNewFilesCount,
+    getFileReviews,
+    handleFileReview,
 }

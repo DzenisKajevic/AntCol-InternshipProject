@@ -5,6 +5,83 @@ const audioFileController = require('../controllers/audioFile.controller');
 const middleware = require('../middleware/middleware');
 
 
+// user schema
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *   File Review:
+ *    type: object
+ *    required:
+ *      -fileId
+ *      -filename
+ *      -contentType
+ *      -author
+ *      -genre
+ *      -songName
+ *      -uploadedBy
+ *      -uploadDate
+ *      -reviewStatus
+ *    properties:
+ *      _id:
+ *        type: string
+ *        description: Auto-generated id of the review
+ *      fileId:
+ *        type: string
+ *        description: ID of the file under review
+ *      filename:
+ *        type: string
+ *        description: Name of the file under review
+ *      contentType:
+ *        type: string
+ *        description: Format of the file under review
+ *      author:
+ *        type: string
+ *        description: Author of the file
+ *      genre:
+ *        type: string
+ *        description: Genre of the file
+ *      songName:
+ *        type: string
+ *        description: Name of the song
+ *      uploadedBy:
+ *        type: string
+ *        desription: Date when the file was created
+ *      uploadDate:
+ *        type: string/date-time
+ *        desription: Date when the file was created
+ *      reviewStatus:
+ *        type: string
+ *        desription: The current state of the review
+ *      adminId:
+ *        type: string
+ *        desription: ID of the admin that's reviewing the file
+ *      adminName:
+ *        type: string
+ *        desription: Name of the admin that's reviewing the file
+ *      reviewTerminationDate:
+ *        type: string
+ *        desription: Date when the review was finished / edited
+ *      description:
+ *        type: string
+ *        desription: Conclusion about the review
+ *    example:
+ *      _id: 63185c5163b128f4415d0c04
+ *      fileId: 63185c5163b128f4415d0bf9
+ *      filename: 91476_Glorious_morning.mp3
+ *      contentType: audio/mpeg
+ *      author: Someone
+ *      genre: Something
+ *      songName: Glorious Morning
+ *      uploadedBy: 6311e6c692a2db96a4bfbbb0
+ *      uploadDate: 2022-09-02T10:44:51.516Z
+ *      reviewStatus: Denied
+ *      adminId: 6311e6c692a2db96a4bfbbb0
+ *      adminName: admin
+ *      reviewTerminationDate: 2022-09-07T10:34:39.905Z
+ *      description: The file doesn't meet the requirements
+ * */
+
 // adds a file to the user's fav list
 /** 
  * @swagger
@@ -178,7 +255,7 @@ router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 *    operationId: getAllAudioFiles
 *    security:
 *       - bearerAuth: []
-*    description: Use to request information on all files from the database
+*    description: Use to request information on all files from the database based on filters
 *    parameters:
 *      - in: query
 *        name: filters
@@ -188,8 +265,6 @@ router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 *          example:
 *            genre: Something
 *            author: Someone
-*            other parameter: To search by
-*            if invalid: Is ignored
 *      - in: query
 *        name: pagination
 *        required: false
@@ -331,5 +406,96 @@ router.delete('/deleteFavouriteFile', audioFileController.deleteFavouriteFile);
  *         description: Error fetching new files
  */
 router.get('/newFilesCount', audioFileController.getNewFilesCount);
+
+// admin
+
+/** 
+* @swagger
+* /api/v1/audioFiles/getFileReviews:
+*   get:
+*     tags:
+*      - admin
+*     operationId: getFileReviews
+*     description: Returns file reviews based on filters
+*     produces:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     parameters:
+*      - in: query
+*        name: filters
+*        required: false
+*        schema:
+*          type: object
+*          example:
+*            reviewStatus: Denied
+*            adminId: 6311dea3f6b92981caa95e06
+*            adminName: tempUser
+*            filename: 91476_Glorious_morning.mp3
+*            songName: Glorious Morning
+*            author: Someone
+*            genre: Something
+*      - in: query
+*        name: pagination
+*        required: false
+*        schema:
+*          type: object
+*          example:
+*            page: 1
+*            pageSize: 4
+*     responses:
+*       200:
+*         description: Paginated list of file reviews based on filters
+*         content:
+*          application/json:
+*           schema:
+*            type: integer
+*       401: 
+*         description: Missing administrator privileges
+*       500:
+*         description: Could not fetch file reviews
+*/
+router.get('/getFileReviews', audioFileController.getFileReviews);
+
+// admin
+/** 
+ * @swagger
+ * /api/v1/audioFiles/handleFileReview:
+ *   post:
+ *     tags:
+ *      - admin
+ *     operationId: handleFileReview
+ *     description: Check the file out, set to "Pending", "Under review", "Accepted" or "Denied"
+ *     security:
+ *       - bearerAuth: []
+ *     produces:
+ *       - application/json
+ *     requestBody:
+ *      content:
+ *       application/x-www-form-urlencoded:
+ *        schema:
+ *          type: object
+ *          properties:
+ *           fileId:
+ *            example: 63185c5163b128f4415d0bf9
+ *            description: ID of the requested file
+ *            required: true
+ *            type: string
+ *           status:
+ *            example: Denied
+ *            required: true
+ *            type: string
+ *           description:
+ *            example: The file doesn't meet the requirements
+ *            type: string
+ *     responses:
+ *       201:
+ *         description: Review handling successful
+ *       401: 
+ *         description: Missing administrator privileges
+ *       500:
+ *         description: Could not handle file review
+ */
+router.post('/handleFileReview', audioFileController.handleFileReview);
 
 module.exports = router;
