@@ -14,7 +14,7 @@ async function createEmptyPlaylist(req, res, next) {
 
 async function addFileToPlaylist(req, res, next) {
     try {
-        res.status(201).send(await playlistService.addFileToPlaylist(req.body.playlistId, req.body.fileId));
+        res.status(201).send(await playlistService.addFileToPlaylist(req.body.playlistId, req.body.fileIDs));
     }
     catch (err) {
         console.log(err);
