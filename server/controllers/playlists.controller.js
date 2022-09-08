@@ -22,7 +22,18 @@ async function addFileToPlaylist(req, res, next) {
     }
 };
 
+async function updatePlaylistVisibility(req, res, next) {
+    try {
+        res.status(201).send(await playlistService.updatePlaylistVisibility(req.body.playListId, req.body.visibility));
+    }
+    catch (err) {
+        console.log(err);
+        next(new StatusError(err.message, 'Error updating playlist visibility'));
+    }
+}
+
 module.exports = {
     createEmptyPlaylist,
     addFileToPlaylist,
+    updatePlaylistVisibility,
 }

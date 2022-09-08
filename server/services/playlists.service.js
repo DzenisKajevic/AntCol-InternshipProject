@@ -26,7 +26,8 @@ async function addFileToPlaylist(playlistId, fileIDs) {
     for (let i = 0; i < fileIDs.length; i++) {
         console.log(mongoose.Types.ObjectId(fileIDs[i]));
         try {
-            const file = await AudioFile.findOne({ 'fileId': fileIDs[i], 'reviewed': true });
+            const file = await AudioFile.findOne({ '_id': fileIDs[i], 'reviewed': true });
+            console.log(file);
             if (!file) {
                 throw new StatusError(null, 'Can\'t add non-existing file to the playlist', 404);
             }
