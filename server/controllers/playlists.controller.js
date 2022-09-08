@@ -7,18 +7,24 @@ async function createEmptyPlaylist(req, res, next) {
         res.status(201).send(await playlistService.createEmptyPlaylist(req.user, req.body));
     }
     catch (err) {
-        if (err.name === 'StatusError') {
+        if (err.message.startsWith("E11000 duplicate key error")) {
+            console.log(err);
+            next(new StatusError(err.message, `A playlist with that name already exists`, 500));
+        }
+        else if (err.name === 'StatusError') {
             console.log(err);
             return res.status(err.statusCode).send(err.additionalMessage);
         }
-        console.log(err);
-        next(new StatusError(err.message, 'Error creating playlist', 500));
+        else {
+            console.log(err);
+            next(new StatusError(err.message, `Error creating playlist`, 500));
+        }
     }
 };
 
-async function addFileToPlaylist(req, res, next) {
+async function addFilesToPlaylist(req, res, next) {
     try {
-        res.status(201).send(await playlistService.addFileToPlaylist(req.body.playlistId, req.body.fileIDs));
+        res.status(201).send(await playlistService.addFilesToPlaylist(req.body.playlistId, req.body.fileIDs));
     }
     catch (err) {
         if (err.name === 'StatusError') {
@@ -30,9 +36,23 @@ async function addFileToPlaylist(req, res, next) {
     }
 };
 
+async function removeFileFromPlaylist(req, res, next) {
+    try {
+        res.status(201).send(await playlistService.removeFileFromPlaylist(req.body.playlistId, req.body.fileIDs));
+    }
+    catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
+        console.log(err);
+        next(new StatusError(err.message, 'Error removing file from playlist', 500));
+    }
+};
+
 async function updatePlaylistVisibility(req, res, next) {
     try {
-        res.status(201).send(await playlistService.updatePlaylistVisibility(req.body.playListId, req.body.visibility));
+        res.status(201).send(await playlistService.updatePlaylistVisibility(req.body.playlistId, req.body.visibility));
     }
     catch (err) {
         if (err.name === 'StatusError') {
@@ -86,11 +106,42 @@ async function deletePlaylist(req, res, next) {
     }
 }
 
+async function sharePlaylist(req, res, next) {
+    try {
+        res.status(200).send(await playlistService.sharePlaylist(req.user, req.body.playlistId, req.body.usersToShareWith));
+    }
+    catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
+        console.log(err);
+        next(new StatusError(err.message, 'Error sharing playlist', 500));
+    }
+}
+
+async function revokePlaylistShare(req, res, next) {
+    try {
+        res.status(200).send(await playlistService.revokePlaylistShare(req.user, req.body.playlistId, req.body.usersToShareWith));
+    }
+    catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
+        console.log(err);
+        next(new StatusError(err.message, 'Error revoking playlist sharing privileges', 500));
+    }
+}
+
 module.exports = {
     createEmptyPlaylist,
-    addFileToPlaylist,
+    addFilesToPlaylist,
+    removeFileFromPlaylist,
     updatePlaylistVisibility,
     getPlaylistById,
     getPlaylists,
     deletePlaylist,
+    sharePlaylist,
+    revokePlaylistShare,
 }

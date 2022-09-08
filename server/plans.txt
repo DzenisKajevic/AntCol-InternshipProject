@@ -7,8 +7,8 @@ accepted / denied during admin review
 
 # ADDITIONAL TASKS
 
-- Add a string to use alongside the username as an index
-- Add "sharedWith" field for the playlists
+- Hide user IDs from queries (files)
+- Edit reviews so that less fields are entered through code, just keep the ObjectId of the file and call .populate() when reading the request
 - Add Swagger docs for playlists
 - Separate favourites into their own files (project structure)
 - Rename audioFiles collection (Music?)

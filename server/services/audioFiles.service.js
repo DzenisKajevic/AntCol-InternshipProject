@@ -188,12 +188,8 @@ async function handleFileReview(user, fileId, status, description = '') {
         console.log("Denied");
         const date = new Date;
         update['reviewTerminationDate'] = date.toISOString();
-        try {
-            await deleteFile(fileId);
-        }
-        catch {
-            // if file doesn't exist, just update the review (in case the description was forgotten)
-        }
+        await deleteFile(fileId);
+        // if file doesn't exist, just update the review (in case the description was forgotten)
     }
 
     else if (status === 'Pending') {

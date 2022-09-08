@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const AudioFile = require('./AudioFile');
+const User = require('./User');
 
 const FileArraySchema = new mongoose.Schema(
     { _id: mongoose.Types.ObjectId },);
@@ -27,7 +28,11 @@ const PlaylistSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true
-    }
+    },
+    sharedWith: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+    }]
 });
 
 PlaylistSchema.index({ playlistName: 1, userId: 1 }, { unique: true }); // schema level

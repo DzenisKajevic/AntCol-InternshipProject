@@ -5,7 +5,9 @@ const playlistsController = require('../controllers/playlists.controller');
 
 router.post('/createEmptyPlaylist', playlistsController.createEmptyPlaylist);
 
-router.post('/addFileToPlaylist', playlistsController.addFileToPlaylist);
+router.post('/addFilesToPlaylist', playlistsController.addFilesToPlaylist);
+
+router.delete('/removeFileFromPlaylist', playlistsController.removeFileFromPlaylist);
 
 router.put('/updatePlaylistVisibility', playlistsController.updatePlaylistVisibility);
 
@@ -14,5 +16,9 @@ router.get('/getPlaylistById', playlistsController.getPlaylistById);
 router.get('/getPlaylists', playlistsController.getPlaylists);
 
 router.delete('/deletePlaylist', playlistsController.deletePlaylist);
+
+router.put('/sharePlaylist', playlistsController.sharePlaylist);
+
+router.put('/revokePlaylistShare', playlistsController.revokePlaylistShare);
 
 module.exports = router;
