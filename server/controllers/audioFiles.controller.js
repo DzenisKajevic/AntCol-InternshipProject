@@ -64,6 +64,10 @@ async function getFile(req, res, next) {
         // res is required for the .pipe(res) on the DownloadStream
         await audioFilesService.getFile(req.user, req.params.id, res);
     } catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
         console.error(`Error fetching file\n`, err);
         next(new StatusError(err.message, `Error fetching file`, 500));
     }
@@ -73,6 +77,10 @@ async function getFileInfo(req, res, next) {
     try {
         res.status(200).send(await audioFilesService.getFileInfo(req.params.id));
     } catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
         console.error(`Error fetching file info\n`, err);
         next(new StatusError(err.message, `Error fetching file info`, err.statusCode));
     }
@@ -90,6 +98,10 @@ async function getAllFiles(req, res, next) {
             }
         });
     } catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
         console.error(`Error fetching files\n`, err);
         next(new StatusError(err.message, `Error fetching files`, err.statusCode || 500));
     }
@@ -100,6 +112,10 @@ async function getNewFilesCount(req, res, next) {
         res.status(200).send(await audioFilesService.getNewFilesCount());
     }
     catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
         console.error('Error fetching new files\n', err);
         next(new StatusError(err.message, 'Error fetching new files\n', 500));
     }
@@ -111,6 +127,10 @@ async function getFileReviews(req, res, next) {
         res.status(200).send(await audioFilesService.getFileReviews(req.query));
     }
     catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
         console.error('Could not fetch file reviews\n', err);
         next(new StatusError(err.message, 'Could not fetch file reviews\n', 500));
     }
@@ -122,6 +142,10 @@ async function handleFileReview(req, res, next) {
         res.status(201).send(await audioFilesService.handleFileReview(req.user, req.body.fileId, req.body.status, req.body.description));
     }
     catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
         console.error('Could not handle file review\n', err);
         next(new StatusError(err.message, 'Could not handle file review\n', 500));
     }

@@ -1,16 +1,16 @@
 # IMPORTANT TASKS
 
-- Add mp4 for subscribed users (or visualizer, not sure yet)
+- Add audio visualizer (maybe lock it behind a paywall, not sure)
 - Add a notification to the user who uploaded the file when it gets 
 accepted / denied during admin review
 - Add a notification to the admins when a new file is available for reviews
 
 # ADDITIONAL TASKS
 
+- Add a string to use alongside the username as an index
+- Add "sharedWith" field for the playlists
 - Add Swagger docs for playlists
 - Separate favourites into their own files (project structure)
-- Allow users to add multiple files to a playlist (should be easy)
-- Implement public / private feature for playlists (placeholder for now)
 - Rename audioFiles collection (Music?)
 - Allow addition of multiple genres per song
 - Admin panel: https://www.google.com/search?q=admin+panel&rlz=1C1CHBF_enDE905DE905&sxsrf=ALiCzsaNK3HR1j6PO9M8mlBqwxZJwYKU2A:1662114276260&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjKuYyY8vX5AhXvh4sKHdp7DtoQ_AUoAXoECAEQAw&biw=1536&bih=722&dpr=1.25#imgrc=Gi7TfDGj7KMVUM

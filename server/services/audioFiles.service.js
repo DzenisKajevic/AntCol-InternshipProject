@@ -2,6 +2,7 @@ const db = require('./db.service');
 const AudioFile = require('../models/AudioFile');
 const FavouriteFile = require('../models/FavouriteFile');
 const FileReview = require('../models/FileReview');
+const Playlist = require('../models/Playlist');
 const { StatusError } = require('../utils/helper.util');
 const mongoose = require('mongoose');
 const util = require('../utils/helper.util');
@@ -20,7 +21,10 @@ async function deleteFile(user, fileId) {
         const obj_id = new mongoose.Types.ObjectId(fileId);
         await db.getGfs().delete(obj_id);
         await file.remove();
-        await FavouriteFile.deleteMany({ 'fileId': fileId })
+        // deletes the file from everyone's favourites
+        await FavouriteFile.deleteMany({ 'fileId': fileId });
+        // deletes the file from everyone's playlists 
+        await Playlist.updateMany({ 'fileId': fileId }, { $pull: { 'files': fileId } });
         return "Successfully deleted the file";
     }
     else {
@@ -29,18 +33,18 @@ async function deleteFile(user, fileId) {
 };
 
 async function uploadFile(user, reqBody, file) {
-    const filter = { _id: file.id };
+    const filter = { '_id': file.id };
     const update = {
-        reviewed: false, author: reqBody.author, genre: reqBody.genre,
-        album: reqBody.album, songName: reqBody.songName, uploadedBy: user.userId
+        'reviewed': false, 'author': reqBody.author, 'genre': reqBody.genre,
+        'album': reqBody.album, 'songName': reqBody.songName, 'uploadedBy': user.userId
     };
     const result = await AudioFile.findOneAndUpdate(
         filter, update, { upsert: true, useFindAndModify: false, new: true });
 
     const reviewInformation = {
-        fileId: result._id, filename: result.filename, contentType: result.contentType,
-        uploadDate: result.uploadDate, author: reqBody.author, genre: reqBody.genre, songName: reqBody.songName,
-        uploadedBy: user.userId, reviewStatus: "Needs to be reviewed", adminId: null, adminName: null, reviewTerminationDate: null
+        'fileId': result._id, 'filename': result.filename, 'contentType': result.contentType,
+        'uploadDate': result.uploadDate, 'author': reqBody.author, 'genre': reqBody.genre, 'songName': reqBody.songName,
+        'uploadedBy': mongoose.Types.ObjectId(user.userId), 'reviewStatus': "Needs to be reviewed", 'adminId': null, 'adminName': null, 'reviewTerminationDate': null
     };
 
     try {
@@ -51,9 +55,7 @@ async function uploadFile(user, reqBody, file) {
         await deleteFileHelper(file.id);
         throw new StatusError(null, 'Error adding file to reviews, deleting file', 500);
     }
-    /* console.log(review);
-    console.log(result);
-     */return file.id;
+    return file.id;
 };
 
 async function addFileToFavourites(userId, fileId) {
@@ -167,7 +169,7 @@ async function handleFileReview(user, fileId, status, description = '') {
 
     const update = {
         'reviewStatus': status,
-        'adminId': user.userId,
+        'adminId': mongoose.Types.ObjectId(user.userId),
         'adminName': user.username,
         'description': description,
     };
@@ -218,44 +220,3 @@ module.exports = {
     getFileReviews,
     handleFileReview,
 }
-
-
-// potential pagination 
-/*
-exports.getAllPosts = async (req, res) => {
-    try {
-      let query = Post.find();
-  
-      const page = parseInt(req.query.page) || 1;
-      const pageSize = parseInt(req.query.limit) || 4;
-      const skip = (page - 1) * pageSize;
-      const total = await Post.countDocuments();
-  
-      const pages = Math.ceil(total / pageSize);
-  
-      query = query.skip(skip).limit(pageSize);
-  
-      if (page > pages) {
-        return res.status(404).json({
-          status: "fail",
-          message: "No page found",
-        });
-      }
-  
-      const result = await query;
-  
-      res.status(200).json({
-        status: "success",
-        count: result.length,
-        page,
-        pages,
-        data: result,
-      });
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        status: "error",
-        message: "Server Error",
-      });
-    }
-  };*/
