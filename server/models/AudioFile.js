@@ -2,35 +2,45 @@ const mongoose = require('mongoose');
 
 const AudioFileSchema = new mongoose.Schema({
     length: {
-        type: Number
+        type: Number,
+        required: true
     },
     chunkSize: {
-        type: Number
+        type: Number,
+        required: true
     },
     uploadDate: {
-        type: Date
+        type: Date,
+        required: true
     },
     filename: {
         type: String,
+        required: true
         //unique: true // this doesn't prevent GridFS from uploading files with the same name...
     },
     contentType: {
-        type: String
+        type: String,
+        required: true
     },
     author: {
-        type: String
+        type: String,
+        required: true
     },
     genre: {
-        type: String
+        type: String,
+        required: true
     },
     reviewed: {
-        type: Boolean
+        type: Boolean,
+        required: true
     },
     songName: {
-        type: String
+        type: String,
+        required: true
     },
     uploadedBy: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     }
 });
 

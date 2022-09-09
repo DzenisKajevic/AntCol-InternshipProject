@@ -107,6 +107,10 @@ const middleware = require('../middleware/middleware');
 *                type: string
 *                example: Something
 *                required: true
+*               songname:
+*                type: string
+*                example: Glorious Morning
+*                required: true
 *               author:
 *                type: string
 *                example: Someone

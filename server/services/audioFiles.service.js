@@ -38,22 +38,35 @@ async function uploadFile(user, reqBody, file) {
         'reviewed': false, 'author': reqBody.author, 'genre': reqBody.genre,
         'album': reqBody.album, 'songName': reqBody.songName, 'uploadedBy': user.userId
     };
-    const result = await AudioFile.findOneAndUpdate(
-        filter, update, { upsert: false, useFindAndModify: false, new: true });
 
-    const reviewInformation = {
-        'fileId': result._id, 'filename': result.filename, 'contentType': result.contentType,
-        'uploadDate': result.uploadDate, 'author': reqBody.author, 'genre': reqBody.genre, 'songName': reqBody.songName,
-        'uploadedBy': mongoose.Types.ObjectId(user.userId), 'reviewStatus': "Needs to be reviewed", 'adminId': null, 'adminName': null, 'reviewTerminationDate': null
-    };
-
+    // try catch for "uploading"
     try {
-        const review = await FileReview.create(reviewInformation);
+        const result = await AudioFile.findOneAndUpdate(
+            filter, update, { upsert: false, useFindAndModify: false, new: true, runValidators: true });
+
+        const reviewInformation = {
+            'fileId': result._id, 'filename': result.filename, 'contentType': result.contentType,
+            'uploadDate': result.uploadDate, 'author': reqBody.author, 'genre': reqBody.genre, 'songName': reqBody.songName,
+            'uploadedBy': mongoose.Types.ObjectId(user.userId), 'reviewStatus': "Needs to be reviewed", 'adminId': null, 'adminName': null, 'reviewTerminationDate': null
+        };
+
+        // try-catch for creating a review
+        try {
+            const review = await FileReview.create(reviewInformation);
+        }
+        catch (err) {
+            console.log(err);
+            await deleteFileHelper(file.id);
+            throw new StatusError(null, 'Error adding file to reviews, deleting file', 500);
+        }
     }
     catch (err) {
-        console.log(err);
-        await deleteFileHelper(file.id);
-        throw new StatusError(null, 'Error adding file to reviews, deleting file', 500);
+        deleteFileHelper(file.id);
+        console.error(`Error uploading file\n`, err);
+        if (err.message.includes("E11000 duplicate key error")) throw (new StatusError(err.message, `File with the same artist / song name already exists`, 500));
+        else if (err.message.includes("Validation failed")) throw (new StatusError(err.message, `Required fields are missing`, 500));
+        else throw (new StatusError(err.message, `Error uploading file`, 500));
+
     }
     return file.id;
 };

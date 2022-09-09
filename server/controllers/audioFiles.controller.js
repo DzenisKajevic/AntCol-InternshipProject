@@ -15,6 +15,10 @@ async function uploadFile(req, res, next) {
     try {
         res.status(201).send({ "fileId": await audioFilesService.uploadFile(req.user, req.body, req.file) });
     } catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
         console.error(`Error uploading file\n`, err);
         next(new StatusError(err.message, `Error uploading file`, 500));
     }
