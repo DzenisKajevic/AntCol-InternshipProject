@@ -57,7 +57,7 @@ async function removeFileFromPlaylist(playlistId, fileIDs) {
     updatedPlaylist = await Playlist.findOneAndUpdate({
         '_id': playlistId
     }, { $pull: { 'files': { $in: fileIDs } } },
-        { upsert: false, useFindAndModify: false, new: true }).select('-userId'); // upsert creates a new document if nothing is found
+        { upsert: false, useFindAndModify: false, new: true }).select('-userId');
 
     if (!updatedPlaylist) throw new StatusError(null, 'Can\'t remove files from a non-existing playlist', 404);
     console.log(updatedPlaylist);

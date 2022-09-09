@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
+const AudioFile = require('./AudioFile');
+const User = require('./User');
 
 const FileReviewSchema = new mongoose.Schema({
     fileId: {
         type: mongoose.Types.ObjectId,
+        ref: 'AudioFile',
         required: true
     },
     filename: {
@@ -28,6 +31,7 @@ const FileReviewSchema = new mongoose.Schema({
     },
     uploadedBy: {
         type: mongoose.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     uploadDate: {
@@ -40,6 +44,7 @@ const FileReviewSchema = new mongoose.Schema({
     },
     adminId: {
         type: mongoose.Types.ObjectId,
+        ref: 'User'
     },
     adminName: {
         type: String,

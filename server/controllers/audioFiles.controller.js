@@ -93,6 +93,10 @@ async function getAllFiles(req, res, next) {
                 next(err);
             }
             else if (!err) {
+                files.forEach(function (file, index) {
+                    this[index].userId = undefined;
+                    delete this[index].userId;
+                }, files);
                 console.log(files);
                 res.send(files);
             }

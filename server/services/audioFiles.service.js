@@ -39,7 +39,7 @@ async function uploadFile(user, reqBody, file) {
         'album': reqBody.album, 'songName': reqBody.songName, 'uploadedBy': user.userId
     };
     const result = await AudioFile.findOneAndUpdate(
-        filter, update, { upsert: true, useFindAndModify: false, new: true });
+        filter, update, { upsert: false, useFindAndModify: false, new: true });
 
     const reviewInformation = {
         'fileId': result._id, 'filename': result.filename, 'contentType': result.contentType,
@@ -65,6 +65,8 @@ async function addFileToFavourites(userId, fileId) {
             userId: userId,
             fileId: fileId
         });
+        favouriteFile.userId = undefined;
+        delete favouriteFile.userId;
         return favouriteFile;
     }
     throw new StatusError(null, 'Can\'t add non-existing file to favourites', 500);
@@ -82,10 +84,14 @@ async function getFavouriteFiles(userId, { page, pageSize }) {
 
     // for now, this line is useless, since the userId is extracted from the JWT. Favourite files are private for now
     if (!userId || userId === 'undefined') throw new StatusError(undefined, 'User ID was not provided', 422);
-    const files = await FavouriteFile.find({ 'userId': userId }).skip((page - 1) * pageSize).limit(pageSize);
+    const files = await FavouriteFile.find({ 'userId': userId }).skip((page - 1) * pageSize).limit(pageSize).populate('fileId');
     if (!files || files.length === 0) {
         throw new StatusError(null, 'No files available', 404);
     }
+    files.forEach(function (file, index) {
+        this[index].userId = undefined;
+        delete this[index].userId;
+    }, files);
     return files;
 };
 
@@ -115,7 +121,7 @@ async function getFile(user, fileId, res) {
 
 async function getFileInfo(fileId) {
     if (!fileId || fileId === 'undefined') throw new StatusError(null, 'File id was not provided', 422);
-    const result = await AudioFile.findOne({ _id: new mongoose.Types.ObjectId(fileId), reviewed: true });
+    const result = await AudioFile.findOne({ '_id': new mongoose.Types.ObjectId(fileId), reviewed: true }).select("-uploadedBy");
     if (!result) throw new StatusError(null, 'No such file exists', 404);
     return result;
 };
@@ -181,7 +187,7 @@ async function handleFileReview(user, fileId, status, description = '') {
         update['reviewTerminationDate'] = date.toISOString();
         const filter = { '_id': fileId };
         await AudioFile.findOneAndUpdate(
-            filter, update, { upsert: true, useFindAndModify: false, new: true });
+            filter, update, { upsert: false, useFindAndModify: false, new: true });
     }
 
     else if (status === "Denied") {
@@ -198,7 +204,7 @@ async function handleFileReview(user, fileId, status, description = '') {
     }
 
     const result = await FileReview.findOneAndUpdate(
-        filter, update, { upsert: true, useFindAndModify: false, new: true });
+        filter, update, { upsert: false, useFindAndModify: false, new: true });
     console.log(result);
     return result;
 }
