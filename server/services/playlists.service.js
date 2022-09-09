@@ -2,6 +2,7 @@ const Playlist = require('../models/Playlist');
 const AudioFile = require('../models/AudioFile');
 const { StatusError } = require('../utils/helper.util');
 const mongoose = require('mongoose');
+const User = require('../models/User');
 
 async function createEmptyPlaylist(user, reqBody) {
     const emptyArray = [];
@@ -26,7 +27,7 @@ async function createEmptyPlaylist(user, reqBody) {
 
 // there is a faster way to add mutliple files to playlists, 
 // but in that case it would be impossible to check if all files are reviewed
-async function addFilesToPlaylist(playlistId, fileIDs) {
+async function addFilesToPlaylist(user, playlistId, fileIDs) {
     console.log(fileIDs);
     for (let i = 0; i < fileIDs.length; i++) {
         console.log(mongoose.Types.ObjectId(fileIDs[i]));
@@ -38,7 +39,8 @@ async function addFilesToPlaylist(playlistId, fileIDs) {
     }
     let updatedPlaylist;
     updatedPlaylist = await Playlist.findOneAndUpdate({
-        '_id': playlistId
+        '_id': playlistId,
+        'userId': user.userId,
     }, { $addToSet: { 'files': { $each: fileIDs } } },
         { upsert: false, useFindAndModify: false, new: true }).select('-userId'); // upsert creates a new document if nothing is found
 
@@ -51,11 +53,12 @@ async function addFilesToPlaylist(playlistId, fileIDs) {
 };
 
 
-async function removeFileFromPlaylist(playlistId, fileIDs) {
+async function removeFileFromPlaylist(user, playlistId, fileIDs) {
     console.log(fileIDs);
     let updatedPlaylist;
     updatedPlaylist = await Playlist.findOneAndUpdate({
-        '_id': playlistId
+        '_id': playlistId,
+        'userId': user.userId
     }, { $pull: { 'files': { $in: fileIDs } } },
         { upsert: false, useFindAndModify: false, new: true }).select('-userId');
 
@@ -67,8 +70,8 @@ async function removeFileFromPlaylist(playlistId, fileIDs) {
     return updatedPlaylist;
 }
 
-async function updatePlaylistVisibility(playlistId, visibility) {
-    let playlist = await Playlist.findOneAndUpdate({ '_id': playlistId }, { 'visibility': visibility }).select('-userId');
+async function updatePlaylistVisibility(user, playlistId, visibility) {
+    let playlist = await Playlist.findOneAndUpdate({ '_id': playlistId, 'userId': user.userId }, { 'visibility': visibility }, { new: true }).select('-userId, -sharedWith');
     if (!playlist) {
         throw new StatusError(null, 'Playlist not found', 404);
     }
@@ -77,12 +80,20 @@ async function updatePlaylistVisibility(playlistId, visibility) {
 };
 
 async function getPlaylistById(user, playlistId) {
-    const playlist = await Playlist.findOne({ '_id': playlistId }).populate('files');
+    const playlist = await Playlist.findOne({ '_id': playlistId }).populate('files').populate('sharedWith', 'username -_id');
     if (!playlist) throw new StatusError("Playlist not found", 404);
-    if ((user.userId === playlist.userId.toString()) || (playlist.visibility === "public") || (playlist.sharedWith.includes(user.userId))
-        || (user.role === "Admin")) {
+    else if (user.userId === playlist.userId.toString()) {
         playlist.userId = undefined;
         delete playlist.userId;
+        console.log(playlist);
+        return playlist;
+    }
+    else if ((playlist.visibility === "public") || (playlist.sharedWith.includes(user.userId))
+        || (user.role === "Admin")) {
+        playlist.userId = undefined;
+        playlist.sharedWith = undefined;
+        delete playlist.userId;
+        delete playlist.sharedWith;
         console.log(playlist);
         return playlist;
     }
@@ -110,7 +121,7 @@ async function getPlaylists(user, reqBody) {
         }
         // commented line below is for checking if a playlist is shared with the user
         //{ userId: user.userId }, $or: [{ visibility: "public" }, { sharedWith: {$in: [user.userId]} }];
-        let playlists = await Playlist.find({ 'userId': reqBody.userId, $or: [{ 'visibility': 'public' }, { sharedWith: { $in: [user.userId] } }] }).select('-userId')
+        let playlists = await Playlist.find({ 'userId': reqBody.userId, $or: [{ 'visibility': 'public' }, { sharedWith: { $in: [user.userId] } }] }).select('-userId, -sharedWith')
             .skip((page - 1) * pageSize).limit(pageSize);
         return playlists;
     }
@@ -123,8 +134,12 @@ async function deletePlaylist(user, playlistId) {
 };
 
 async function sharePlaylist(user, playlistId, usersToShareWith) {
+    usersToShareWith = usersToShareWith.filter(user => User.findOne(user));
+    if (!usersToShareWith.length) throw new StatusError(null, 'Could not find any users with those IDs', 404);
     const playlist = await Playlist.findOneAndUpdate({ 'userId': user.userId, '_id': playlistId },
-        { $addToSet: { 'sharedWith': { $each: usersToShareWith } } }, { useFindAndModify: false, new: true }).select('-userId');
+        { $addToSet: { 'sharedWith': { $each: usersToShareWith } } }, { useFindAndModify: false, new: true })
+        .select('-userId').populate('sharedWith', 'username -_id');
+    if (!playlist) throw new StatusError(null, 'Playlist not found');
     console.log(playlist);
     return playlist;
 }

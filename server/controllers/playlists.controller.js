@@ -1,6 +1,5 @@
 const playlistService = require('../services/playlists.service');
 const { StatusError } = require('../utils/helper.util');
-const helperUtil = require('../utils/helper.util');
 
 async function createEmptyPlaylist(req, res, next) {
     try {
@@ -24,7 +23,7 @@ async function createEmptyPlaylist(req, res, next) {
 
 async function addFilesToPlaylist(req, res, next) {
     try {
-        res.status(201).send(await playlistService.addFilesToPlaylist(req.body.playlistId, req.body.fileIDs));
+        res.status(201).send(await playlistService.addFilesToPlaylist(req.user, req.body.playlistId, req.body.fileIDs));
     }
     catch (err) {
         if (err.name === 'StatusError') {
@@ -38,7 +37,7 @@ async function addFilesToPlaylist(req, res, next) {
 
 async function removeFileFromPlaylist(req, res, next) {
     try {
-        res.status(201).send(await playlistService.removeFileFromPlaylist(req.body.playlistId, req.body.fileIDs));
+        res.status(201).send(await playlistService.removeFileFromPlaylist(req.user, req.body.playlistId, req.body.fileIDs));
     }
     catch (err) {
         if (err.name === 'StatusError') {
@@ -52,7 +51,7 @@ async function removeFileFromPlaylist(req, res, next) {
 
 async function updatePlaylistVisibility(req, res, next) {
     try {
-        res.status(201).send(await playlistService.updatePlaylistVisibility(req.body.playlistId, req.body.visibility));
+        res.status(201).send(await playlistService.updatePlaylistVisibility(req.user, req.body.playlistId, req.body.visibility));
     }
     catch (err) {
         if (err.name === 'StatusError') {
@@ -66,7 +65,7 @@ async function updatePlaylistVisibility(req, res, next) {
 
 async function getPlaylistById(req, res, next) {
     try {
-        res.status(200).send(await playlistService.getPlaylistById(req.user, req.body.playlistId));
+        res.status(200).send(await playlistService.getPlaylistById(req.user, req.params.playlistId));
     }
     catch (err) {
         if (err.name === 'StatusError') {

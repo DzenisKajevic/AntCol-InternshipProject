@@ -5,7 +5,7 @@ const audioFileController = require('../controllers/audioFiles.controller');
 const middleware = require('../middleware/middleware');
 
 
-// user schema
+// File Review Schema
 /**
  * @swagger
  * components:

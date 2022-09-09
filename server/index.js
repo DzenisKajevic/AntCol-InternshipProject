@@ -41,10 +41,7 @@ const swaggerOptions = {
         basePath: '/api/v1'
     },
     apis: ['.\\routes\\*.js', '.\\index.js']
-    //['./routes/*.js']
-    //apis: [`./routes/audioFiles.route.js`],
 };
-//console.log([__dirname] + '\\routes\\audioFiles.route.js');
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 //explorer = search bar
