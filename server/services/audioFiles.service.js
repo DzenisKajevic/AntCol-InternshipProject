@@ -58,43 +58,6 @@ async function uploadFile(user, reqBody, file) {
     return file.id;
 };
 
-async function addFileToFavourites(userId, fileId) {
-    const file = await AudioFile.findOne({ 'fileId': fileId, 'reviewed': true });
-    if (file) {
-        let favouriteFile = await FavouriteFile.create({
-            userId: userId,
-            fileId: fileId
-        });
-        favouriteFile.userId = undefined;
-        delete favouriteFile.userId;
-        return favouriteFile;
-    }
-    throw new StatusError(null, 'Can\'t add non-existing file to favourites', 500);
-}
-
-async function deleteFavouriteFile(userId, fileId) {
-    const file = await FavouriteFile.deleteOne({ 'userId': userId, 'fileId': fileId });
-    if (!file.deletedCount) throw new StatusError(null, 'Error: Nothing was deleted', 500);
-    return "Successfully deleted the file";
-};
-
-async function getFavouriteFiles(userId, { page, pageSize }) {
-    page = parseInt(page) || 1;
-    pageSize = parseInt(pageSize) || 4;
-
-    // for now, this line is useless, since the userId is extracted from the JWT. Favourite files are private for now
-    if (!userId || userId === 'undefined') throw new StatusError(undefined, 'User ID was not provided', 422);
-    const files = await FavouriteFile.find({ 'userId': userId }).skip((page - 1) * pageSize).limit(pageSize).populate('fileId');
-    if (!files || files.length === 0) {
-        throw new StatusError(null, 'No files available', 404);
-    }
-    files.forEach(function (file, index) {
-        this[index].userId = undefined;
-        delete this[index].userId;
-    }, files);
-    return files;
-};
-
 async function getFile(user, fileId, res) {
     if (!fileId || fileId === 'undefined') throw new StatusError('File id was not provided', 422);
 
@@ -164,7 +127,7 @@ async function getFileReviews(queryParams) {
     const page = parseInt(queryParams.page) || 1;
     const pageSize = parseInt(queryParams.pageSize) || 4;
 
-    const result = await FileReview.find(filters).skip((page - 1) * pageSize).limit(pageSize);
+    const result = await FileReview.find(filters).skip((page - 1) * pageSize).limit(pageSize).populate('fileId');
     return result;
 };
 
@@ -172,6 +135,16 @@ async function getFileReviews(queryParams) {
 async function handleFileReview(user, fileId, status, description = '') {
     const filter = {};
     filter['fileId'] = fileId;
+
+    const file = await AudioFile.findOne({ '_id': fileId });
+    console.log(file);
+    if (!file) {
+        await FileReview.findOneAndUpdate(
+            filter, { 'fileId': fileId, 'reviewStatus': 'Denied', 'adminId': null, 'adminName': null, 'description': 'File was deleted before the review took place' },
+            { upsert: false, useFindAndModify: false, new: true });
+        console.log(file);
+        throw new StatusError(null, 'That file does not exist, closing review', 404);
+    }
 
     const update = {
         'reviewStatus': status,
@@ -204,7 +177,7 @@ async function handleFileReview(user, fileId, status, description = '') {
     }
 
     const result = await FileReview.findOneAndUpdate(
-        filter, update, { upsert: false, useFindAndModify: false, new: true });
+        filter, update, { upsert: false, useFindAndModify: false, new: true }).populate('fileId');
     console.log(result);
     return result;
 }
@@ -212,9 +185,6 @@ async function handleFileReview(user, fileId, status, description = '') {
 module.exports = {
     deleteFile,
     uploadFile,
-    addFileToFavourites,
-    getFavouriteFiles,
-    deleteFavouriteFile,
     getAllFiles,
     getFile,
     getFileInfo,

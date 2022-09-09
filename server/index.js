@@ -5,8 +5,9 @@
 
 const generalConfig = require('./configs/general.config');
 const dbConnection = require('./services/db.service');
-const usersAuthRoute = require('./routes/usersAuth.route');
+const usersAuthRouter = require('./routes/usersAuth.route');
 const audioFilesRouter = require('./routes/audioFiles.route');
+const favouriteFilesRouter = require('./routes/favouriteFiles.route');
 const playlistsRouter = require('./routes/playlists.route');
 const middleware = require('./middleware/middleware');
 const { morgan } = require('./utils/helper.util');
@@ -90,13 +91,15 @@ app.get('/', (req, res) => {
 });
 
 // route middleware
-app.use('/api/v1/auth', usersAuthRoute);
+app.use('/api/v1/auth', usersAuthRouter);
 app.use('/api/v1/audioFiles', audioFilesRouter);
+app.use('/api/v1/favouriteFiles', favouriteFilesRouter);
 app.use('/api/v1/playlists', playlistsRouter);
 
 // error handler middleware
 app.use(middleware.handleErrors);
 
+// used for giving unique IDs to requests for logging
 function assignId(req, res, next) {
     req.id = uuidv4();
     next();
