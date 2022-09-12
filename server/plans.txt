@@ -1,13 +1,14 @@
 # IMPORTANT TASKS
 
-- Limit users to only deleting their own files (admins can delete whatever)
-
+- Add audio visualizer (maybe lock it behind a paywall, not sure)
+- Add a notification to the user who uploaded the file when it gets 
+accepted / denied during admin review
 
 # ADDITIONAL TASKS
 
+- Rename audioFiles collection (Music?)
+- Allow addition of multiple genres per song
 - Admin panel: https://www.google.com/search?q=admin+panel&rlz=1C1CHBF_enDE905DE905&sxsrf=ALiCzsaNK3HR1j6PO9M8mlBqwxZJwYKU2A:1662114276260&source=lnms&tbm=isch&sa=X&ved=2ahUKEwjKuYyY8vX5AhXvh4sKHdp7DtoQ_AUoAXoECAEQAw&biw=1536&bih=722&dpr=1.25#imgrc=Gi7TfDGj7KMVUM
-- Fix file upload ignoring index
-- Fix login with invalid credentials showing no error message
 
 
 # USEFUL LINKS
@@ -17,9 +18,6 @@
 
 
 # NOTES
-
-- enctype="multipart/form-data" is required for uploading files:
-<form action="/upload" method="POST" enctype="multipart/form-data"></form>
 
 - From a browser compatibility standpoint, .MP3 and .MP4 are the best audio file formats for use on the Web. 
 All modern browsers support this format, including IE9. Other formats that are supported by most browsers include OGG, WebM, AAC, and WAV.

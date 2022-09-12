@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const AudioFile = require('./AudioFile');
+const User = require('./User');
 
 const FavouriteFileSchema = new mongoose.Schema({
     userId: {
         type: String,
+        ref: 'User',
         required: [true, 'User ID can\'t be empty'],
     },
     fileId: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        ref: 'AudioFile',
         required: [true, 'File ID can\'t be empty'],
     }
 });
