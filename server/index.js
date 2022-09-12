@@ -5,8 +5,10 @@
 
 const generalConfig = require('./configs/general.config');
 const dbConnection = require('./services/db.service');
-const usersAuthRoute = require('./routes/usersAuth.route');
+const usersAuthRouter = require('./routes/usersAuth.route');
 const audioFilesRouter = require('./routes/audioFiles.route');
+const favouriteFilesRouter = require('./routes/favouriteFiles.route');
+const playlistsRouter = require('./routes/playlists.route');
 const middleware = require('./middleware/middleware');
 const { morgan } = require('./utils/helper.util');
 const { v4: uuidv4 } = require('uuid');
@@ -16,6 +18,34 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUI = require('swagger-ui-express');
+
+const swaggerOptions = {
+    //explorer: true,
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info: {
+            //basePath: "/api/v1",
+            title: 'AntCol Music App API',
+            description: 'Developer API',
+            contact: {
+                name: "Dženis Kajević"
+            },
+            servers: {
+                url: 'http://localhost:3001/api/v1',
+                description: 'Development server',
+            }
+        },
+        host: `localhost:${generalConfig.expressPort}`, // Host (optional)
+        basePath: '/api/v1'
+    },
+    apis: ['.\\routes\\*.js', '.\\index.js']
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+//explorer = search bar
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs, { explorer: true }));
 
 mongoose.set('debug', true);
 app.use(express.json());
@@ -34,17 +64,39 @@ app.use(assignId);
 
 app.all('*', middleware.JWTAuth);
 
+/**
+ * @swagger
+ * components:
+ *  securitySchemes:
+ *      bearerAuth: # arbitrary name for the security scheme
+ *          type: http
+ *          scheme: bearer
+ *          bearerFormat: JWT
+ */
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     description: Returns the homepage
+ *     responses:
+ *       200:
+ *         description: hello world
+ */
 app.get('/', (req, res) => {
     res.send("Welcome");
 });
 
 // route middleware
-app.use('/api/v1/auth', usersAuthRoute);
+app.use('/api/v1/auth', usersAuthRouter);
 app.use('/api/v1/audioFiles', audioFilesRouter);
+app.use('/api/v1/favouriteFiles', favouriteFilesRouter);
+app.use('/api/v1/playlists', playlistsRouter);
 
 // error handler middleware
 app.use(middleware.handleErrors);
 
+// used for giving unique IDs to requests for logging
 function assignId(req, res, next) {
     req.id = uuidv4();
     next();
