@@ -37,7 +37,7 @@ const swaggerOptions = {
                 description: 'Development server',
             }
         },
-        host: `localhost:${generalConfig.expressPort}`, // Host (optional)
+        host: `${generalConfig.host}:${generalConfig.expressPort}`, // Host (optional)
         basePath: '/api/v1'
     },
     apis: ['.\\routes\\*.js', '.\\index.js']
