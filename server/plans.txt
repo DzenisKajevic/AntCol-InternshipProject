@@ -1,6 +1,8 @@
 # IMPORTANT TASKS
 
-- Add audio visualizer (maybe lock it behind a paywall, not sure)
+- Move /utils/audioVisualiserFE.js to frontend when the time comes
+- Find a way to implement subscriptions
+- Find a way to implement song recommendations
 - Add a notification to the user who uploaded the file when it gets 
 accepted / denied during admin review
 
