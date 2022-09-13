@@ -2,6 +2,8 @@
 
 // cd node_modules\.bin
 // jshint ../../index.js
+const cors = require('cors')
+
 
 const generalConfig = require('./configs/general.config');
 const dbConnection = require('./services/db.service');
@@ -21,6 +23,11 @@ const mongoose = require('mongoose');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUI = require('swagger-ui-express');
 
+
+app.use(cors()) // Use this after the variable declaration
+
+console.log(`${__dirname}`)
+console.log(`${generalConfig.host}:${generalConfig.expressPort}`);
 const swaggerOptions = {
     //explorer: true,
     swaggerDefinition: {
@@ -33,14 +40,14 @@ const swaggerOptions = {
                 name: "Dženis Kajević"
             },
             servers: {
-                url: 'http://localhost:3001/api/v1',
+                url: `http://${generalConfig.host}:${generalConfig.expressPort}/api/v1`,
                 description: 'Development server',
             }
         },
         host: `${generalConfig.host}:${generalConfig.expressPort}`, // Host (optional)
         basePath: '/api/v1'
     },
-    apis: ['.\\routes\\*.js', '.\\index.js']
+    apis: ['./routes/*.js', './index.js']
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

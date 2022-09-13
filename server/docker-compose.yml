@@ -6,7 +6,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      HOST: web
+      HOST: localhost
       DB_HOST: db
       database: newDb
       port: 27017:27017
