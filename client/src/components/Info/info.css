@@ -1,14 +1,15 @@
+/* big title text with linear bg color  */
 .info-title {
     font-family: var(--title-font);
     margin-left: 55%;
     padding-top: 4rem;
-    /* max-width: 400px; */
     font-size: 2rem;
     background: var(--linear-bg);
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
+/* normal white information text  */
 .info-p {
     color: var(--white-text);
     font-family: var(--text-font1);
@@ -19,6 +20,7 @@
     line-height: 25px;
 }
 
+/* normal text wit linear bg color  */
 .highlighted-text {
     background: var(--linear-bg);
     font-family: var(--title-font);
@@ -27,12 +29,9 @@
     -webkit-text-fill-color: transparent;
     text-decoration: underline;
     position: relative;
-
-    /* text-underline-position: under; */
-    /* text-decoration-color: var(--linear-bg); */
-    /* text-decoration-color: red; */
 }
 
+/* linear colored underline for highlighted text  */
 .highlighted-text::before {
     content: "";
     position: absolute;
@@ -44,6 +43,7 @@
     background: var(--linear-bg);
 }
 
+/* big linear subscribe button  */
 .subscribe-button {
     position: relative;
     overflow: hidden;
@@ -65,11 +65,13 @@
     margin-top: 4rem;
 }
 
+/* hovering over this button makes it darker */
 .subscribe-button:hover {
     transition: all 0.5s ease-in-out;
     opacity: 1;
 }
 
+/* shining effect on button  */
 .shine:after {
     content: '';
     position: absolute;
@@ -77,16 +79,18 @@
     right: -50%;
     bottom: -50%;
     left: -50%;
-    background: linear-gradient(to bottom, rgba(229, 172, 142, 0), rgba(255,255,255,0.5) 50%, rgba(229, 172, 142, 0));
+    background: linear-gradient(to bottom, rgba(229, 172, 142, 0), rgba(255, 255, 255, 0.5) 50%, rgba(229, 172, 142, 0));
     transform: rotateZ(60deg) translate(-5em, 7.5em);
 }
 
-.shine:hover::after, button:focus::after {
+.shine:hover::after,
+button:focus::after {
     animation: shine 1s forwards;
 }
 
+/* shine button animation  */
 @keyframes shine {
     100% {
-      transform: rotateZ(60deg) translate(1em, -9em);
+        transform: rotateZ(60deg) translate(1em, -9em);
     }
 }
