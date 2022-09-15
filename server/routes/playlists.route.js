@@ -87,12 +87,12 @@ router.post('/addFilesToPlaylist', playlistsController.addFilesToPlaylist);
 // removes file(s) from a playlist
 /**
 * @swagger
-* /api/v1/playlists/removeFileFromPlaylist:
+* /api/v1/playlists/removeFilesFromPlaylist:
 *   delete:
 *     tags:
 *      - playlists
 *     description: Removes an array of items from the given playlist
-*     operationId: removeFileFromPlaylist
+*     operationId: removeFilesFromPlaylist
 *     security:
 *       - bearerAuth: []
 *     produces:
@@ -125,7 +125,7 @@ router.post('/addFilesToPlaylist', playlistsController.addFilesToPlaylist);
 *       500:
 *         description: Error removing file from the playlist
 */
-router.delete('/removeFileFromPlaylist', playlistsController.removeFileFromPlaylist);
+router.delete('/removeFilesFromPlaylist', playlistsController.removeFilesFromPlaylist);
 
 // updates playlist visibility
 /**

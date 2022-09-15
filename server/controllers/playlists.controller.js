@@ -35,9 +35,9 @@ async function addFilesToPlaylist(req, res, next) {
     }
 };
 
-async function removeFileFromPlaylist(req, res, next) {
+async function removeFilesFromPlaylist(req, res, next) {
     try {
-        res.status(201).send(await playlistService.removeFileFromPlaylist(req.user, req.body.playlistId, req.body.fileIDs));
+        res.status(200).send(await playlistService.removeFilesFromPlaylist(req.user, req.body.playlistId, req.body.fileIDs));
     }
     catch (err) {
         if (err.name === 'StatusError') {
@@ -136,7 +136,7 @@ async function revokePlaylistShare(req, res, next) {
 module.exports = {
     createEmptyPlaylist,
     addFilesToPlaylist,
-    removeFileFromPlaylist,
+    removeFilesFromPlaylist,
     updatePlaylistVisibility,
     getPlaylistById,
     getPlaylists,

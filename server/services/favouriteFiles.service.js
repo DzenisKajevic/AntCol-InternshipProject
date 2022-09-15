@@ -19,7 +19,7 @@ async function addFileToFavourites(userId, fileId) {
 async function deleteFavouriteFile(userId, fileId) {
     const file = await FavouriteFile.deleteOne({ 'userId': userId, 'fileId': fileId });
     if (!file.deletedCount) throw new StatusError(null, 'Error: Nothing was deleted', 500);
-    return "Successfully deleted the file";
+    return "Successfully deleted file from favourites";
 };
 
 async function getFavouriteFiles(userId, { page, pageSize }) {

@@ -111,7 +111,7 @@ async function getAllFiles(queryParams, callback) {
     Object.keys(queryParams).forEach(key => {
         if (key in util.fileSearchFilters) filters[key] = queryParams[key];
     });
-    console.log(filters);
+    //console.log(filters);
     //console.log(typeof (keys));
     let page = parseInt(queryParams.page) || 1;
     let pageSize = parseInt(queryParams.pageSize) || 4;
@@ -135,11 +135,15 @@ async function getNewFilesCount() {
 async function getFileReviews(queryParams) {
     let filters = {};
     Object.keys(queryParams).forEach(key => {
-        if (key in util.reviewSearchFilters) filters[key] = queryParams[key];
+        if (key in util.reviewSearchFilters) {
+            filters[key] = queryParams[key];
+            //console.log(queryParams[key]);
+        }
     });
     const page = parseInt(queryParams.page) || 1;
     const pageSize = parseInt(queryParams.pageSize) || 4;
 
+    //console.log(filters);
     const result = await FileReview.find(filters).skip((page - 1) * pageSize).limit(pageSize).populate('fileId');
     return result;
 };

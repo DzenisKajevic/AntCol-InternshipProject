@@ -1,5 +1,6 @@
 # IMPORTANT TASKS
 
+- Delete file from all playlists upon deletion
 - Move /utils/audioVisualiserFE.js to frontend when the time comes
 - Find a way to implement subscriptions
 - Find a way to implement song recommendations

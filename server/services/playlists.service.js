@@ -53,7 +53,7 @@ async function addFilesToPlaylist(user, playlistId, fileIDs) {
 };
 
 
-async function removeFileFromPlaylist(user, playlistId, fileIDs) {
+async function removeFilesFromPlaylist(user, playlistId, fileIDs) {
     console.log(fileIDs);
     let updatedPlaylist;
     updatedPlaylist = await Playlist.findOneAndUpdate({
@@ -157,7 +157,7 @@ async function revokePlaylistShare(user, playlistId, usersToRevokeSharing) {
 module.exports = {
     createEmptyPlaylist,
     addFilesToPlaylist,
-    removeFileFromPlaylist,
+    removeFilesFromPlaylist,
     updatePlaylistVisibility,
     getPlaylistById,
     getPlaylists,
