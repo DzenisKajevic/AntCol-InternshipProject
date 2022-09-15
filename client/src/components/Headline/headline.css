@@ -1,15 +1,10 @@
+/* headline components container  */
 .headline-container {
     height: 100vh;
-    /* background-image: url(../../../public/assets/app-images/main-bg-image.jpg); */
-    /* background-repeat: no-repeat;
-    background-position: -20% ; */
-    /* display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column; */
     position: relative;
 }
 
+/* this rotates the bg image and overflows its content  */
 .headline-container::before {
     content: '';
     position: absolute;
@@ -17,11 +12,12 @@
     height: 100%;
     top: 25%;
     left: -35%;
-    z-index:-1;
+    z-index: 1;
     background: url(../../../public/assets/app-images/main-bg-image.jpg)0 0 repeat;
     transform: rotate(-45deg);
 }
 
+/* big linear colored title  */
 .headline-title {
     font-family: var(--title-font);
     margin-left: 70%;
@@ -33,6 +29,7 @@
     -webkit-text-fill-color: transparent;
 }
 
+/* normal white text  */
 .headline-title-p {
     color: var(--white-text);
     font-family: var(--text-font1);

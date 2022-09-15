@@ -1,7 +1,9 @@
+/* footer components container  */
 .footer-container {
     padding-top: 15rem;
 }
 
+/* two link containers  */
 .footer-links-container {
     display: flex;
     align-items: center;
@@ -12,18 +14,21 @@
     margin-bottom: 3rem;
 }
 
+/* list containing links  */
 .footer-ul {
     display: flex;
     flex-direction: column;
     text-align: center;
 }
 
+/* list header  */
 .footer-ul h4 {
     color: var(--white-text);
     font-family: var(--text-font1);
     font-size: 1.5rem;
 }
 
+/* list links  */
 .footer-ul a {
     /* color: var(--white-text); */
     color: #878888;
@@ -31,11 +36,13 @@
     padding-top: 1rem;
 }
 
+/* list links on hover change color and get an underline */
 .footer-ul a:hover {
     color: var(--white-text);
     text-decoration: underline;
 }
 
+/* container with social media icons  */
 .sm-container {
     display: flex;
     justify-content: space-between;
@@ -45,18 +52,21 @@
     align-self: flex-end;
 }
 
+/* styling social media icons  */
 .sm-icons-styling {
     width: 50px;
     color: var(--white-text);
     cursor: pointer;
 }
 
+/* a div used as a break line, separating footer content  */
 .breakline {
     width: 80%;
     margin: auto;
     border: 1px solid #212429;
 }
 
+/* container with form, icon and copyright p  */
 .footer-bottom-container {
     display: flex;
     justify-content: space-between;
@@ -66,6 +76,7 @@
     height: 100px;
 }
 
+/* footer form with different languages select  */
 .language-form {
     background: var(--linear-bg);
     border: none;
@@ -75,11 +86,13 @@
     width: 100px;
 }
 
+/* music app logo in the footer  */
 .footer-music-app-logo {
     width: 180px;
     overflow: hidden;
 }
 
+/* copyright paragraph in the footer  */
 .copyright-p {
     color: var(--white-text);
     text-decoration: underline;
