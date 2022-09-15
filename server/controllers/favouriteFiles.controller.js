@@ -15,7 +15,7 @@ async function addFileToFavourites(req, res, next) {
 
 async function getFavouriteFiles(req, res, next) {
     try {
-        res.status(201).send(await favouriteFilesService.getFavouriteFiles(req.user.userId, req.query));
+        res.status(200).send(await favouriteFilesService.getFavouriteFiles(req.user.userId, req.query));
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);
@@ -29,7 +29,7 @@ async function getFavouriteFiles(req, res, next) {
 
 async function deleteFavouriteFile(req, res, next) {
     try {
-        res.status(201).send(await favouriteFilesService.deleteFavouriteFile(req.user.userId, req.body.fileId));
+        res.status(200).send(await favouriteFilesService.deleteFavouriteFile(req.user.userId, req.body.fileId));
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);

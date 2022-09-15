@@ -25,7 +25,7 @@ const FileReviewSchema = new mongoose.Schema({
     description: {
         type: String
     }
-});
+}, { strictQuery: false });
 
 
 module.exports = mongoose.model("FileReview", FileReviewSchema, 'fileReviews');

@@ -5,6 +5,18 @@ const GridFsStorage = require('multer-gridfs-storage').GridFsStorage;
 //const crypto = require('crypto');
 const path = require('path');
 
+// deep populate in mongoose
+/* SomeModel
+  .find()
+  .populate({
+    path : 'userId',
+    populate : {
+      path : 'reviewId'
+    }
+  })
+  .exec(function (err, res) {
+
+  }) */
 
 checkFileType = (file, cb) => {
     const reqFiletype = /mp3|ogg|weba|aac|wav/;
