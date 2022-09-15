@@ -1,0 +1,223 @@
+/* log in page container with white bg image */
+.loginpage-container {
+    background-image: url('../../../../public/assets/log-sign-forms/login-register-bg.jpg');
+    height: 100vh;
+}
+
+/* div used as a wrapper, changing bg color to linear colors  */
+.login-bg-color-wrapper {
+    background: rgb(73, 0, 87);
+    background: radial-gradient(circle, rgba(73, 0, 87, 1) 0%, rgba(216, 0, 255, 1) 0%, rgba(255, 224, 0, 1) 100%);
+    height: 100vh;
+    opacity: 0.7;
+    padding-top: 6rem;
+}
+
+/* linear colore title text  */
+.login-title {
+    font-family: var(--title-font);
+    background: var(--linear-bg);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    font-size: 1.5rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    position: relative;
+}
+
+/* linear colored underline for title  */
+.login-title::before {
+    content: "";
+    position: absolute;
+    top: 65%;
+    width: 60%;
+    right: 20%;
+    height: 5px;
+    border-radius: 2px;
+    background: var(--linear-bg);
+}
+
+/* white bg log in form  */
+.login-form {
+    width: 35%;
+    margin: auto;
+    height: 75vh;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 1)
+}
+
+/* all label text  */
+.login-label {
+    font-family: var(--text-font1);
+    padding-left: 6rem;
+    padding-bottom: 1rem;
+    padding-top: 2rem;
+    display: block;
+}
+
+/* remember me paragraph  */
+.login-label2 {
+    font-family: var(--text-font1);
+    padding-left: 2rem;
+    font-size: 14px;
+    padding-right: 1rem;
+}
+
+/* checkbox input field  */
+.checkbox-input {
+    -webkit-appearance: none;
+    background-color: #fafafa;
+    border: 1px solid #cacece;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+    padding: 9px;
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
+}
+
+.checkbox-input:active,
+.checkbox-input:checked:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* changes bg color to purple  */
+.checkbox-input:checked {
+    background-color: var(--purple);
+    border: 1px solid #adb8c0;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05), inset 15px 10px -12px rgba(255, 255, 255, 0.1);
+    color: #99a1a7;
+}
+
+/* check icon appears when checked  */
+.checkbox-input:checked:after {
+    content: '\2714';
+    font-size: 14px;
+    position: absolute;
+    top: 0px;
+    left: 3px;
+    color: var(--yellow);
+}
+
+/* input fields  */
+.login-input {
+    display: block;
+    height: 50px;
+    width: 60%;
+    margin: auto;
+    outline: none;
+    border-radius: 10px;
+    border: none;
+    border-bottom: 1px solid #000;
+    text-indent: 0.5rem;
+}
+
+/* on focus input fields change color to gray  */
+.login-input:focus {
+    background-color: #eee;
+}
+
+/* container for remember me and forgot pw paragraphs */
+
+.paragraph-fieldset {
+    border: none;
+    display: flex;
+    align-items: center;
+}
+
+/* forgot pw link  */
+.pw-link-paragraph {
+    font-family: var(--text-font1);
+    font-size: 14px;
+    display: inline;
+    padding-left: 10rem;
+}
+
+/* forgot pw link  */
+.pw-link-paragraph a {
+    text-decoration: underline;
+    color: var(--purple);
+}
+
+/* on hover changes color to yellow  */
+.pw-link-paragraph a:hover {
+    color: var(--yellow);
+}
+
+/* sign up paragraph  */
+.signup-link-paragraph {
+    font-family: var(--text-font1);
+    font-size: 14px;
+    text-align: center;
+}
+
+sign up paragraph link .signup-link-paragraph a {
+    text-decoration: underline;
+    color: var(--purple);
+}
+
+/* on hover changes the color to yellow  */
+.signup-link-paragraph a:hover {
+    /* color: #e15cf8; */
+    color: var(--yellow);
+}
+
+/* big linear colored log in button  */
+.loginpage-button {
+    border: none;
+    cursor: pointer;
+    width: 60%;
+    height: 50px;
+    font-family: var(--text-font1);
+    border-radius: 15px;
+    color: black;
+    font-weight: 500;
+    font-size: 15px;
+    display: block;
+    margin: 2rem auto;
+    transition: all 0.5s ease-in-out;
+    background: var(--yellow);
+    background: var(--linear-bg);
+    position: relative;
+    overflow: hidden;
+    opacity: 0.8;
+}
+
+/* on hover the button changes opacity  */
+.loginpage-button:hover {
+    transition: all 0.5s ease-in-out;
+    opacity: 1;
+}
+
+/* shine effect for button  */
+.shine:after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    bottom: -50%;
+    left: -50%;
+    background: linear-gradient(to bottom, rgba(229, 172, 142, 0), rgba(255, 255, 255, 0.5) 50%, rgba(229, 172, 142, 0));
+    transform: rotateZ(60deg) translate(-5em, 15em);
+}
+
+.shine:hover::after,
+button:focus::after {
+    animation: shine 1s forwards;
+}
+
+/* shine animation  */
+@keyframes shine {
+    100% {
+        transform: rotateZ(60deg) translate(1em, -15em);
+    }
+}
+
+/* music app icon  */
+.loginpage-icon {
+    width: 120px;
+    margin: auto;
+    display: block;
+    padding: 1.5rem 0;
+}
