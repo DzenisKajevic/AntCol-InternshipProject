@@ -8,6 +8,7 @@ const cors = require('cors')
 const generalConfig = require('./configs/general.config');
 const dbConnection = require('./services/db.service');
 const usersAuthRouter = require('./routes/usersAuth.route');
+const notificationsRouter = require('./routes/notifications.route');
 const audioFilesRouter = require('./routes/audioFiles.route');
 const favouriteFilesRouter = require('./routes/favouriteFiles.route');
 const playlistsRouter = require('./routes/playlists.route');
@@ -99,6 +100,7 @@ app.use('/api/v1/auth', usersAuthRouter);
 app.use('/api/v1/audioFiles', audioFilesRouter);
 app.use('/api/v1/favouriteFiles', favouriteFilesRouter);
 app.use('/api/v1/playlists', playlistsRouter);
+app.use('/api/v1/notifications', notificationsRouter);
 
 // error handler middleware
 app.use(middleware.handleErrors);

@@ -79,7 +79,7 @@ async function getPlaylistById(req, res, next) {
 
 async function getPlaylists(req, res, next) {
     try {
-        res.status(200).send(await playlistService.getPlaylists(req.user, req.body));
+        res.status(200).send(await playlistService.getPlaylists(req.user, req.query));
     }
     catch (err) {
         if (err.name === 'StatusError') {

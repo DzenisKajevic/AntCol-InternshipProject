@@ -37,7 +37,9 @@ const Register = () => {
             required
           />
           {/* change the onClick on the line below to test axios calls */}
-          <button className="registrationpage-button shine" onClick={() => logout()}>Sign up</button>
+          <button className="registrationpage-button shine" onClick={() => getPlaylists({
+            "userId": "6311e6c692a2db96a4bfbbb0", "page": 1, "pageSize": 10
+          })}>Sign up</button>
           <img
             className="registerpage-icon"
             src="./assets/app-images/music-app-logo.png"
@@ -286,7 +288,7 @@ async function getPlaylistById(playlistId) {
   }
 }
 
-//onClick = {() => getPlaylists({"userId: "6311e6c692a2db96a4bfbbb0", page": 1, "pageSize": 10})}
+//onClick = {() => getPlaylists({"userId": "6311e6c692a2db96a4bfbbb0", "page": 1, "pageSize": 10})}
 async function getPlaylists(options) {
   const response = await playlists.getPlaylists(options);
   if (response.error) {

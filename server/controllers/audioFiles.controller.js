@@ -1,6 +1,5 @@
 const audioFilesService = require('../services/audioFiles.service');
 const { StatusError } = require('../utils/helper.util');
-const helperUtil = require('../utils/helper.util');
 
 async function deleteFile(req, res, next) {
     try {

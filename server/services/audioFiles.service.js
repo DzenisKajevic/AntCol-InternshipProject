@@ -6,6 +6,7 @@ const Playlist = require('../models/Playlist');
 const { StatusError } = require('../utils/helper.util');
 const mongoose = require('mongoose');
 const util = require('../utils/helper.util');
+const Notification = require('../models/Notifications');
 
 async function deleteFileHelper(id) {
     if (!id || id === 'undefined') return 'The file id was not provided';
@@ -45,14 +46,18 @@ async function uploadFile(user, reqBody, file) {
             filter, update, { upsert: false, useFindAndModify: false, new: true, runValidators: true });
 
         const reviewInformation = {
-            'fileId': result._id, 'filename': result.filename, 'contentType': result.contentType,
-            'uploadDate': result.uploadDate, 'author': reqBody.author, 'genre': reqBody.genre, 'songName': reqBody.songName,
-            'uploadedBy': mongoose.Types.ObjectId(user.userId), 'reviewStatus': "Needs to be reviewed", 'adminId': null, 'adminName': null, 'reviewTerminationDate': null
+            'fileId': result._id, 'reviewStatus': "Needs to be reviewed", 'description': null, 'adminId': null, 'adminName': null, 'reviewTerminationDate': null
         };
 
         // try-catch for creating a review
         try {
-            const review = await FileReview.create(reviewInformation);
+            const review = await (await FileReview.create(reviewInformation)).populate('fileId');
+            try {
+                await Notification.create({ 'notificationTime': review.fileId.uploadDate, 'userId': review.fileId.uploadedBy, 'description': `The uploaded file ${review.fileId.filename} is currently under review` });
+            }
+            catch (err) {
+                console.log('Error sending notification', err);
+            }
         }
         catch (err) {
             console.log(err);
