@@ -108,16 +108,17 @@ async function getFileInfo(fileId) {
 };
 
 // Added filters, removed 2 routes
-async function getAllFiles(queryParams, callback) {
+async function getAllFiles(user, queryParams, callback) {
     //{ genre, page, pageSize }
     let filters = {};
     filters['contentType'] = "audio/mpeg";
-    filters['reviewed'] = true;
+    if (user.role !== 'Admin') filters['reviewed'] = true;
+    else if (queryParams['reviewed'] === 'true' || queryParams['reviewed'] === 'false') filters['reviewed'] = queryParams['reviewed'];
     Object.keys(queryParams).forEach(key => {
+        console.log(key, typeof (queryParams[key]));
         if (key in util.fileSearchFilters) filters[key] = queryParams[key];
     });
-    //console.log(filters);
-    //console.log(typeof (keys));
+
     let page = parseInt(queryParams.page) || 1;
     let pageSize = parseInt(queryParams.pageSize) || 4;
     db.getGfs().find(filters).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
@@ -181,14 +182,25 @@ async function handleFileReview(user, fileId, status, description = '') {
         update['reviewed'] = true;
         update['reviewTerminationDate'] = date.toISOString();
         const filter = { '_id': fileId };
-        await AudioFile.findOneAndUpdate(
+        const file = await AudioFile.findOneAndUpdate(
             filter, update, { upsert: false, useFindAndModify: false, new: true });
+        await Notification.create({
+            'userId': file.uploadedBy, 'read': false,
+            'description': `The uploaded file ${file.filename} has been accepted`,
+            'notificationTime': update['reviewTerminationDate']
+        });
     }
 
     else if (status === "Denied") {
         console.log("Denied");
         const date = new Date;
         update['reviewTerminationDate'] = date.toISOString();
+        const file = await AudioFile.findOne(filter);
+        await Notification.create({
+            'userId': file.uploadedBy, 'read': false,
+            'description': `The uploaded file ${file.filename} has been rejected`,
+            'notificationTime': update['reviewTerminationDate']
+        });
         await deleteFile(fileId);
         // if file doesn't exist, just update the review (in case the description was forgotten)
     }

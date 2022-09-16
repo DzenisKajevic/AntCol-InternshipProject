@@ -52,7 +52,7 @@ async function getFileInfo(req, res, next) {
 
 async function getAllFiles(req, res, next) {
     try {
-        await audioFilesService.getAllFiles(req.query, (err, files) => {
+        await audioFilesService.getAllFiles(req.user, req.query, (err, files) => {
             if (err) {
                 next(err);
             }

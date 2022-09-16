@@ -3,7 +3,7 @@ const User = require('./User');
 
 const NotificationSchema = new mongoose.Schema({
     read: {
-        type: Boolean,
+        type: String,
         required: true,
         default: false
     },

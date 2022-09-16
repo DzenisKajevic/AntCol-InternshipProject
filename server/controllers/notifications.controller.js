@@ -12,7 +12,7 @@ async function deleteNotification(req, res, next) {
 
 async function createNotification(req, res, next) {
     try {
-        res.status(201).send({ "fileId": await notificationsService.createNotification(req.body.userId, req.body.description) });
+        res.status(201).send(await notificationsService.createNotification(req.user, req.body.userId, req.body.description));
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);
@@ -25,7 +25,7 @@ async function createNotification(req, res, next) {
 
 async function getNotifications(req, res, next) {
     try {
-        await notificationsService.getNotifications(req.user);
+        res.status(200).send(await notificationsService.getNotifications(req.user, req.params));
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);
@@ -38,7 +38,7 @@ async function getNotifications(req, res, next) {
 
 async function markNotificationAsRead(req, res, next) {
     try {
-        res.status(200).send(await notificationsService.markNotificationAsRead(req.user, req.params.id));
+        res.status(200).send(await notificationsService.markNotificationAsRead(req.user, req.body.notificationId));
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);

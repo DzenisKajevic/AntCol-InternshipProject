@@ -31,7 +31,7 @@ const AudioFileSchema = new mongoose.Schema({
         required: true
     },
     reviewed: {
-        type: Boolean,
+        type: String,
         required: true
     },
     songName: {

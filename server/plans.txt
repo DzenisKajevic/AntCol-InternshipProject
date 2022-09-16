@@ -3,12 +3,11 @@
 - Move /utils/audioVisualiserFE.js to frontend when the time comes
 - Find a way to implement subscriptions
 - Find a way to implement song recommendations
-- Add a notification to the user who uploaded the file when it gets 
-accepted / denied during admin review
+- Add notification axios calls to FE
 
 # ADDITIONAL TASKS
 
-- Decode JWT on FE, when saving to user state
+- Decode JWT on FE when saving to user state
 - Allow users to upload profile pictures
 - Rename audioFiles collection (Music?)
 - Allow addition of multiple genres per song
