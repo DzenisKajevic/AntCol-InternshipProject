@@ -13,7 +13,7 @@
     top: 25%;
     left: -35%;
     z-index: 1;
-    background: url(../../../public/assets/app-images/main-bg-image.jpg)0 0 repeat;
+    background: url(../../../../../public/assets/app-images/main-bg-image.jpg)0 0 repeat;
     transform: rotate(-45deg);
 }
 
