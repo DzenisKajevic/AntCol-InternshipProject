@@ -12,6 +12,7 @@ const notificationsRouter = require('./routes/notifications.route');
 const audioFilesRouter = require('./routes/audioFiles.route');
 const favouriteFilesRouter = require('./routes/favouriteFiles.route');
 const playlistsRouter = require('./routes/playlists.route');
+const profilePicRouter = require('./routes/profilePics.routes');
 const middleware = require('./middleware/middleware');
 const { morgan } = require('./utils/helper.util');
 const { v4: uuidv4 } = require('uuid');
@@ -98,6 +99,7 @@ app.get('/', (req, res) => {
 // route middleware
 app.use('/api/v1/auth', usersAuthRouter);
 app.use('/api/v1/audioFiles', audioFilesRouter);
+app.use('/api/v1/profilePic', profilePicRouter);
 app.use('/api/v1/favouriteFiles', favouriteFilesRouter);
 app.use('/api/v1/playlists', playlistsRouter);
 app.use('/api/v1/notifications', notificationsRouter);

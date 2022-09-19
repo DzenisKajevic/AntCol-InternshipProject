@@ -61,8 +61,7 @@ async function uploadFile(file) {
     catch (err) {
         console.log(err);
         await deleteFileHelper(file.id);
-        if (err.message.includes("E11000 duplicate key error")) throw (new StatusError(err.message, `File with the same artist / song name already exists`, 500));
-        else if (err.message.includes("Validation failed")) throw (new StatusError(err.message, `Required fields are missing`, 500));
+        if (err.message.includes("Validation failed")) throw (new StatusError(err.message, `Required fields are missing`, 500));
         else throw (new StatusError(err.message, `Error uploading file`, 500));
     }
 }

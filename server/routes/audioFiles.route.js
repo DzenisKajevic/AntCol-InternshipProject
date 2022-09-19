@@ -1,9 +1,9 @@
 const express = require('express');
-const { default: mongoose } = require('mongoose');
 const router = express.Router();
 const audioFileController = require('../controllers/audioFiles.controller');
 const middleware = require('../middleware/middleware');
-
+const multer = require("multer");
+const upload = multer();
 
 // File Review Schema
 /**

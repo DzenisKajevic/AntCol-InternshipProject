@@ -64,6 +64,26 @@ async function audioFileUploadMiddleware(req, res, next) {
 
     store = await db.setupAudioStorageEngine(req);
     const upload = store.single('audioFile');
+
+    upload(req, res, function (err) {
+        console.log(req.body);
+        if (err) {
+            console.log(err);
+            if (err.message.includes("E11000 duplicate key error")) next(new StatusError(err.message, `File with the same artist / song name already exists`, 500));
+            else if (err.message.includes("Validation failed")) next(new StatusError(err.message, `Required fields are missing`, 500));
+            else next(new StatusError(err.message, `Error uploading file`, 500));
+        }
+        next();
+    });
+};
+
+async function profilePicUploadMiddleware(req, res, next) {
+    // accepts a single file and stores it in req.file
+    // the file must be passed with the key: "profilePic", otherwise the request will fail
+
+    store = await db.setupProfilePicStorageEngine(req);
+    const upload = store.single('profilePic');
+
     upload(req, res, function (err) {
         if (err) {
             console.log(err);
@@ -76,8 +96,10 @@ async function audioFileUploadMiddleware(req, res, next) {
 };
 
 
+
 module.exports = {
     handleErrors,
     JWTAuth,
     audioFileUploadMiddleware,
+    profilePicUploadMiddleware,
 }

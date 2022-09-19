@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const dbConfig = require('../configs/db.config');
 const GridFsStorage = require('multer-gridfs-storage').GridFsStorage;
-//const crypto = require('crypto');
+const crypto = require('crypto');
 const path = require('path');
 
 // deep populate in mongoose
@@ -18,9 +18,27 @@ const path = require('path');
 
   }) */
 
-checkFileType = (file, cb) => {
+checkAudioFileType = (file, cb) => {
     const reqFiletype = /mp3|ogg|weba|aac|wav/;
     const reqMimetype = /audio/;
+    const extname = reqFiletype.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = reqMimetype.test(file.mimetype);
+    if (mimetype && extname) return cb(null, true);
+    cb('Unsupported file type submitted');
+};
+checkMetadata = (req, cb) => {
+    console.log(req.body);
+    let metadata = req.body;
+    const requiredMetadata = ["genre", "author", "songName", "album"];
+    const hasOwnProperty = Object.hasOwnProperty.bind(metadata)
+    const hasAllKeys = requiredMetadata.every(item => hasOwnProperty(item));
+
+    if (!hasAllKeys) cb("Some required metadata was left out");
+}
+
+checkImageFileType = (file, cb) => {
+    const reqFiletype = /jpg|jpeg|png/;
+    const reqMimetype = /image/;
     const extname = reqFiletype.test(path.extname(file.originalname).toLowerCase());
     const mimetype = reqMimetype.test(file.mimetype);
     if (mimetype && extname) return cb(null, true);
@@ -64,16 +82,16 @@ const dbService = {
         }
     },
 
-    setupAudioStorageEngine: async function (req) {
+    setupAudioStorageEngine: async function () {
         // Create storage engine
         dbService.audioStorage = new GridFsStorage({
             url: dbService.dbURI,
             bucketName: dbService.audioBucketName,
             file: (req, file) => {
                 let metadata = req.body;
+
                 metadata['reviewed'] = 'false';
                 metadata['uploadedBy'] = mongoose.Types.ObjectId(req.user.userId);
-                // this function runs every time a new file is created
                 return new Promise((resolve, reject) => {
                     const filename = path.basename(file.originalname);
                     const fileInfo = {
@@ -91,7 +109,8 @@ const dbService = {
                 storage: dbService.audioStorage,
                 limits: { fileSize: 50000000 }, // limits file to 50MB
                 fileFilter: function (req, file, cb) {
-                    checkFileType(file, cb);
+                    checkAudioFileType(file, cb);
+                    checkMetadata(req, cb);
                 }
             });
         return dbService.audioStore;
@@ -103,15 +122,24 @@ const dbService = {
             url: dbService.dbURI,
             bucketName: dbService.profilePicBucketName,
             file: (req, file) => {
-                // this function runs every time a new file is created
+                let metadata = {
+                    'uploadedBy': mongoose.Types.ObjectId(req.user.userId)
+                };
                 return new Promise((resolve, reject) => {
-                    const filename = path.basename(file.originalname);
-                    const fileInfo = {
-                        filename: filename,
-                        bucketName: dbService.profilePicBucketName,
-                        metadata: req.body
-                    };
-                    resolve(fileInfo);
+                    // use the crypto package to generate a random name for the file
+                    // I'll probably remove this later
+                    crypto.randomBytes(16, (err, buf) => {
+                        if (err) {
+                            return reject(err);
+                        }
+                        const filename = buf.toString('hex') + path.extname(file.originalname);
+                        const fileInfo = {
+                            filename: filename,
+                            bucketName: dbService.profilePicBucketName,
+                            metadata: metadata
+                        };
+                        resolve(fileInfo);
+                    });
                 });
             }
         });
@@ -119,9 +147,9 @@ const dbService = {
         dbService.profilePicStore = multer(
             {
                 storage: dbService.profilePicStorage,
-                limits: { fileSize: 50000000 }, // limits file to 50MB
+                limits: { fileSize: 10000000 }, // limits file to 10MB
                 fileFilter: function (req, file, cb) {
-                    checkFileType(file, cb);
+                    checkImageFileType(file, cb);
                 }
             });
 
