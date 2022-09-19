@@ -1,5 +1,33 @@
 const mongoose = require('mongoose');
 
+const metadata = new mongoose.Schema({
+    author: {
+        type: String,
+        required: true
+    },
+    genre: {
+        type: String,
+        required: true
+    },
+    reviewed: {
+        type: String,
+        required: true
+    },
+    songName: {
+        type: String,
+        required: true
+    },
+    album: {
+        type: String,
+        required: true
+    },
+    uploadedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    }
+}, { _id: false });
+
+
 const AudioFileSchema = new mongoose.Schema({
     length: {
         type: Number,
@@ -22,24 +50,8 @@ const AudioFileSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    author: {
-        type: String,
-        required: true
-    },
-    genre: {
-        type: String,
-        required: true
-    },
-    reviewed: {
-        type: String,
-        required: true
-    },
-    songName: {
-        type: String,
-        required: true
-    },
-    uploadedBy: {
-        type: mongoose.Schema.Types.ObjectId,
+    metadata: {
+        type: metadata,
         required: true
     }
 });

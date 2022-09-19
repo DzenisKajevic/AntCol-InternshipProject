@@ -151,7 +151,7 @@ const middleware = require('../middleware/middleware');
 *       500:
 *         description: File could not be uploaded
 */
-router.post('/uploadFile', middleware.uploadMiddleware, audioFileController.uploadFile);
+router.post('/uploadFile', middleware.audioFileUploadMiddleware, audioFileController.uploadFile);
 
 // returns a specific file, ready for playback
 /** 

@@ -1,7 +1,7 @@
 const { StatusError } = require("../utils/helper.util");
 const jwt = require('jsonwebtoken');
 const generalConfig = require('../configs/general.config');
-const db = require('../services/db.service');
+const db = require('../utils/db.service');
 
 function handleErrors(err, req, res, next) {
 
@@ -58,16 +58,18 @@ function JWTAuth(req, res, next) {
     });
 };
 
-function uploadMiddleware(req, res, next) {
+async function audioFileUploadMiddleware(req, res, next) {
     // accepts a single file and stores it in req.file
     // the file must be passed with the key: "audioFile", otherwise the request will fail
-    const upload = db.getStore().single('audioFile');
 
+    store = await db.setupAudioStorageEngine(req);
+    const upload = store.single('audioFile');
     upload(req, res, function (err) {
         if (err) {
-            req.err = err.message;
             console.log(err);
-            return res.status(400).send(err);
+            if (err.message.includes("E11000 duplicate key error")) next(new StatusError(err.message, `File with the same artist / song name already exists`, 500));
+            else if (err.message.includes("Validation failed")) next(new StatusError(err.message, `Required fields are missing`, 500));
+            else next(new StatusError(err.message, `Error uploading file`, 500));
         }
         next();
     });
@@ -77,5 +79,5 @@ function uploadMiddleware(req, res, next) {
 module.exports = {
     handleErrors,
     JWTAuth,
-    uploadMiddleware
+    audioFileUploadMiddleware,
 }

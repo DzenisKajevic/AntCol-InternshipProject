@@ -6,7 +6,7 @@ const cors = require('cors')
 
 
 const generalConfig = require('./configs/general.config');
-const dbConnection = require('./services/db.service');
+const dbConnection = require('./utils/db.service');
 const usersAuthRouter = require('./routes/usersAuth.route');
 const notificationsRouter = require('./routes/notifications.route');
 const audioFilesRouter = require('./routes/audioFiles.route');
@@ -122,8 +122,6 @@ const start = async () => {
 
     try {
         await dbConnection.connect();
-        // used for file uploads / downloads... 
-        await dbConnection.setupStorageEngine();
     }
     catch (error) {
         console.log(error);
