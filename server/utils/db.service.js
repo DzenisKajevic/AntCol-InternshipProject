@@ -48,7 +48,7 @@ checkImageFileType = (file, cb) => {
 const dbService = {
     profilePicStore: null,
     audioStore: null,
-    profilePicBucketName: 'profilePictures',
+    profilePicBucketName: 'profilePics',
     audioBucketName: 'audioFiles',
     profilePicStorage: null,
     audioStorage: null, // all of these variables are in use, 
@@ -65,10 +65,8 @@ const dbService = {
                 authSource: dbConfig.database,
                 user: dbConfig.user,
                 pass: dbConfig.password,
-            })
-            //console.log(this.dbConnection);
+            });
             dbService.dbConnection = mongoose.connection;
-            //console.log(this.dbConnection);
             dbService.audioGfs = new mongoose.mongo.GridFSBucket(dbService.dbConnection.db, {
                 bucketName: dbService.audioBucketName
             });
@@ -167,7 +165,7 @@ const dbService = {
         return dbService.audioGfs;
     },
     getProfilePicGfs: () => {
-        return dbService.getProfilePicGfs;
+        return dbService.profilePicGfs;
     }
 }
 

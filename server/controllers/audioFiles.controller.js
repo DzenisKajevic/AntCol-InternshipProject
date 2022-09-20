@@ -1,9 +1,9 @@
-const profilePicService = require('../services/audioFiles.service');
+const audioFilesService = require('../services/audioFiles.service');
 const { StatusError } = require('../utils/helper.util');
 
 async function deleteFile(req, res, next) {
     try {
-        res.status(200).send(await profilePicService.deleteFile(req.user, req.body.fileId));
+        res.status(200).send(await audioFilesService.deleteFile(req.user, req.body.fileId));
     } catch (err) {
         console.error(`Error deleting file\n`, err);
         next(new StatusError(err.message, `Error deleting file`, 500));
@@ -12,7 +12,7 @@ async function deleteFile(req, res, next) {
 
 async function uploadFile(req, res, next) {
     try {
-        res.status(201).send({ "fileId": await profilePicService.uploadFile(req, res, next) });
+        res.status(201).send({ "fileId": await audioFilesService.uploadFile(req, res, next) });
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);
@@ -26,7 +26,7 @@ async function uploadFile(req, res, next) {
 async function getFile(req, res, next) {
     try {
         // res is required for the .pipe(res) on the DownloadStream
-        await profilePicService.getFile(req.user, req.params.id, res);
+        await audioFilesService.getFile(req.user, req.params.id, res);
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);

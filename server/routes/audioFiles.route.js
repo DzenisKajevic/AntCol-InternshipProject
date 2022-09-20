@@ -159,7 +159,7 @@ router.post('/uploadFile', middleware.audioFileUploadMiddleware, audioFileContro
 *  /api/v1/audioFiles/getFile/{fileId}: 
 *   get: 
 *    tags:
-*      - file uploads
+*      - audioFiles
 *    operationId: getFile
 *    produces:
 *       - audio/mp3
@@ -194,7 +194,7 @@ router.get('/getFile/:id', audioFileController.getFile);
 *  /api/v1/audioFiles/getFileInfo/{fileId}: 
 *   get: 
 *    tags:
-*      - file uploads
+*      - audioFiles
 *    operationId: getFileInfo
 *    security:
 *       - bearerAuth: []
@@ -223,7 +223,7 @@ router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 *  /api/v1/audioFiles/getAllFiles: 
 *   get: 
 *    tags:
-*      - file uploads
+*      - audioFiles
 *    operationId: getAllAudioFiles
 *    security:
 *       - bearerAuth: []
@@ -261,7 +261,7 @@ router.get('/getAllFiles', audioFileController.getAllFiles);
 *  /api/v1/audioFiles/deleteFile: 
 *   delete: 
 *    tags:
-*      - file uploads
+*      - audioFiles
 *    operationId: deleteFile
 *    security:
 *       - bearerAuth: []

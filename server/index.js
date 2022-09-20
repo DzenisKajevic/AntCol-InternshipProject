@@ -99,7 +99,7 @@ app.get('/', (req, res) => {
 // route middleware
 app.use('/api/v1/auth', usersAuthRouter);
 app.use('/api/v1/audioFiles', audioFilesRouter);
-app.use('/api/v1/profilePic', profilePicRouter);
+app.use('/api/v1/profilePics', profilePicRouter);
 app.use('/api/v1/favouriteFiles', favouriteFilesRouter);
 app.use('/api/v1/playlists', playlistsRouter);
 app.use('/api/v1/notifications', notificationsRouter);

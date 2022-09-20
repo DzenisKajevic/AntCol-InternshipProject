@@ -23,7 +23,22 @@ async function uploadFile(req, res, next) {
     }
 };
 
+async function getFile(req, res, next) {
+    try {
+        // res is required for the .pipe(res) on the DownloadStream
+        await profilePicsService.getFile(req.params.id, res);
+    } catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
+        console.error(`Error fetching file\n`, err);
+        next(new StatusError(err.message, `Error fetching file`, 500));
+    }
+};
+
 module.exports = {
     deleteFile,
     uploadFile,
+    getFile
 }

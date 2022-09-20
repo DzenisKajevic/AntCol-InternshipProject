@@ -6,10 +6,10 @@ const middleware = require('../middleware/middleware');
 // EDIT SWAGGER
 /**
 * @swagger
-* /api/v1/audioFiles/uploadFile:
+* /api/v1/profilePics/uploadFile:
 *   post:
 *     tags:
-*      - file uploads
+*      - profilePics
 *     description: Upload a file to the database
 *     operationId: uploadFile
 *     security:
@@ -24,47 +24,13 @@ const middleware = require('../middleware/middleware');
 *           schema:
 *             type: object
 *             properties:
-*               genre:
-*                type: string
-*                example: Something
-*                required: true
-*               songname:
-*                type: string
-*                example: Glorious Morning
-*                required: true
-*               author:
-*                type: string
-*                example: Someone
-*                required: true
-*               audioFile:
+*               profilePic:
 *                type: string
 *                format: binary
 *                required: true
 *     responses:
 *       201:
 *         description: File successfully uploaded to the database
-*         links:
-*           GetFileById:
-*             operationId: getFile
-*             parameters:
-*               fileId: '$response.body#/fileId'
-*             description: >
-*               The `fileId` value returned in the response can be used as
-*               the `fileId` parameter in `GET /api/v1/favouriteFiles/addFileToFavourites`.
-*           AddFileToFavourites:
-*             operationId: addFileToFavourites
-*             parameters:
-*               fileId: '$response.body#/fileId'
-*             description: >
-*               The `fileId` value returned in the response can be used as
-*               the `fileId` parameter in `POST /api/v1/favouriteFiles/addFileToFavourites`.
-*           DeleteFileById:
-*             operationId: deleteFile
-*             parameters:
-*               fileId: '$response.body#/fileId'
-*             description: >
-*               The `fileId` value returned in the response can be used as
-*               the `fileId` parameter in `DELETE /api/v1/audioFiles/deleteFile`.
 *       400:
 *         description: Unsupported file type || File too large
 *       401: 
@@ -78,10 +44,10 @@ router.post('/uploadFile', middleware.profilePicUploadMiddleware, profilePicCont
 // deletes a specific file EDIT SWAGGER
 /** 
 * @swagger
-*  /api/v1/audioFiles/deleteFile: 
+*  /api/v1/profilePics/deleteFile: 
 *   delete: 
 *    tags:
-*      - file uploads
+*      - profilePics
 *    operationId: deleteFile
 *    security:
 *       - bearerAuth: []
@@ -93,7 +59,7 @@ router.post('/uploadFile', middleware.profilePicUploadMiddleware, profilePicCont
 *         type: object
 *         properties:
 *          fileId:
-*           example: 6311f239d67a5113d40edd4c
+*           example: 632979b58b7dc897ce305e3a
 *           description: ID of the requested file
 *           required: true
 *           type: string
@@ -107,5 +73,37 @@ router.post('/uploadFile', middleware.profilePicUploadMiddleware, profilePicCont
 */
 router.delete('/deleteFile', profilePicController.deleteFile);
 
+// returns a specific file
+/** 
+* @swagger
+*  /api/v1/profilePics/getFile/{fileId}: 
+*   get: 
+*    tags:
+*      - profilePics
+*    operationId: profilePicGetFile
+*    produces:
+*       - image/jpg
+*       - image/jpeg
+*       - image/png
+*    security:
+*       - bearerAuth: []
+*    description: Use to fetch a single file with the specified id
+*    parameters:
+*       - in: path
+*         name: fileId
+*         schema:
+*           type: string
+*           example: 632979b58b7dc897ce305e3a
+*    responses: 
+*      200: 
+*          description: Successful response
+*      401: 
+*          description: Missing authorization
+*      404:
+*          description: File not found
+*      500:
+*          description: Error fetching file info (invalid input?)
+*/
+router.get('/getFile/:id', profilePicController.getFile);
 
 module.exports = router;

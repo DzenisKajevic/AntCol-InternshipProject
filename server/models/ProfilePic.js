@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
 
+const metadata = new mongoose.Schema({
+    uploadedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    }
+}, { _id: false });
+
+
 const ProfilePicSchema = new mongoose.Schema({
     length: {
         type: Number,
@@ -21,8 +29,8 @@ const ProfilePicSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    uploadedBy: {
-        type: mongoose.Schema.Types.ObjectId,
+    metadata: {
+        type: metadata,
         required: true
     }
 });

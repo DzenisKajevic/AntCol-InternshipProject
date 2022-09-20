@@ -2,6 +2,7 @@ const { StatusError } = require("../utils/helper.util");
 const jwt = require('jsonwebtoken');
 const generalConfig = require('../configs/general.config');
 const db = require('../utils/db.service');
+const ProfilePic = require("../models/ProfilePic");
 
 function handleErrors(err, req, res, next) {
 
@@ -82,6 +83,10 @@ async function profilePicUploadMiddleware(req, res, next) {
     // the file must be passed with the key: "profilePic", otherwise the request will fail
 
     store = await db.setupProfilePicStorageEngine(req);
+
+    // deletes previous profile picture, replaces it with the new
+    const oldProfilePic = await ProfilePic.deleteOne({ 'metadata.uploadedBy': req.user.userId });
+    console.log(oldProfilePic);
     const upload = store.single('profilePic');
 
     upload(req, res, function (err) {
