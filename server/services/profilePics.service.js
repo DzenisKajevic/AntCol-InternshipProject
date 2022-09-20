@@ -42,7 +42,7 @@ async function getFile(fileId, res) {
         console.log(err);
         if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
         else {
-            res.setHeader('Content-Disposition', 'attachment');
+            //res.setHeader('Content-Disposition', 'attachment');
             res.setHeader('Content-Type', files[0].contentType);
             // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
             // open download stream start stop: could be used for buffering(?)

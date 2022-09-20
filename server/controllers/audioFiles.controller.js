@@ -26,7 +26,7 @@ async function uploadFile(req, res, next) {
 async function getFile(req, res, next) {
     try {
         // res is required for the .pipe(res) on the DownloadStream
-        await audioFilesService.getFile(req.user, req.params.id, res);
+        await audioFilesService.getFile(req, res);
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);

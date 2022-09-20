@@ -34,11 +34,11 @@ async function deleteFile(user, fileId) {
     }
 };
 
-async function uploadFile(file) {
+async function uploadFile(req, res) {
     // file is uploaded at this point
-    //console.log(file);
+    console.log("File", req.file);
     const reviewInformation = {
-        'fileId': file.id, 'reviewStatus': "Needs to be reviewed", 'description': null,
+        'fileId': req.file.id, 'reviewStatus': "Needs to be reviewed", 'description': null,
         'adminId': null, 'adminName': null, 'reviewTerminationDate': null
     };
 
@@ -51,8 +51,8 @@ async function uploadFile(file) {
                 'notificationTime': review.fileId.uploadDate, 'userId': review.fileId.metadata.uploadedBy,
                 'description': `The uploaded file ${review.fileId.filename} is currently under review`
             });
-            console.log(file);
-            return file.id;
+            //console.log(file);
+            return req.file.id;
         }
         catch (err) {
             console.log('Error sending notification, but the file was uploaded normally', err);
@@ -60,16 +60,19 @@ async function uploadFile(file) {
     }
     catch (err) {
         console.log(err);
-        await deleteFileHelper(file.id);
+        await deleteFileHelper(req.file.id);
         if (err.message.includes("Validation failed")) throw (new StatusError(err.message, `Required fields are missing`, 500));
         else throw (new StatusError(err.message, `Error uploading file`, 500));
     }
 }
 
-async function getFile(user, fileId, res) {
+async function getFile(req, res) {
+    const fileId = req.params.id;
+    const user = req.user;
+
     if (!fileId || fileId === 'undefined') throw new StatusError('File id was not provided', 422);
 
-    console.log(user.role != 'Admin');
+    //console.log(user.role != 'Admin');
     const _id = mongoose.Types.ObjectId(fileId);
     filters = {};
     filters['_id'] = _id;
@@ -81,13 +84,55 @@ async function getFile(user, fileId, res) {
     await db.getAudioGfs().find(filters).limit(1).toArray((err, files) => {
         if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
         else {
-            res.setHeader('Content-Disposition', 'attachment');
-            res.setHeader('Content-Type', files[0].contentType);
-            // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
-            // open download stream start stop: could be used for buffering(?)
-            db.getAudioGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
+            const fileSize = files[0].length;
+            const rangeHeader = req.get('Range');
+            console.log("FileSize: ", fileSize);
+
+            let rangeRequest;
+            if (fileSize && rangeHeader) rangeRequest = util.readRangeHeader(rangeHeader, fileSize);
+            // if no range is requested, send the whole file
+            if (!rangeRequest) {
+                console.log("no range req");
+                //res.setHeader('Content-Disposition', 'attachment');
+                res.setHeader('Content-Type', files[0].contentType);
+                res.setHeader('Accept-Ranges', 'bytes');
+                // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
+                // open download stream start stop: could be used for buffering(?)
+                //console.log(db.getAudioGfs().openDownloadStream(_id));
+                db.getAudioGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
+            }
+            // otherwise send only the requested portion of the file
+            else {
+                var start = rangeRequest.Start;
+                var end = rangeRequest.End;
+
+                // If the range can't be fulfilled. 
+                console.log("Start", start, "End", end);
+                if (start >= fileSize || end >= fileSize) {
+                    // Indicate the acceptable range.
+                    res.setHeader('Content-Range', 'bytes */' + fileSize); // File size.
+
+                    // Return the 416 'Requested Range Not Satisfiable'.
+                    res.status(416).send("Requested bytes are out of range");
+                    //console.log("sent");
+                }
+
+                // Indicate the current range. 
+                res.setHeader('Content-Range', 'bytes ' + start + '-' + end + '/' + fileSize);
+                res.setHeader('Content-Length', start == end ? 0 : (end - start + 1));
+                res.setHeader('Content-Type', files[0].contentType);
+                res.setHeader('Accept-Ranges', 'bytes');
+                res.setHeader('Cache-Control', 'no-cache');
+
+                // Return the 206 'Partial Content'.
+                res.status(206);
+                console.log(files[0]);
+                //console.log(db.getAudioGfs().openDownloadStream(_id, { start: start, end: end }));
+                db.getAudioGfs().openDownloadStream(_id, { start: start, end: end }).pipe(res);
+            }
         }
     });
+
 };
 
 async function getFileInfo(fileId) {

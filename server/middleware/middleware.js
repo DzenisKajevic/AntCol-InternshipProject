@@ -67,7 +67,7 @@ async function audioFileUploadMiddleware(req, res, next) {
     const upload = store.single('audioFile');
 
     upload(req, res, function (err) {
-        console.log(req.body);
+        //console.log(req.body);
         if (err) {
             console.log(err);
             if (err.message.includes("E11000 duplicate key error")) next(new StatusError(err.message, `File with the same artist / song name already exists`, 500));
