@@ -7,6 +7,16 @@ Install dependencies:
     cd server
     npm install
     (if npm install doesn't work, do npm install --legacy-peer-deps)
+To setup db:
+- create "root" user:
+    db.createUser(
+    { user: "root",
+                    pwd: root,  // Or  "<cleartext password>
+                    roles: [ { role: "clusterAdmin", db: "admin" },
+                            { role: "readAnyDatabase", db: "admin" },
+                            "readWrite"] }
+    )
+- optionally (recommended) force login on mongodb so that the db isn't accessible without an account    
 To start the server, run:
     cd server
     node index.js

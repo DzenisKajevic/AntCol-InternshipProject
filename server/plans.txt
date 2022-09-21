@@ -1,5 +1,6 @@
 # IMPORTANT TASKS
 
+- Set up sliders for volume and seeking -> https://mui.com/material-ui/react-slider/
 - Move /utils/audioVisualiserFE.js to frontend when the time comes
 - Find a way to implement subscriptions
 - Find a way to implement song recommendations

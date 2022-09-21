@@ -119,7 +119,7 @@ async function getFile(req, res) {
 
                 // Indicate the current range. 
                 res.setHeader('Content-Range', 'bytes ' + start + '-' + end + '/' + fileSize);
-                res.setHeader('Content-Length', start == end ? 0 : (end - start + 1));
+                //res.setHeader('Content-Length', start == end ? 0 : (end - start + 1));
                 res.setHeader('Content-Type', files[0].contentType);
                 res.setHeader('Accept-Ranges', 'bytes');
                 res.setHeader('Cache-Control', 'no-cache');

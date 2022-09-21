@@ -3,14 +3,11 @@
 const audioContext = new AudioContext();
 console.log(audioContext);
 
- const button1 = document.getElementById('button1');
 const button2 = document.getElementById('button2');
 const button3 = document.getElementById('button3');
 let audio1 = new Audio('91476_Glorious_morning.mp3');
 
-button1.addEventListener('click', () => {
-    audio1.play();
-});
+
 
 audio1.addEventListener('playing', () => {
     console.log('Audio1 started playing');
@@ -39,26 +36,46 @@ function playSound() {
         oscillator.stop();
     }, 500)
 }; */
+const button1 = document.getElementById('button1');
 
+button1.addEventListener('click', () => {
+    if (shouldPlay) {
+        animate();
+        console.log("pl");
+        source.playbackRate.value = 1;
+        shouldPlay = false;
+    }
+    else {
+        cancelAnimationFrame(animationId);
+        //animate();
+        console.log("npl");
+        source.playbackRate.value = 0;
+        shouldPlay = true;
+    }
+});
 
 const container = document.getElementById('container');
 // canvas is a special html element that creates a field where we can draw animated interactive images with js
 // canvas has 2D and webgl APIs, which are separate and work in different ways
 const canvas = document.getElementById('canvas1'); //150x300 by default
-canvas.width = window.innerWidth;
+/* canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+ */
+canvas.width = 1080;
+canvas.height = 720;
+
 let file;
 let animate;
-
 let animationId;
 let shouldPlay = true;
 
 //context
 const ctx = canvas.getContext('2d');
 let audioSource;
+let source;
 let analyser;
 let playedPreviously = false;
-let audio1 = document.getElementById('audio1');
+//let audio1 = document.getElementById('audio1');
 
 let drawBarVisualiser = function (bufferLength, x, barWidth, barHeight, dataArray) {
     for (let i = 0; i < bufferLength; i++) {
@@ -85,6 +102,7 @@ let drawBarVisualiser = function (bufferLength, x, barWidth, barHeight, dataArra
 let drawCircleVisualiser = function (bufferLength, x, barWidth, barHeight, dataArray) {
     for (let i = 0; i < bufferLength; i++) {
         barHeight = dataArray[i];
+        //console.log("Bar H: " + barHeight);
         ctx.save();
         // sets the center for rotations
         ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -118,74 +136,70 @@ let drawWeirdVisualiser = function (bufferLength, x, barWidth, barHeight, dataAr
 }
 
 
-audio1.addEventListener('play', (e) => {
-    console.log("pl");
-    shouldPlay = true;
-    animate();
-});
-audio1.addEventListener('pause', (e) => {
-    //ctx.clearRect(0, 0, canvas.width, canvas.height);
-    cancelAnimationFrame(animationId);
-    shouldPlay = false;
-    animate();
-    console.log("npl");
-});
-audio1.addEventListener('ended', (e) => {
-    //ctx.clearRect(0, 0, canvas.width, canvas.height);
-    cancelAnimationFrame(animationId);
-})
-
-// fetch file from API
-let headers = {
-    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzE5ZDBmNmUzMTAxN2U4YjA4YzFkODYiLCJ1c2VybmFtZSI6InRlbXBVc2VyMSIsInJvbGUiOiJCYXNpYyIsImlhdCI6MTY2MzA2MDE4NSwiZXhwIjoxNjYzMTQ2NTg1fQ.5zxCRCxIFZzJFrUUwpCXvgkuUeQVs146BcOkMs_FkWc'
-}
-let url = 'http://localhost:3001/api/v1/audioFiles/getFile/631aed4060c43bb3bf484804';
-axios({
-    method: 'get', //you can set what request you want to be
-    url: url,
-    data: {},
-    headers: headers
-})
-    .then(function (response) {
-        file = response.data;
-        console.log(file);
-        audio1.src = URL.createObjectURL((new Blob([file], { type: "audio/mp3" })));
-        audio1.load();
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
 
 
-container.addEventListener('click', function () {
+
+
+
+container.addEventListener('click', async function () {
     //console.log("animating");
 
     console.log("Pressed");
     if (playedPreviously) {
-        audio1.play();
+        //audio1.play();
     }
 
     else {
         playedPreviously = true;
-        audio1.src = '91476_Glorious_morning.mp3';
+        // fetch file from API
+        let headers = {
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzExZTZjNjkyYTJkYjk2YTRiZmJiYjAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjYzNzQ1MjY1LCJleHAiOjE2NjM4MzE2NjV9.vkkI2sG2_VGiqrv1G4zD2s3lIafdC7eOYBEkJkBguNY',
+            'Range': 'bytes=1000000-2215622'
+        }
+        let url = 'http://localhost:3001/api/v1/audioFiles/getFile/63299fff95f55c20e3e08ae0';
+        let response = await axios({
+            responseType: 'arraybuffer',
+            method: 'get', //you can set what request you want to be
+            url: url,
+            data: {},
+            headers: headers
+        });
+        file = response.data;
+        console.log(file);
+        //audio1.src = URL.createObjectURL((new Blob([file], { type: "audio/mp3" })));
+        //console.log(audio1.src);
+        //audio1.load();
+
+
+
+        //audio1.src = '91476_Glorious_morning.mp3';
         const audioContext = new AudioContext();
-        console.log(audioContext);
+        // creates a special analyzer node which is used to expose audio time and frequency data
+        analyser = audioContext.createAnalyser();
+
+        source = audioContext.createBufferSource();
+        const audioBuffer = await audioContext.decodeAudioData(response.data);
+        source.buffer = audioBuffer;
+        source.connect(analyser);
+        source.loop = true;
+        // connect the source and analyser node
+
+        source.connect(audioContext.destination);
+
+        //audio1.controls = true;
+        //document.body.appendChild(audio1);
+
+        //source.connect(audioContext.destination);
+        //console.log(audioContext);
 
         // creating an audio source from an html audio element, 
         // taking audio1 element and creating an audio node of it to serve as the source
 
         // setting audio1 variable as the source
-        audioSource = audioContext.createMediaElementSource(audio1);
-        audio1.play();
-
-        // creates a special analyzer node which is used to expose audio time and frequency data
-        if (!analyser) analyser = audioContext.createAnalyser();
-
-        // connect the source and analyser node
-        audioSource.connect(analyser);
+        //audioSource = audioContext.createMediaElementSource(audio1);
 
         // connects to the default audio output device
-        analyser.connect(audioContext.destination)
+
 
         // special property that represents the number of audio samples we want in 
         // our analyser data file (default value is 2048, but it can be: 32, 64, 128, 256, etc.
@@ -193,38 +207,45 @@ container.addEventListener('click', function () {
         // if we use a higher number, we will get more bars drawn on the canvas
         analyser.fftSize = 1024;
 
+        //console.log(source);
+        console.log(analyser);
         // read-only property that contains a number of data values we 
         // will have in the analyser data file
 
         // this will draw a bar on the audio visualiser for each of these
         // and we get exactly fftSize/2 of them
         const bufferLength = analyser.frequencyBinCount;
+        console.log("BUFFER LENGTH", bufferLength);
 
         // bufferLength converted into a special type of array that can contain only unassigned 8-bit ints
         const dataArray = new Uint8Array(bufferLength);
 
         // sets the width of a single bar in the analyser
         const barWidth = canvas.width / bufferLength;
+
+        console.log("BAR WIDTH", barWidth);
         let barHeight;
         // used for drawing bars next to each other
         let x;
 
         animate = () => {
-            if (!shouldPlay) return;
+            //if (!shouldPlay) return;
             console.log("Animating");
             x = 0;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             // copies the current frequency data into dataArray
             // each item in the array now represents a decibel value for a specific frequency
             // its value can be 0-255 -> will determine the height
+            //analyser.getByteFrequencyData(dataArray);
             analyser.getByteFrequencyData(dataArray);
-            drawCircleVisualiser(bufferLength, x, barWidth, barHeight, dataArray);
+            console.log("DATA ARRAY", dataArray);
+            drawWeirdVisualiser(bufferLength, x, barWidth, barHeight, dataArray);
             animationId = requestAnimationFrame(animate);
         }
 
-        // options for drawing elements -> bars, circles, fallen particles, pulsing images, any canvas particle effect
-
-        animate();
+        source.start();
+        // pause playback
+        source.playbackRate.value = 0;
     }
 
 });
