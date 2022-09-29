@@ -9,13 +9,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./register.css";
 import "../../../variables.css";
-// import * as registerAxios from "../registerAxios";
+import * as registerAxios from "../registerAxios";
 import * as userAuth from "../../../api/auth/userAuth";
 
 // username and password validation, shows what is a valid username and password
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,23}$/;
 const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
+const REGISTER_URL = "http://localhost:3001/api/v1/auth/register";
 
 const Register = () => {
   // admins can't be registered through forms. They can only be added manually through the DB
@@ -101,14 +102,35 @@ const Register = () => {
     }
     console.log(username, email, pass);
     setSuccess(true);
-    navigate("/login");
+    // navigate("/login");
+  };
+
+  const submitHandler = async (e) => {
+    const user = {};
+    e.preventDefault();
+    user.username = username;
+    user.email = email;
+    user.password = pass;
+    const result = await registerAxios.register(user);
+
+    //console.log(result.code);
+
+    if (result.data) {
+      console.log(result.data.data);
+      localStorage.token = result.data.data.token;
+      setSuccess("Successfuly Registered!");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
+    }
   };
 
   return (
     <>
       {success ? (
-        <section>
-          <h1>Successfuly Registered!</h1>
+        <section className="success-register-page">
+          <h1 className="success-register-title">Successfuly Registered!</h1>
         </section>
       ) : (
         <section className="registrationpage-container">
@@ -116,9 +138,11 @@ const Register = () => {
             {errMsg}
           </p>
           <div className="register-bg-color-wrapper">
-            <form onSubmit={handleSubmit} className="register-form">
+            <form onSubmit={submitHandler} className="register-form">
               <h1 className="register-title">Sign up for a new account</h1>
-
+              <p ref={errRef} className={errMsg ? "reg-errmsg" : "offscreen"}>
+                {errMsg}
+              </p>
               <label htmlFor="username" className="register-label">
                 Username:
                 <span className={validName ? "reg-valid" : "hide"}>
@@ -216,17 +240,16 @@ const Register = () => {
                 Must include at least one uppercase letter, lowercase letter and
                 a number.
               </p>
-              {/* change the onClick on the line below to test axios calls */}
-              <button
-                className="registrationpage-button shine" /* onClick={() => registerAxios.register("tempUser", "email@gmail.com", "pass123") }*/
-              >
+              <button type="submit" className="registrationpage-button shine">
                 Sign up
               </button>
-              <img
-                className="registerpage-icon"
-                src="./assets/app-images/music-app-logo.png"
-                alt="music app logo"
-              />
+              <Link to="/">
+                <img
+                  className="registerpage-icon"
+                  src="./assets/app-images/music-app-logo.png"
+                  alt="music app logo"
+                />
+              </Link>
               <p className="register-link-paragraph">
                 Already have an account? <Link to="/login">Log in</Link>
               </p>

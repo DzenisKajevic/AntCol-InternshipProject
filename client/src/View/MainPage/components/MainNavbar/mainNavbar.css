@@ -1,22 +1,41 @@
-.navbar-header {}
+.mainNavbar {
+    height: 90px;
+    /* background: rgb(33, 33, 33); */
+    display: flex;
+    background: #000;
+    align-items: center;
+    justify-content: space-between;
+}
 
-/* landing page navigation bar */
-.navbar {
+.mainNavbar-app-logo {
+    width: 150px;
+    margin-left: 4rem;
+
+}
+
+.animated-logo {
+    position: relative;
+    width: 10vw;
+    height: 10vw;
+    border-radius: 50%;
+    background-color: aqua;
+}
+
+.mainNavbar-button-container {
     display: flex;
     align-items: center;
-    width: 95%;
-    height: 90px;
+    justify-content: space-between;
+    /* margin-right: 5%; */
+    width: 20%;
+    margin-right: 1rem;
 }
 
-/* appplication logo, located in navbar */
-.music-app-logo {
-    width: 200px;
-    margin-top: 1rem;
-    margin-right: auto;
+.v-breakline-main {
+  border-left: 3px solid #3f3f3f;
+  height: 6vh;
 }
 
-/* black log in button, located in navbar  */
-.login-button {
+.logout-button {
     background-color: rgba(0, 0, 0, 0.8);
     position: relative;
     overflow: hidden;
@@ -31,14 +50,12 @@
     transition: all 0.3s ease-in-out;
 }
 
-/* log in button on over changes bg color */
-.login-button:hover {
-    background-color: #212429;
+.logout-button:hover {
+    background-color: #323232;
     transition: all 0.3s ease-in-out;
 }
 
-/* linear sign up button, located in navbar  */
-.signup-button {
+.sub-button {
     position: relative;
     overflow: hidden;
     border: none;
@@ -58,14 +75,11 @@
     transition: all 0.5s ease-in-out;
 }
 
-/* sign up button on hover changes opacity, becomes darker */
-.signup-button:hover {
+.sub-button:hover {
     transition: all 0.5s ease-in-out;
     opacity: 1;
 }
 
-
-/* adds the shine effect on buttons */
 .shine:after {
     content: '';
     position: absolute;
@@ -87,11 +101,4 @@ button:focus::after {
     100% {
         transform: rotateZ(60deg) translate(1em, -9em);
     }
-}
-
-.v-breakline {
-  border-left: 3px solid #505050;
-  height: 6vh;
-  margin-left: 2rem;
-  margin-right: 1rem;
 }

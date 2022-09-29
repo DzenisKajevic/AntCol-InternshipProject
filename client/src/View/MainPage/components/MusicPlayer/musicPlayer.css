@@ -1,0 +1,91 @@
+.music-player {
+    height: 150px;
+    width: 100%;
+    background-color: #000;
+    position: sticky;
+    bottom: 0%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.forward-backward {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    height: 35px;
+    width: 35px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--yellow);
+}
+
+.forward-backward:hover {
+    background-color: #dbc100;
+}
+
+.play-pause {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background-color: var(--yellow);
+    margin: 0 10px;
+}
+
+.play-pause:hover {
+    background-color: #dbc100;
+}
+
+.current-time {
+color: aliceblue;
+}
+
+.duration {
+color: aliceblue;
+}
+
+.progress-bar {
+    appearance: none;
+    background: var(--purple);
+    border-radius: 10px;
+    position: relative;
+    width: 100%;
+    height: 11px;
+    outline: none;
+}
+
+.progress-bar::before {
+    content: "";
+    height: 11px;
+    width: 0;
+    background-color: #8e00a7;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 15px;
+    width: 15px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    background-color: var(--yellow);
+    z-index: 3;
+    margin: -2px 0 0 0;
+    box-sizing: border-box;
+}
+
+.progress-bar:active::-webkit-slider-thumb {
+    transform: scale(1.2);
+    background-color: #dbc100;
+}

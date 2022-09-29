@@ -194,10 +194,23 @@ button:focus::after {
 
 
 /* error message appears */
-.reg-errmsg {
+.errmsg {
     background-color: lightpink;
     color: firebrick;
     font-weight: bold;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
+}
+
+.success-register-page {
+    background-color: var(--yellow);
+    height: 20vh;
+    width: 40%;
+    margin: auto;
+}
+
+.success-register-title {
+    text-align: center;
+    font-family: var(--title-font);
+    color: var(--purple);
 }

@@ -17,6 +17,7 @@ const Navbar = () => {
         <Link to="/login" className="links">
           <button className="login-button shine">Log in</button>
         </Link>
+        <div className="v-breakline"></div>
         <Link to="/registration" className="links">
           <button className="signup-button shine">Sign up</button>
         </Link>
