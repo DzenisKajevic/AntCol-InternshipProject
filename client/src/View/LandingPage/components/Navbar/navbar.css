@@ -88,3 +88,10 @@ button:focus::after {
         transform: rotateZ(60deg) translate(1em, -9em);
     }
 }
+
+.v-breakline {
+  border-left: 3px solid #505050;
+  height: 6vh;
+  margin-left: 2rem;
+  margin-right: 1rem;
+}

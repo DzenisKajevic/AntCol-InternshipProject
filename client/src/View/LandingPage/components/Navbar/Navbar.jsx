@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./navbar.css";
-import "../../variables.css";
+import "../../../../variables.css";
 
 const Navbar = () => {
   return (
@@ -12,9 +12,12 @@ const Navbar = () => {
           src="./assets/app-images/music-app-logo.png"
           alt="application logo"
         />
-        <Link to="/log-in" className="links">
+        {/* link to main page, temporary */}
+        <Link to="/main-page">main page </Link>
+        <Link to="/login" className="links">
           <button className="login-button shine">Log in</button>
         </Link>
+        <div className="v-breakline"></div>
         <Link to="/registration" className="links">
           <button className="signup-button shine">Sign up</button>
         </Link>

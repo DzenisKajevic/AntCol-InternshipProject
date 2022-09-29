@@ -13,3 +13,17 @@
 a {
     text-decoration: none;
 }
+
+.grid {
+    display: grid;
+    grid-template-columns: 288px 1fr;
+    grid-template-rows: 90px 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    }
+    
+    .grid-navbar { grid-area: 1 / 1 / 2 / 6; }
+    .grid-sidebar { grid-area: 2 / 1 / 6 / 2; }
+    .grid-content { grid-area: 2 / 2 / 6 / 6; }
+    
+    

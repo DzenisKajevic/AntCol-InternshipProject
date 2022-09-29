@@ -1,343 +1,265 @@
 import React from "react";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  faCheck,
+  faTimes,
+  faInfoCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./register.css";
 import "../../../variables.css";
-import * as userAuth from "../../../api/auth/userAuth"
-import * as audioFiles from "../../../api/audioFiles/audioFiles"
-import * as favouriteFiles from "../../../api/favouriteFiles/favouriteFiles"
-import * as playlists from "../../../api/playlists/playlists"
+import * as registerAxios from "../registerAxios";
+import * as userAuth from "../../../api/auth/userAuth";
+
+// username and password validation, shows what is a valid username and password
+const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,23}$/;
+const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
+const REGISTER_URL = "http://localhost:3001/api/v1/auth/register";
 
 const Register = () => {
+  // admins can't be registered through forms. They can only be added manually through the DB
+  // onClick={() => register("tempUser", "email@gmail.com", "pass123")}
+  async function register(username, email, pass) {
+    const response = await userAuth.register(username, email, pass);
+    if (response.error) {
+      console.log(response.error); // response.error.response.data -> error message
+    } else {
+      console.log(response.data);
+    }
+  }
+
+  // navigates to another page after successful register
+  const navigate = useNavigate();
+
+  // setting up focus on user input and error if accures
+  const userRef = useRef();
+  const errRef = useRef();
+
+  // state for setting up username
+  const [username, setUsername] = useState("");
+  const [validName, setValidName] = useState(false);
+  const [usernameFocus, setUsernameFocus] = useState(false);
+
+  // state for setting up email
+  const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(false);
+  const [emailFocus, setEmailFocus] = useState(false);
+
+  // state for setting up password
+  const [pass, setPass] = useState("");
+  const [validPass, setValidPass] = useState(false);
+  const [passFocus, setPassFocus] = useState(false);
+
+  // state for possible error message, or success message
+  const [errMsg, setErrMsg] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  // setting up effect for focus when the component loads
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
+  // setting up effect for the username, validating the username anytime it changes
+  useEffect(() => {
+    const result = USER_REGEX.test(username);
+    console.log(result);
+    console.log(username);
+    setValidName(result);
+  }, [username]);
+
+  // setting up effeect for the email, validating the email
+  useEffect(() => {
+    const result = EMAIL_REGEX.test(email);
+    console.log(result);
+    console.log(email);
+    setValidEmail(result);
+  }, [email]);
+
+  // setting up effect for the password, validating the password
+  useEffect(() => {
+    const result = PWD_REGEX.test(pass);
+    console.log(result);
+    console.log(pass);
+    setValidPass(result);
+  }, [pass]);
+
+  // setting up effect for possible erros message
+  useEffect(() => {
+    setErrMsg("");
+  }, [username, pass]);
+
+  // submit function, checking if all the input fields are valid then displaying either error or success message
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const v1 = USER_REGEX.test(username);
+    const v2 = EMAIL_REGEX.test(email);
+    const v3 = PWD_REGEX.test(pass);
+    if (!v1 || !v2 || !v3) {
+      setErrMsg("Invalid entry");
+      return;
+    }
+    console.log(username, email, pass);
+    setSuccess(true);
+    // navigate("/login");
+  };
+
+  const submitHandler = async (e) => {
+    const user = {};
+    e.preventDefault();
+    user.username = username;
+    user.email = email;
+    user.password = pass;
+    const result = await registerAxios.register(user);
+
+    //console.log(result.code);
+
+    if (result.data) {
+      console.log(result.data.data);
+      localStorage.token = result.data.data.token;
+      setSuccess("Successfuly Registered!");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
+    }
+  };
+
+
   return (
-    <section className="registrationpage-container">
-      <div className="register-bg-color-wrapper">
-        <form action="post" className="register-form">
-          <h1 className="register-title">Sign up for a new account</h1>
-
-          <label className="register-label">Username:</label>
-          <input
-            type="text"
-            className="register-input"
-            placeholder="Choose a username"
-            required
-          />
-
-          <label className="register-label">Email:</label>
-          <input
-            type="email"
-            className="register-input"
-            placeholder="Type in your e-mail address"
-            required
-          />
-
-          <label className="register-label">Password:</label>
-          <input
-            type="password"
-            className="register-input"
-            placeholder="Choose a password"
-            required
-          />
-          {/* change the onClick on the line below to test axios calls */}
-          <button className="registrationpage-button shine" onClick={() => getPlaylists({
-            "userId": "6311e6c692a2db96a4bfbbb0", "page": 1, "pageSize": 10
-          })}>Sign up</button>
-          <img
-            className="registerpage-icon"
-            src="./assets/app-images/music-app-logo.png"
-            alt="music app logo"
-          />
-          <p className="register-link-paragraph">
-            Already have an account? <a href="">Log in</a>
+    <>
+      {success ? (
+        <section className="success-register-page">
+          <h1 className="success-register-title">Successfuly Registered!</h1>
+        </section>
+      ) : (
+        <section className="registrationpage-container">
+          <p ref={errRef} className={errMsg ? "reg-errmsg" : "offscreen"}>
+            {errMsg}
           </p>
-        </form>
-      </div>
-    </section >
+          <div className="register-bg-color-wrapper">
+            <form onSubmit={submitHandler} className="register-form">
+              <h1 className="register-title">Sign up for a new account</h1>
+              <p ref={errRef} className={errMsg ? "reg-errmsg" : "offscreen"}>
+                {errMsg}
+              </p>
+              <label htmlFor="username" className="register-label">
+                Username:
+                <span className={validName ? "reg-valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </span>
+                <span
+                  className={validName || !username ? "hide" : "reg-invalid"}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </span>
+              </label>
+              <input
+                type="text"
+                id="username"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setUsername(e.target.value)}
+                onFocus={() => setUsernameFocus(true)}
+                onBlur={() => setUsernameFocus(false)}
+                className="register-input"
+                placeholder="Choose a username"
+                required
+              />
+              <p
+                id="uidnote"
+                className={
+                  usernameFocus && username && !validName
+                    ? "reg-instructions"
+                    : "offscreen"
+                }
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                5 to 23 characters, <br />
+                Must begin with a letter, <br />
+                Letters, numbers, hyphens and underscores are allowed
+              </p>
+
+              <label htmlFor="email" className="register-label">
+                Email:
+                <span className={validEmail ? "reg-valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </span>
+                <span className={validEmail || !email ? "hide" : "reg-invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setEmailFocus(true)}
+                onBlur={() => setEmailFocus(false)}
+                className="register-input"
+                placeholder="Type in your e-mail address"
+                required
+                autoComplete="off"
+              />
+              <p
+                id="emailnote"
+                className={
+                  emailFocus && !validEmail ? "reg-instructions" : "offscreen"
+                }
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                Enter a valid e-mail address!
+              </p>
+
+              <label htmlFor="password" className="register-label">
+                Password:
+                <span className={validPass ? "reg-valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </span>
+                <span className={validPass || !pass ? "hide" : "reg-invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </span>
+              </label>
+              <input
+                type="password"
+                id="password"
+                onChange={(e) => setPass(e.target.value)}
+                onFocus={() => setPassFocus(true)}
+                onBlur={() => setPassFocus(false)}
+                className="register-input"
+                placeholder="Choose a password"
+                required
+              />
+              <p
+                id="passnote"
+                className={
+                  passFocus && !validPass ? "reg-instructions" : "offscreen"
+                }
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                8 to 24 characters, <br />
+                Must include at least one uppercase letter, lowercase letter and
+                a number.
+              </p>
+              <button type="submit" className="registrationpage-button shine">
+                Sign up
+              </button>
+              <Link to="/">
+                <img
+                  className="registerpage-icon"
+                  src="./assets/app-images/music-app-logo.png"
+                  alt="music app logo"
+                />
+              </Link>
+              <p className="register-link-paragraph">
+                Already have an account? <Link to="/login">Log in</Link>
+              </p>
+            </form>
+          </div>
+        </section>
+      )}
+    </>
   );
 };
-
-// admins can't be registered through forms. They can only be added manually through the DB
-// onClick={() => register("tempUser", "email@gmail.com", "pass123")}
-async function register(username, email, pass) {
-  const response = await userAuth.register(username, email, pass);
-  if (response.error) {
-    console.log(response.error); // response.error.response.data -> error message
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-// onClick={() => login("email@gmail.com", "pass123")}
-async function login(email, pass) {
-  const response = await userAuth.login(email, pass);
-  if (response.error) {
-    console.log(response.error); // response.error.response.data -> error message
-  }
-  else {
-    // saves the token into the localStorage. 
-    window.localStorage.token = response.data.data.token;
-    // .data is needed twice because of initial data / error separation
-    console.log(response);
-  }
-}
-
-function logout() {
-  window.localStorage.clear();
-  window.location.reload();
-}
-
-// onClick={() => getNewUsersCount()}
-async function getNewUsersCount() {
-  const response = await userAuth.getNewUsersCount();
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick={() => deleteFile("631aed4060c43bb3bf484804")}
-async function deleteFile(fileId) {
-  const response = await audioFiles.deleteFile(fileId);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-// can't test yet, requires a multipart form for file uploads
-async function uploadFile(audioFile, author, genre, songName, album) {
-  const response = await audioFiles.uploadFile(audioFile, author, genre, songName, album);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick={() => getFile("631aed4060c43bb3bf484804")}
-async function getFile(fileId) {
-  const response = await audioFiles.getFile(fileId);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick={() => getFileInfo("631aed4060c43bb3bf484804")}
-async function getFileInfo(fileId) {
-  const response = await audioFiles.getFileInfo(fileId);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-// onClick={() => getAllFiles({ 'genre': "Something", 'author': "Someone", 'page': 1, 'pageSize': 1 })}
-// genre and author are optional (search / filter), pass null instead if not present
-// possible parameters: 
-// genre, author, page, pageSize
-async function getAllFiles(options) {
-  const response = await audioFiles.getAllFiles(options);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-// onClick={() => getNewFilesCount()}
-async function getNewFilesCount() {
-  const response = await audioFiles.getNewFilesCount();
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-// onClick={() => getFileReviews({ 'description': 'The file doesn\'t meet the requirements', 'genre': 'Something' })}
-// possible parameters:
-// genre, author, fileId, fileName, songName, uploadedBy,
-// reviewStatus, adminId, adminName, description, page, pageSize
-async function getFileReviews(options = null) {
-  const response = await audioFiles.getFileReviews(options);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-// onClick={() => handleFileReview("6322fab48ab321a55be1d784", "Accepted", "The file meets the requirements")}
-async function handleFileReview(fileId, status, description) {
-  const response = await audioFiles.handleFileReview(fileId, status, description);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick = {() => addFileToFavourites("6322fab48ab321a55be1d784")}
-async function addFileToFavourites(fileId) {
-  const response = await favouriteFiles.addFileToFavourites(fileId);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-// onClick={() => getFavouriteFiles({ 'page': 1, 'pageSize': 4})}
-async function getFavouriteFiles(options = null) {
-  const response = await favouriteFiles.getFavouriteFiles(options);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick = {() => deleteFavouriteFile("6322fab48ab321a55be1d784")}
-async function deleteFavouriteFile(fileId) {
-  const response = await favouriteFiles.deleteFavouriteFile(fileId);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick = {() => createEmptyPlaylist("playlist1", 'public')}
-async function createEmptyPlaylist(playlistName, visibility = 'private') {
-  const response = await playlists.createEmptyPlaylist(playlistName, visibility);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-/* onClick = {() => addFilesToPlaylist({
-    "fileIDs": [
-      "6322fab48ab321a55be1d784"
-      ],
-  "playlistId": "6323044493813cd714991cd5"
-})} */
-async function addFilesToPlaylist(input) {
-  const response = await playlists.addFilesToPlaylist(input);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-/* onClick = {() => removeFilesFromPlaylist({
-    "fileIDs": [
-      "6322fab48ab321a55be1d784"
-      ],
-  "playlistId": "6323044493813cd714991cd5"
-})} */
-async function removeFilesFromPlaylist(input) {
-  const response = await playlists.removeFilesFromPlaylist(input);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick = {() => createEmptyPlaylist("6323044493813cd714991cd5", 'private')}
-async function updatePlaylistVisibility(playlistId, visibility) {
-  const response = await playlists.updatePlaylistVisibility(playlistId, visibility);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick = {() => getPlaylistById("6323044493813cd714991cd5")}
-async function getPlaylistById(playlistId) {
-  const response = await playlists.getPlaylistById(playlistId);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick = {() => getPlaylists({"userId": "6311e6c692a2db96a4bfbbb0", "page": 1, "pageSize": 10})}
-async function getPlaylists(options) {
-  const response = await playlists.getPlaylists(options);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-//onClick = {() => deletePlaylist("6323044493813cd714991cd5")}
-async function deletePlaylist(playlistId) {
-  const response = await playlists.deletePlaylist(playlistId);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-/* onClick={() => sharePlaylist({
-  "playlistId": "63230c58571d3ebf0f6610b3",
-  "usersToShareWith": [
-    "6319d0f6e31017e8b08c1d86"]
-})} */
-async function sharePlaylist(input) {
-  const response = await playlists.sharePlaylist(input);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
-
-/* onClick={() => revokePlaylistShare({
-  "playlistId": "63230c58571d3ebf0f6610b3",
-  "usersToShareWith": [
-    "6319d0f6e31017e8b08c1d86"]
-})} */
-async function revokePlaylistShare(input) {
-  const response = await playlists.revokePlaylistShare(input);
-  if (response.error) {
-    console.log(response.error);
-  }
-  else {
-    console.log(response.data);
-  }
-}
 
 export default Register;

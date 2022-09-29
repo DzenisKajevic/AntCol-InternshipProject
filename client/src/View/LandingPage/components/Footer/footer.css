@@ -63,7 +63,7 @@
 .breakline {
     width: 80%;
     margin: auto;
-    border: 1px solid #212429;
+    border: 1px solid #3f3f3f;
 }
 
 /* container with form, icon and copyright p  */
@@ -84,6 +84,7 @@
     height: 30px;
     border-radius: 10px;
     width: 100px;
+    cursor: pointer;
 }
 
 /* music app logo in the footer  */
