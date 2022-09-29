@@ -92,7 +92,7 @@ function readRangeHeader(range, totalLength) {
     var end = parseInt(array[2]);
     var result = {
         Start: isNaN(start) ? 0 : start,
-        End: isNaN(end) ? (totalLength - 1) : end
+        End: isNaN(end) ? (totalLength) : end
     };
 
     if (!isNaN(start) && isNaN(end)) {

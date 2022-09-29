@@ -108,17 +108,21 @@ async function getFile(req, res) {
 
                 // If the range can't be fulfilled. 
                 console.log("Start", start, "End", end);
-                if (start >= fileSize || end >= fileSize) {
+                if (start > fileSize || end > fileSize) {
                     // Indicate the acceptable range.
                     res.setHeader('Content-Range', 'bytes */' + fileSize); // File size.
 
                     // Return the 416 'Requested Range Not Satisfiable'.
                     res.status(416).send("Requested bytes are out of range");
+                    return;
                     //console.log("sent");
                 }
 
                 // Indicate the current range. 
-                res.setHeader('Content-Range', 'bytes ' + start + '-' + end + '/' + fileSize);
+                //res.setHeader('Content-Range', 'bytes ' + start + '-' + end + '/' + fileSize);
+
+                res.setHeader('End-Byte', end);
+                res.setHeader('Access-Control-Expose-Headers', "End-Byte");
                 //res.setHeader('Content-Length', start == end ? 0 : (end - start + 1));
                 res.setHeader('Content-Type', files[0].contentType);
                 res.setHeader('Accept-Ranges', 'bytes');
