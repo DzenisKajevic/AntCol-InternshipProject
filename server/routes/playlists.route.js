@@ -204,7 +204,7 @@ router.get('/getPlaylistById/:playlistId', playlistsController.getPlaylistById);
 /** 
 * @swagger
 *  /api/v1/playlists/getPlaylists: 
-*   post: 
+*   get: 
 *    tags:
 *      - playlists
 *    operationId: getPlaylists
@@ -213,25 +213,23 @@ router.get('/getPlaylistById/:playlistId', playlistsController.getPlaylistById);
 *    security:
 *       - bearerAuth: []
 *    description: Use to fetch multiple playlists from a user (GET request due to userID being sent)
-*    requestBody:
-*      content:
-*       application/x-www-form-urlencoded:
-*        schema:
-*          type: object
-*          properties:
-*           userId:
-*            description: ID of the user whose playlists we're viewing
-*            required: true
-*            example: 6311e6c692a2db96a4bfbbb0
-*            type: string
-*           page:
-*            example: 1
-*            description: Current page
-*            type: number
-*           pageSize:
-*            example: 10
-*            description: Number of playlists per page
-*            type: number
+*    parameters:
+*       - in: query
+*         name: userId
+*         description: ID of the user whose playlists we're viewing
+*         required: true
+*         example: 6311e6c692a2db96a4bfbbb0
+*         type: string
+*       - in: query
+*         name: page
+*         example: 1
+*         description: Current page
+*         type: number
+*       - in: query
+*         name: pageSize
+*         example: 10
+*         description: Number of playlists per page
+*         type: number
 *    responses: 
 *      200: 
 *          description: Successfully retrieved playlists
@@ -242,7 +240,7 @@ router.get('/getPlaylistById/:playlistId', playlistsController.getPlaylistById);
 *      500:
 *          description: Error fetching playlists
 */
-router.post('/getPlaylists', playlistsController.getPlaylists);
+router.get('/getPlaylists', playlistsController.getPlaylists);
 
 // deletes a single playlist
 /** 

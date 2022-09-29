@@ -42,7 +42,7 @@ async function addFilesToPlaylist(user, playlistId, fileIDs) {
         '_id': playlistId,
         'userId': user.userId,
     }, { $addToSet: { 'files': { $each: fileIDs } } },
-        { upsert: false, useFindAndModify: false, new: true }).select('-userId'); // upsert creates a new document if nothing is found
+        { upsert: false, useFindAndModify: false, new: true }); // upsert creates a new document if nothing is found
 
     if (!updatedPlaylist) throw new StatusError(null, 'Can\'t add files to a non-existing playlist', 404);
     console.log(updatedPlaylist);
@@ -60,7 +60,7 @@ async function removeFilesFromPlaylist(user, playlistId, fileIDs) {
         '_id': playlistId,
         'userId': user.userId
     }, { $pull: { 'files': { $in: fileIDs } } },
-        { upsert: false, useFindAndModify: false, new: true }).select('-userId');
+        { upsert: false, useFindAndModify: false, new: true });
 
     if (!updatedPlaylist) throw new StatusError(null, 'Can\'t remove files from a non-existing playlist', 404);
     console.log(updatedPlaylist);
@@ -71,7 +71,7 @@ async function removeFilesFromPlaylist(user, playlistId, fileIDs) {
 }
 
 async function updatePlaylistVisibility(user, playlistId, visibility) {
-    let playlist = await Playlist.findOneAndUpdate({ '_id': playlistId, 'userId': user.userId }, { 'visibility': visibility }, { new: true }).select('-userId, -sharedWith');
+    let playlist = await Playlist.findOneAndUpdate({ '_id': playlistId, 'userId': user.userId }, { 'visibility': visibility }, { new: true });
     if (!playlist) {
         throw new StatusError(null, 'Playlist not found', 404);
     }
@@ -80,7 +80,7 @@ async function updatePlaylistVisibility(user, playlistId, visibility) {
 };
 
 async function getPlaylistById(user, playlistId) {
-    const playlist = await Playlist.findOne({ '_id': playlistId }).populate('files').populate('sharedWith', 'username -_id');
+    const playlist = await Playlist.findOne({ '_id': playlistId }).populate('files').populate('sharedWith', 'username _id');
     if (!playlist) throw new StatusError("Playlist not found", 404);
     else if (user.userId === playlist.userId.toString()) {
         playlist.userId = undefined;
@@ -100,14 +100,14 @@ async function getPlaylistById(user, playlistId) {
     throw new StatusError(null, "Forbidden: No permissions to access that playlist", 403);
 };
 
-async function getPlaylists(user, reqBody) {
-    page = parseInt(reqBody.page) || 1;
-    pageSize = parseInt(reqBody.pageSize) || 10;
+async function getPlaylists(user, reqQuery) {
+    page = parseInt(reqQuery.page) || 1;
+    pageSize = parseInt(reqQuery.pageSize) || 10;
 
 
     // if we're looking for our own playlists
-    if (!reqBody.userId || reqBody.userId === user.userId) {
-        let playlists = await Playlist.find({ 'userId': user.userId }).select('-userId')
+    if (!reqQuery.userId || reqQuery.userId === user.userId) {
+        let playlists = await Playlist.find({ 'userId': user.userId })
             .skip((page - 1) * pageSize).limit(pageSize);
         return playlists;
     }
@@ -115,13 +115,13 @@ async function getPlaylists(user, reqBody) {
     // if we're looking for someone else's playlists
     else {
         if (user.role === "Admin") {
-            let playlists = await Playlist.find({ 'userId': reqBody.userId }).select('-userId')
+            let playlists = await Playlist.find({ 'userId': reqQuery.userId })
                 .skip((page - 1) * pageSize).limit(pageSize);
             return playlists;
         }
         // commented line below is for checking if a playlist is shared with the user
         //{ userId: user.userId }, $or: [{ visibility: "public" }, { sharedWith: {$in: [user.userId]} }];
-        let playlists = await Playlist.find({ 'userId': reqBody.userId, $or: [{ 'visibility': 'public' }, { sharedWith: { $in: [user.userId] } }] }).select('-userId, -sharedWith')
+        let playlists = await Playlist.find({ 'userId': reqQuery.userId, $or: [{ 'visibility': 'public' }, { sharedWith: { $in: [user.userId] } }] })
             .skip((page - 1) * pageSize).limit(pageSize);
         return playlists;
     }
@@ -138,7 +138,7 @@ async function sharePlaylist(user, playlistId, usersToShareWith) {
     if (!usersToShareWith.length) throw new StatusError(null, 'Could not find any users with those IDs', 404);
     const playlist = await Playlist.findOneAndUpdate({ 'userId': user.userId, '_id': playlistId },
         { $addToSet: { 'sharedWith': { $each: usersToShareWith } } }, { useFindAndModify: false, new: true })
-        .select('-userId').populate('sharedWith', 'username -_id');
+        .populate('sharedWith', 'username _id');
     if (!playlist) throw new StatusError(null, 'Playlist not found');
     console.log(playlist);
     return playlist;
@@ -147,7 +147,8 @@ async function sharePlaylist(user, playlistId, usersToShareWith) {
 async function revokePlaylistShare(user, playlistId, usersToRevokeSharing) {
     //pulling with $each won't work, $in will though
     const playlist = await Playlist.findOneAndUpdate({ 'userId': user.userId, '_id': playlistId },
-        { $pull: { 'sharedWith': { $in: usersToRevokeSharing } } }, { useFindAndModify: false, new: true }).select('-userId');;
+        { $pull: { 'sharedWith': { $in: usersToRevokeSharing } } }, { useFindAndModify: false, new: true })
+        .populate('sharedWith', 'username _id');
     console.log(playlist);
     return playlist;
 }

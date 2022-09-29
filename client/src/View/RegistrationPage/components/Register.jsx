@@ -126,6 +126,7 @@ const Register = () => {
     }
   };
 
+
   return (
     <>
       {success ? (

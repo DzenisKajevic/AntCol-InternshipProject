@@ -66,9 +66,9 @@ export async function getPlaylistById(playlistId) {
 export async function getPlaylists(options) {
     return await resolve(
         axios({
-            method: 'post', // post request due to userId being passed
+            method: 'get', // post request due to userId being passed
             url: `http://localhost:3001/api/v1/playlists/getPlaylists`,
-            data: options,
+            params: options,
             headers: {
                 'Authorization': 'Bearer ' + window.localStorage.token
             }

@@ -72,6 +72,42 @@ morgan.token('timestamp', function getTimestamp(req) {
     return datetime;
 });
 
+// helper function used for determining byte range for audio file buffering
+function readRangeHeader(range, totalLength) {
+    /*
+     * Example of the method 'split' with regular expression.
+     * 
+     * Input: bytes=100-200
+     * Output: [null, 100, 200, null]
+     * 
+     * Input: bytes=-200
+     * Output: [null, null, 200, null]
+     */
+
+    if (range == null || range.length == 0)
+        return null;
+
+    var array = range.split(/bytes=([0-9]*)-([0-9]*)/);
+    var start = parseInt(array[1]);
+    var end = parseInt(array[2]);
+    var result = {
+        Start: isNaN(start) ? 0 : start,
+        End: isNaN(end) ? (totalLength) : end
+    };
+
+    if (!isNaN(start) && isNaN(end)) {
+        result.Start = start;
+        result.End = totalLength - 1;
+    }
+
+    if (isNaN(start) && !isNaN(end)) {
+        result.Start = totalLength - end;
+        result.End = totalLength - 1;
+    }
+
+    return result;
+}
+
 // useless function at the moment. userID is saved in req.user.userId after authenticating anyways
 /* async function extractUserIdFromJWT(req) {
     const authHeader = req.headers['authorization'];
@@ -89,5 +125,6 @@ module.exports = {
     fileSearchFilters,
     paginationOptions,
     reviewSearchFilters,
+    readRangeHeader,
     //extractUserIdFromJWT
 };

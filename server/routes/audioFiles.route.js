@@ -1,9 +1,9 @@
 const express = require('express');
-const { default: mongoose } = require('mongoose');
 const router = express.Router();
 const audioFileController = require('../controllers/audioFiles.controller');
 const middleware = require('../middleware/middleware');
-
+const multer = require("multer");
+const upload = multer();
 
 // File Review Schema
 /**
@@ -151,7 +151,7 @@ const middleware = require('../middleware/middleware');
 *       500:
 *         description: File could not be uploaded
 */
-router.post('/uploadFile', middleware.uploadMiddleware, audioFileController.uploadFile);
+router.post('/uploadFile', middleware.audioFileUploadMiddleware, audioFileController.uploadFile);
 
 // returns a specific file, ready for playback
 /** 
@@ -159,7 +159,7 @@ router.post('/uploadFile', middleware.uploadMiddleware, audioFileController.uplo
 *  /api/v1/audioFiles/getFile/{fileId}: 
 *   get: 
 *    tags:
-*      - file uploads
+*      - audioFiles
 *    operationId: getFile
 *    produces:
 *       - audio/mp3
@@ -194,7 +194,7 @@ router.get('/getFile/:id', audioFileController.getFile);
 *  /api/v1/audioFiles/getFileInfo/{fileId}: 
 *   get: 
 *    tags:
-*      - file uploads
+*      - audioFiles
 *    operationId: getFileInfo
 *    security:
 *       - bearerAuth: []
@@ -223,7 +223,7 @@ router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 *  /api/v1/audioFiles/getAllFiles: 
 *   get: 
 *    tags:
-*      - file uploads
+*      - audioFiles
 *    operationId: getAllAudioFiles
 *    security:
 *       - bearerAuth: []
@@ -261,7 +261,7 @@ router.get('/getAllFiles', audioFileController.getAllFiles);
 *  /api/v1/audioFiles/deleteFile: 
 *   delete: 
 *    tags:
-*      - file uploads
+*      - audioFiles
 *    operationId: deleteFile
 *    security:
 *       - bearerAuth: []
