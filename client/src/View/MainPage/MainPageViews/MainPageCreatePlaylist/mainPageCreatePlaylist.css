@@ -1,0 +1,35 @@
+.main-page-create-playlist-title {
+    font-family: var(--title-font);
+    max-width: 600px;
+    font-size: 3rem;
+    background: var(--linear-bg);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin: auto;
+    padding-top: 2rem;
+}
+
+.main-page-create-playlist-p {
+    color: var(--white-text);
+    font-family: var(--text-font1);
+    width: 50%;
+    text-align: center;
+    margin: auto;
+    padding-top: 4rem;
+}
+
+.create-playlist-form {
+    width: 50%;
+    height: 50px;
+    margin: auto;
+    background: var(--linear-bg);
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+.add-playlist-icon {
+    height: 50px;
+    width: 60px;
+}
