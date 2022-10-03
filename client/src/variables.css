@@ -3,8 +3,10 @@
     --dark-bg: #191b1f;
     --white-text: #dedfe0;
     --yellow: #ffe000;
+    --yellow-dark: #e1c701;
     --purple: #d800ff;
     --purple-dark: #a800c6;
+    --white-bg: #edecec;
     --linear-bg: linear-gradient(90deg, rgba(216, 0, 255, 1)0%, rgba(255, 224, 0, 1)100%);
     --linear-bg-r: linear-gradient(90deg, rgba(255, 224, 0, 1)0%, rgba(216, 0, 255, 1)100%);
 

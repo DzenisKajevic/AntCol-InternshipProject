@@ -6,8 +6,10 @@ import {
   faArrowRight,
   faPlay,
   faPause,
+  faExpand,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NavLink } from "react-router-dom";
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -109,6 +111,9 @@ const MusicPlayer = () => {
       <div className="duration">
         {duration && !isNaN(duration) && calculateTime(duration)}
       </div>
+      <NavLink to="/main-page/audio-player" className="expand-icon">
+        <FontAwesomeIcon icon={faExpand} />
+      </NavLink>
     </section>
   );
 };

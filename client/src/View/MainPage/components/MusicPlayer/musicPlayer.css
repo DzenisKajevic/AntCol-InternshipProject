@@ -39,6 +39,11 @@
     background-color: #dbc100;
 }
 
+.expand-icon {
+    color: aliceblue;
+    float: right;
+}
+
 .current-time {
 color: aliceblue;
 }

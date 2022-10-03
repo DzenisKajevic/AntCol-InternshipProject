@@ -13,7 +13,7 @@ const Navbar = () => {
           alt="application logo"
         />
         {/* link to main page, temporary */}
-        <Link to="/main-page">main page </Link>
+        <Link to="/main-page/home">main page </Link>
         <Link to="/login" className="links">
           <button className="login-button shine">Log in</button>
         </Link>

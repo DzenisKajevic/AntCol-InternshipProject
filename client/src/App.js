@@ -8,6 +8,7 @@ import MainPageHome from './View/MainPage/MainPageViews/MainPageHome/MainPageHom
 import MainPageSearch from "./View/MainPage/MainPageViews/MainPageSearch/MainPageSearch";
 import MainPageCreatePlaylist from "./View/MainPage/MainPageViews/MainPageCreatePlaylist/MainPageCreatePlaylist";
 import MainPageFavorites from "./View/MainPage/MainPageViews/MainPageFavorites/MainPageFavorites";
+import { AudioVisualiser } from './View/MainPage/MainPageViews/MainPagePlayer/AudioVisualiser';
 
 function App ()
 {
@@ -23,9 +24,10 @@ function App ()
           path="/main-page/create-playlist"
           element={ <MainPageCreatePlaylist /> }
         />
+        <Route path='/main-page/audio-player' element={ <AudioVisualiser /> } />
         <Route path="/main-page/favorites" element={ <MainPageFavorites /> } />
       </Route>
-    </Routes>
+    </Routes >
   );
 }
 

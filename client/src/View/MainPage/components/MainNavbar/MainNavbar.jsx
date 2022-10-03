@@ -2,14 +2,15 @@ import React from "react";
 import "./mainNavbar.css";
 import "../../../../variables.css";
 import { Link } from "react-router-dom";
+import logo from "./navbarImages/music-app-logo.png";
 
 const MainNavbar = () => {
   return (
     <nav className="mainNavbar">
-      <Link to="/main-page">
+      <Link to="/main-page/home">
         <img
           className="mainNavbar-app-logo"
-          src="./assets/app-images/music-app-logo.png"
+          src={logo}
           alt="application logo"
         />
       </Link>

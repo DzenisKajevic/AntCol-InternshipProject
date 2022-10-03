@@ -8,7 +8,8 @@ import SeekSlider from './MainPageViews/MainPagePlayer/Components/SeekSlider';
 import VolumeSlider from './MainPageViews/MainPagePlayer/Components/VolumeSlider';
 
 
-const MainPage = () => {
+const MainPage = () =>
+{
     return (
         <section>
             <div className='grid'>
@@ -20,10 +21,10 @@ const MainPage = () => {
                 </div>
                 <div className='grid-content'>
                     <MainContent />
-                    {/* <MusicPlayer /> */}
-                    <SeekSlider />
-                    <VolumeSlider />
-                    <AudioVisualiser />
+                    {/* <MusicPlayer /> */ }
+                    {/* <SeekSlider /> */ }
+                    {/* <VolumeSlider /> */ }
+                    {/* <AudioVisualiser /> */ }
                 </div>
             </div>
         </section>
