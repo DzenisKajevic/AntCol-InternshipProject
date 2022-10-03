@@ -1,15 +1,16 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import './AudioVisualiser.css';
 import axios from 'axios';
 import { setSongInfo } from '../../../../slices/sliders/songInfoSlice';
 import { setSeekBytes } from '../../../../slices/sliders/seekBytesSlice';
 import { setSeekSliderValue } from '../../../../slices/sliders/seekSliderValueSlice';
+import { setVisualiserHidden } from '../../../../slices/sliders/visualiserHiddenSlice';
 import { useSelector, useDispatch } from 'react-redux';
-
 
 let volumeNode;
 let source = null;
 let source2 = null;
+let ctx = null;
 
 const AudioVisualiser = () =>
 {
@@ -17,28 +18,20 @@ const AudioVisualiser = () =>
     const dispatch = useDispatch();
     const seekBytes = useSelector( ( state ) => state.seekBytes.start );
     const songInfo = useSelector( ( state ) => state.songInfo.value );
+    const visualiserHidden = useSelector( ( state ) => state.visualiserHidden );
 
     useEffect( () =>
     {
-        console.log( seekBytes );
         if ( seekBytes === -1 ) { return; };
         if ( seekBytes ) { cleanup(); };
         if ( songInfo !== null )
         {
-            console.log( "USE EFF", "SEEK BYTES", seekBytes );
             shouldPlay.current = false;
             playedPreviously.current = true;
-            console.log( "SHOULD PLAY", shouldPlay.current );
-            console.log( songInfo, '- Has changed' )
+
             async function songPlayContinued ()
             {
-                headers.current[ 'Authorization' ] = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzExZTZjNjkyYTJkYjk2YTRiZmJiYjAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjY0MzYzNjcxLCJleHAiOjE2NjQ0NTAwNzF9.TqjjflokQcRHiJlZMVjZoTs8VTZ8mvkuUlT-pZwArec';
-
-
-                audioContext = new AudioContext();
-                //console.log("......", audioContext);
-                console.log( "Setting song info", audioContext );
-
+                audioContext.current = new AudioContext();
                 canvasRef.width = 1080;
                 canvasRef.height = 720;
                 if ( !seekBytes )
@@ -47,20 +40,16 @@ const AudioVisualiser = () =>
                 }
                 else
                 {
-
-                    console.log( typeof ( seekBytes ), "...", songInfo.chunkSize );
-
-
+                    // fetch full chunk
                     if ( songInfo.length - seekBytes > songInfo.chunkSize )
                     {
-                        console.log( "Entered 2nd check" );
                         headers.current[ 'Range' ] = `bytes=${ Number( seekBytes ) }-${ Number( seekBytes ) + Number( songInfo.chunkSize ) }`;
                     }
                     // else fetch the rest of the file
                     else if ( songInfo.length - seekBytes <= 1 )
                     {
                         playedPreviously.current = false;
-                        if ( source ) { source.killed = true; source.stop(); }
+                        if ( source ) { source.killed = true; source.stop(); } // killed = terminated by seeking
                         if ( source2 ) { source2.killed = true; source2.stop(); }
                         dispatch( setSeekBytes( null ) );
                         return;
@@ -68,55 +57,40 @@ const AudioVisualiser = () =>
                     else
                     {
                         headers.current[ 'Range' ] = `bytes=${ Number( seekBytes ) }-`;
-                        console.log( "Entered 3rd check" );
                     }
                 }
-                console.log( "HEADERS", headers.current );
                 firstChunk.current = await apiCall();
-
-                console.log( "HEADERS2", headers.current );
                 endByte.current = Number( firstChunk.current.headers[ 'end-byte' ] );
-                console.log( "endByte: ", typeof ( endByte.current ), endByte.current + 1, "fileSize:", typeof ( Number( songInfo.length ) ), Number( songInfo.length ) );
 
-                console.log( "HEADERS", headers.current );
                 if ( endByte.current + 1 < songInfo.length )
                 {
-                    console.log( "Entered 1st check" );
-                    // if it's a complete chunk
+                    // if a complete chunk is available, fetch it
                     if ( songInfo.length - endByte.current > songInfo.chunkSize )
                     {
-                        console.log( "Entered 2nd check" );
                         headers.current[ 'Range' ] = `bytes=${ Number( endByte.current - 1 ) }-${ Number( endByte.current - 1 ) + Number( songInfo.chunkSize ) + 1 }`;
                     }
                     // else fetch the rest of the file
                     else
                     {
                         headers.current[ 'Range' ] = `bytes=${ Number( endByte.current - 1 ) }-`;
-                        console.log( "Entered 3rd check" );
                     }
-
-                    console.log( "HEADERS", headers.current );
                     secondChunk.current = await apiCall();
                 }
 
-                console.log( "......", audioContext );
-                analyser.current = audioContext.createAnalyser();
-                console.log( "ANALYSER", analyser.current );
+                analyser.current = audioContext.current.createAnalyser();
 
-                source = audioContext.createBufferSource();
-                audioBuffer = await audioContext.decodeAudioData( firstChunk.current.data );
-                console.log( "AUDIO BUFFER", audioBuffer );
-                source.buffer = audioBuffer;
-                console.log( "SECOND CHUNK", secondChunk.current );
+                source = audioContext.current.createBufferSource();
+                audioBuffer.current = await audioContext.current.decodeAudioData( firstChunk.current.data );
+                source.buffer = audioBuffer.current;
 
                 if ( secondChunk.current )
                 {
                     firstChunk.current = secondChunk.current;
-                    audioBuffer = await audioContext.decodeAudioData( firstChunk.current.data );
+                    audioBuffer.current = await audioContext.current.decodeAudioData( firstChunk.current.data );
                 }
                 else
                 {
-                    audioBuffer = null;
+                    audioBuffer.current = null;
                 }
                 secondChunk.current = null;
 
@@ -125,10 +99,10 @@ const AudioVisualiser = () =>
 
                 source.addEventListener( "ended", recursiveEventListener );
 
-                volumeNode = audioContext.createGain();
+                volumeNode = audioContext.current.createGain();
                 source.connect( volumeNode );
 
-                volumeNode.connect( audioContext.destination );
+                volumeNode.connect( audioContext.current.destination );
                 analyser.current.fftSize = 1024;
                 const bufferLength = analyser.current.frequencyBinCount;
                 const dataArray = new Uint8Array( bufferLength );
@@ -146,25 +120,24 @@ const AudioVisualiser = () =>
                     barHeight
                 };
 
-                animate();
-
-
+                if ( !visualiserHidden.hidden )
+                {
+                    animate();
+                    animationId.current = null;
+                }
                 if ( !seekBytes ) dispatch( setSeekSliderValue( endByte.current - songInfo.chunkSize * 2 ) );
                 else dispatch( setSeekSliderValue( seekBytes ) );
                 source.start();
-                console.log( source );
             };
             songPlayContinued();
             dispatch( setSeekBytes( -1 ) );
         }
-    }, [ songInfo, seekBytes ] );
+    }, [ songInfo, seekBytes, visualiserHidden ] );
 
     const canvasRef = useRef( null );
     const size = { width: 1080, height: 720 };
     let endByte = useRef( null );
-    let chunkSize = useRef( null );
     let dataObj = useRef( null );
-    //let fileSize = useRef(null);
     let firstChunk = useRef( null );
     let secondChunk = useRef( null );
     let analyser = useRef( null );
@@ -172,48 +145,38 @@ const AudioVisualiser = () =>
     let animationId = useRef( null );
     let playedPreviously = useRef( false );
     let headers = useRef( {} );
-    //let fileUrl = useRef('http://localhost:3001/api/v1/audioFiles/getFile/63299fff95f55c20e3e08ae0');
-    let fileUrl = useRef( 'http://localhost:3001/api/v1/audioFiles/getFile/63357c719836dde2b7005474' );
-    //let fileInfoUrl = useRef('http://localhost:3001/api/v1/audioFiles/getFileInfo/63299fff95f55c20e3e08ae0');
-    let fileInfoUrl = useRef( 'http://localhost:3001/api/v1/audioFiles/getFileInfo/63357c719836dde2b7005474' );
-    //let fileUrl = useRef('http://localhost:3001/api/v1/audioFiles/getFile/63316d27093f5f376189043d');
-    //let fileInfoUrl = useRef('http://localhost:3001/api/v1/audioFiles/getFileInfo/63316d27093f5f376189043d');
+    let fileUrl = useRef( 'http://localhost:3001/api/v1/audioFiles/getFile/63299fff95f55c20e3e08ae0' );
+    let fileInfoUrl = useRef( 'http://localhost:3001/api/v1/audioFiles/getFileInfo/63299fff95f55c20e3e08ae0' );
 
-
-    let audioBuffer;
-    let audioContext;
+    let audioBuffer = useRef( null );
+    let audioContext = useRef( null );
 
     const cleanup = function ()
     {
-        console.log( "Cleanup" );
 
         if ( source ) { source.killed = true; source.stop(); }
         if ( source2 ) { source2.killed = true; source2.stop(); }
         if ( animationId.current ) cancelAnimationFrame( animationId.current );
         endByte.current = null;
         dataObj.current = {};
-        //fileSize.current = null;
         firstChunk.current = null;
         secondChunk.current = null;
         analyser.current = null;
         source = null;
         source2 = null;
         playedPreviously.current = null;
-        headers.current = {};
+        headers.current[ 'Range' ] = null;
 
         animationId.current = null;
         shouldPlay.current = false;
-        audioBuffer = null;
-        audioContext = null;
-        const ctx = canvasRef.current.getContext( '2d' );
+        audioBuffer.current = null;
+        audioContext.current = null;
+        ctx = canvasRef.current.getContext( '2d' );
         ctx.clearRect( 0, 0, canvasRef.width, canvasRef.height );
-
-        //dispatch(setSeekBytes(-1));
     };
 
     const animate = () =>
     {
-        const ctx = canvasRef.current.getContext( '2d' );
         dataObj.current.x = 0;
         ctx.clearRect( 0, 0, canvasRef.width, canvasRef.height );
         analyser.current.getByteFrequencyData( dataObj.current.dataArray );
@@ -224,19 +187,19 @@ const AudioVisualiser = () =>
 
     const playPause = function ()
     {
-        console.log( "Sh", shouldPlay.current );
         if ( shouldPlay.current )
         {
-            animate();
-            console.log( source );
-            console.log( source2 );
+            if ( !visualiserHidden.hidden )
+            {
+                animate();
+            }
             source.playbackRate.value = 1;
             shouldPlay.current = false;
         }
         else
         {
-            console.log( source, source2 );
-            cancelAnimationFrame( animationId.current );
+            if ( animationId.current ) cancelAnimationFrame( animationId.current );
+            //ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
             source.playbackRate.value = 0;
             shouldPlay.current = true;
         }
@@ -293,7 +256,7 @@ const AudioVisualiser = () =>
     const getFile = async function ()
     {
         let initHeaders = {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzM1ODg2NDkyMzdmNjFkMzA3NDQxOWUiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkJhc2ljIiwiaWF0IjoxNjY0NDUyNzA5LCJleHAiOjE2NjQ1MzkxMDl9.3klHGJXf3iBfJ5ift0tK5ISNMjjh0jl6WcfRYa2ICps',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzExZTZjNjkyYTJkYjk2YTRiZmJiYjAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjY0NzgyMjgzLCJleHAiOjE2NjQ4Njg2ODN9.sE6hMVMMnqodYN7nTJ7qNppNTPjIqSq0hPtfAv4jv7s',
         }
         headers.current = initHeaders;
         console.log( 'hed.', headers.current )
@@ -303,13 +266,11 @@ const AudioVisualiser = () =>
             data: {},
             headers: headers.current
         } );
-        console.log( response );
         return response.data;
     }
 
     const apiCall = async function ()
     {
-        console.log( "API call headers", headers.current );
         const response = await axios( {
             responseType: 'arraybuffer',
             method: 'get',
@@ -323,20 +284,16 @@ const AudioVisualiser = () =>
 
     const recursiveEventListener = async function ()
     {
-        console.log( "KILLED", this.killed );
         if ( this.killed ) { return; }
-        console.log( audioBuffer );
-        if ( audioBuffer )
+        if ( audioBuffer.current )
         {
-            source2 = audioContext.createBufferSource();
-            source2.buffer = audioBuffer;
+            source2 = audioContext.current.createBufferSource();
+            source2.buffer = audioBuffer.current;
             source2.connect( analyser.current );
             source2.connect( volumeNode );
             source2.playbackRate.value = 1;
             source2.addEventListener( 'ended', recursiveEventListener );
             source2.loop = false;
-
-
 
             try
             {
@@ -344,56 +301,52 @@ const AudioVisualiser = () =>
             } catch ( e ) { }
             source = source2;
 
-            //if (!seekBytes) dispatch(setSeekSliderValue(endByte.current - songInfo.chunkSize * 2));
-            console.log( "SetSeek" );
+            // setSeekSliderValue -> used for "showing" current song progress, not used for requesting chunks, unlike setSeekBytes
             dispatch( setSeekSliderValue( endByte.current - songInfo.chunkSize ) );
 
             source.start();
 
-
             firstChunk.current = null;
-            console.log( "API CALL" );
-            console.log( "SONG INFO", songInfo );
-            console.log( "endByte ", endByte.current, "fileSize", songInfo.length );
             if ( endByte.current + 1 < songInfo.length )
             {
 
                 // if it's a complete chunk
                 if ( songInfo.length - endByte.current > Number( songInfo.chunkSize ) )
                 {
-                    console.log( "FIRST IF" );
                     headers.current[ 'Range' ] = `bytes=${ Number( endByte.current + 1 ) }-${ Number( endByte.current ) + Number( songInfo.chunkSize ) + 1 }`;
                 }// else fetch the rest of the file
                 else
                 {
-                    console.log( "SECOND IF" );
                     headers.current[ 'Range' ] = `bytes=${ Number( endByte.current + 1 ) }-`
                 };
                 firstChunk.current = await apiCall();
-                audioBuffer = await audioContext.decodeAudioData( firstChunk.current.data );
+                audioBuffer.current = await audioContext.current.decodeAudioData( firstChunk.current.data );
             }
             else
             {
-                audioBuffer = null;
+                audioBuffer.current = null;
             }
         }
         else
         {
             source.stop();
-            console.log( "Stopping animation" );
-
-            cancelAnimationFrame( animationId.current );
+            if ( animationId.current )
+                cancelAnimationFrame( animationId.current );
             cleanup();
         }
 
     };
     const fetchAndPlay = async function ()
     {
+
+        // sample code for hiding the visualiser. Copy / paste into onclick for hiding and delete the "&& !shouldPlay.current" part
+        /* 
+                if (visualiserHidden.hidden && !shouldPlay.current) { dispatch(setVisualiserHidden(false)); console.log("DISPATCH FALSE"); }
+                else if (!visualiserHidden.hidden && !shouldPlay.current) { dispatch(setVisualiserHidden(true)); console.log("DISPATCH TRUE"); }
+         */
+
         if ( playedPreviously.current )
         {
-            console.log( "Pause/play" );
-            console.log( source, source2 );
-            //console.log(songInfo);
             playPause();
         }
 
@@ -408,15 +361,14 @@ const AudioVisualiser = () =>
 
     };
 
-
-
-
     return (
         <div id="container" >
             <button id="button1" onClick={ fetchAndPlay }>Play/Pause</button>
-            <canvas id="canvas1" { ...size } ref={ canvasRef }></canvas>
+            <canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef }></canvas>
         </div>
     );
 }
 
 export { AudioVisualiser, volumeNode, source, source2 };
+
+// useCallback

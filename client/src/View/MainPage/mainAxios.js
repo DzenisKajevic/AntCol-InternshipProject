@@ -1,13 +1,12 @@
-import * as userAuth from "../../../api/auth/userAuth"
-import * as audioFiles from "../../../api/audioFiles/audioFiles"
-import * as favouriteFiles from "../../../api/favouriteFiles/favouriteFiles"
-import * as playlists from "../../../api/playlists/playlists"
+import * as userAuth from "../../api/auth/userAuth"
+import * as audioFiles from "../../api/audioFiles/audioFiles"
+import * as favouriteFiles from "../../api/favouriteFiles/favouriteFiles"
+import * as playlists from "../../api/playlists/playlists"
 
 // most of these functions will need to be moved to different folders
-
 export function logout() {
     window.localStorage.clear();
-    window.location.reload();
+    window.location.replace('/');
 }
 
 // onClick={() => getNewUsersCount()}
