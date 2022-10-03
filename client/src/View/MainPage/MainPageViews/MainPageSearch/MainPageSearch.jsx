@@ -2,6 +2,7 @@ import React from "react";
 import "./mainPageSearch.css";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SongContainer from "./components/SongContainer";
 
 const MainPageSearch = () => {
   return (
@@ -28,6 +29,7 @@ const MainPageSearch = () => {
         <button className="search-buttons">Song</button>
         <button className="search-buttons">Playlist</button>
       </nav>
+      <SongContainer />
     </section>
   );
 };

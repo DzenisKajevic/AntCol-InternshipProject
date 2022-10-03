@@ -14,6 +14,8 @@ import { PrivateRoute } from './View/PrivateRoute';
 
 function App ()
 {
+
+
   return (
     <Routes>
       <Route path="/" element={ <LandingPage /> } />
@@ -38,9 +40,9 @@ function App ()
               <MainPageCreatePlaylist />
             </PrivateRoute> }
         />
-        {/*<Route path='/main-page/audio-player' element={ <AudioVisualiser /> }*/ />}
+        {/*<Route path='/main-page/audio-player' element={ <AudioVisualiser /> } />*/ }
 
-          < Route path="/main-page/favorites" element={
+        < Route path="/main-page/favorites" element={
           <PrivateRoute>
             <MainPageFavorites />
           </PrivateRoute> } />
