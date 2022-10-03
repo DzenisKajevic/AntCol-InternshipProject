@@ -3,6 +3,7 @@ import songInfoReducer from './slices/sliders/songInfoSlice'
 import seekSliderValueReducer from './slices/sliders/seekSliderValueSlice'
 import volumeSliderValueReducer from './slices/sliders/volumeSliderValueSlice'
 import seekBytesReducer from './slices/sliders/seekBytesSlice'
+import visualiserHiddenReducer from './slices/sliders/visualiserHiddenSlice'
 
 export default configureStore({
     reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
         seekSliderValue: seekSliderValueReducer,
         volumeSliderValue: volumeSliderValueReducer,
         seekBytes: seekBytesReducer,
+        visualiserHidden: visualiserHiddenReducer,
     },
 })

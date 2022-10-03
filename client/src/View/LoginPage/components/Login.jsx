@@ -10,18 +10,6 @@ import * as userAuth from "../../../api/auth/userAuth";
 const LOGIN_URL = "http://localhost:3001/api/v1/auth/login";
 
 const Login = () => {
-  async function login(user) {
-    const response = await userAuth.login(user.email, user.pass);
-    if (response.error) {
-      console.log(response.error); // response.error.response.data -> error message
-    } else {
-      // saves the token into the localStorage.
-      window.localStorage.token = response.data.data.token;
-      // .data is needed twice because of initial data / error separation
-      console.log(response);
-    }
-  }
-
   const navigate = useNavigate();
 
   const emailRef = useRef();
@@ -47,15 +35,12 @@ const Login = () => {
     user.password = pass;
     const result = await loginAxios.login(user);
 
-    //console.log(result.code);
-
     if (result.data) {
-      console.log(result.data.data);
-      localStorage.token = result.data.data.token;
       setSuccess("Successfuly Logged in!");
 
       setTimeout(() => {
         navigate("/main-page");
+        window.location.reload();
       }, 3000);
     }
   };

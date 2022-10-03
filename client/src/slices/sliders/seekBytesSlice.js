@@ -13,9 +13,6 @@ export const seekBytesSlice = createSlice({
             // which detects changes to a "draft state" and produces a brand new
             // immutable state based off those changes
             state.start = action.payload;
-
-            console.log("Bytes.start", state.start);
-            //state.chunkSize = action.payload.chunkSize
         },
     },
 })

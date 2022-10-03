@@ -4,17 +4,20 @@ import axios from 'axios';
 import { setSongInfo } from '../../../../slices/sliders/songInfoSlice';
 import { setSeekBytes } from '../../../../slices/sliders/seekBytesSlice';
 import { setSeekSliderValue } from '../../../../slices/sliders/seekSliderValueSlice';
+import { setVisualiserHidden } from '../../../../slices/sliders/visualiserHiddenSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
 let volumeNode;
 let source = null;
 let source2 = null;
+let ctx = null;
 
 const AudioVisualiser = () => {
 
     const dispatch = useDispatch();
     const seekBytes = useSelector((state) => state.seekBytes.start);
     const songInfo = useSelector((state) => state.songInfo.value);
+    const visualiserHidden = useSelector((state) => state.visualiserHidden);
 
     useEffect(() => {
         if (seekBytes === -1) { return; };
@@ -24,7 +27,7 @@ const AudioVisualiser = () => {
             playedPreviously.current = true;
 
             async function songPlayContinued() {
-                audioContext = new AudioContext();
+                audioContext.current = new AudioContext();
                 canvasRef.width = 1080;
                 canvasRef.height = 720;
                 if (!seekBytes) {
@@ -62,18 +65,18 @@ const AudioVisualiser = () => {
                     secondChunk.current = await apiCall();
                 }
 
-                analyser.current = audioContext.createAnalyser();
+                analyser.current = audioContext.current.createAnalyser();
 
-                source = audioContext.createBufferSource();
-                audioBuffer = await audioContext.decodeAudioData(firstChunk.current.data);
-                source.buffer = audioBuffer;
+                source = audioContext.current.createBufferSource();
+                audioBuffer.current = await audioContext.current.decodeAudioData(firstChunk.current.data);
+                source.buffer = audioBuffer.current;
 
                 if (secondChunk.current) {
                     firstChunk.current = secondChunk.current;
-                    audioBuffer = await audioContext.decodeAudioData(firstChunk.current.data);
+                    audioBuffer.current = await audioContext.current.decodeAudioData(firstChunk.current.data);
                 }
                 else {
-                    audioBuffer = null;
+                    audioBuffer.current = null;
                 }
                 secondChunk.current = null;
 
@@ -82,10 +85,10 @@ const AudioVisualiser = () => {
 
                 source.addEventListener("ended", recursiveEventListener);
 
-                volumeNode = audioContext.createGain();
+                volumeNode = audioContext.current.createGain();
                 source.connect(volumeNode);
 
-                volumeNode.connect(audioContext.destination);
+                volumeNode.connect(audioContext.current.destination);
                 analyser.current.fftSize = 1024;
                 const bufferLength = analyser.current.frequencyBinCount;
                 const dataArray = new Uint8Array(bufferLength);
@@ -103,7 +106,10 @@ const AudioVisualiser = () => {
                     barHeight
                 };
 
-                animate();
+                if (!visualiserHidden.hidden) {
+                    animate();
+                    animationId.current = null;
+                }
                 if (!seekBytes) dispatch(setSeekSliderValue(endByte.current - songInfo.chunkSize * 2));
                 else dispatch(setSeekSliderValue(seekBytes));
                 source.start();
@@ -111,7 +117,7 @@ const AudioVisualiser = () => {
             songPlayContinued();
             dispatch(setSeekBytes(-1));
         }
-    }, [songInfo, seekBytes]);
+    }, [songInfo, seekBytes, visualiserHidden]);
 
     const canvasRef = useRef(null);
     const size = { width: 1080, height: 720 };
@@ -127,8 +133,8 @@ const AudioVisualiser = () => {
     let fileUrl = useRef('http://localhost:3001/api/v1/audioFiles/getFile/63299fff95f55c20e3e08ae0');
     let fileInfoUrl = useRef('http://localhost:3001/api/v1/audioFiles/getFileInfo/63299fff95f55c20e3e08ae0');
 
-    let audioBuffer;
-    let audioContext;
+    let audioBuffer = useRef(null);
+    let audioContext = useRef(null);
 
     const cleanup = function () {
 
@@ -147,14 +153,13 @@ const AudioVisualiser = () => {
 
         animationId.current = null;
         shouldPlay.current = false;
-        audioBuffer = null;
-        audioContext = null;
-        const ctx = canvasRef.current.getContext('2d');
+        audioBuffer.current = null;
+        audioContext.current = null;
+        ctx = canvasRef.current.getContext('2d');
         ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
     };
 
     const animate = () => {
-        const ctx = canvasRef.current.getContext('2d');
         dataObj.current.x = 0;
         ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
         analyser.current.getByteFrequencyData(dataObj.current.dataArray);
@@ -165,12 +170,15 @@ const AudioVisualiser = () => {
 
     const playPause = function () {
         if (shouldPlay.current) {
-            animate();
+            if (!visualiserHidden.hidden) {
+                animate();
+            }
             source.playbackRate.value = 1;
             shouldPlay.current = false;
         }
         else {
-            cancelAnimationFrame(animationId.current);
+            if (animationId.current) cancelAnimationFrame(animationId.current);
+            //ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
             source.playbackRate.value = 0;
             shouldPlay.current = true;
         }
@@ -220,7 +228,7 @@ const AudioVisualiser = () => {
 
     const getFile = async function () {
         let initHeaders = {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzExZTZjNjkyYTJkYjk2YTRiZmJiYjAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjY0NDUyOTI0LCJleHAiOjE2NjQ1MzkzMjR9.CgrERta_qG3-o8VC6oshX0bn70hUp_L9smIX7QH4wqs',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzExZTZjNjkyYTJkYjk2YTRiZmJiYjAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjY0NzgyMjgzLCJleHAiOjE2NjQ4Njg2ODN9.sE6hMVMMnqodYN7nTJ7qNppNTPjIqSq0hPtfAv4jv7s',
         }
         headers.current = initHeaders;
         let response = await axios({
@@ -233,7 +241,6 @@ const AudioVisualiser = () => {
     }
 
     const apiCall = async function () {
-        console.log(headers.current);
         const response = await axios({
             responseType: 'arraybuffer',
             method: 'get',
@@ -247,9 +254,9 @@ const AudioVisualiser = () => {
 
     const recursiveEventListener = async function () {
         if (this.killed) { return; }
-        if (audioBuffer) {
-            source2 = audioContext.createBufferSource();
-            source2.buffer = audioBuffer;
+        if (audioBuffer.current) {
+            source2 = audioContext.current.createBufferSource();
+            source2.buffer = audioBuffer.current;
             source2.connect(analyser.current);
             source2.connect(volumeNode);
             source2.playbackRate.value = 1;
@@ -277,20 +284,28 @@ const AudioVisualiser = () => {
                     headers.current['Range'] = `bytes=${Number(endByte.current + 1)}-`
                 };
                 firstChunk.current = await apiCall();
-                audioBuffer = await audioContext.decodeAudioData(firstChunk.current.data);
+                audioBuffer.current = await audioContext.current.decodeAudioData(firstChunk.current.data);
             }
             else {
-                audioBuffer = null;
+                audioBuffer.current = null;
             }
         }
         else {
             source.stop();
-            cancelAnimationFrame(animationId.current);
+            if (animationId.current)
+                cancelAnimationFrame(animationId.current);
             cleanup();
         }
 
     };
     const fetchAndPlay = async function () {
+
+        // sample code for hiding the visualiser. Copy / paste into onclick for hiding and delete the "&& !shouldPlay.current" part
+        /* 
+                if (visualiserHidden.hidden && !shouldPlay.current) { dispatch(setVisualiserHidden(false)); console.log("DISPATCH FALSE"); }
+                else if (!visualiserHidden.hidden && !shouldPlay.current) { dispatch(setVisualiserHidden(true)); console.log("DISPATCH TRUE"); }
+         */
+
         if (playedPreviously.current) {
             playPause();
         }
@@ -308,7 +323,7 @@ const AudioVisualiser = () => {
     return (
         <div id="container" >
             <button id="button1" onClick={fetchAndPlay}>Play/Pause</button>
-            <canvas id="canvas1" {...size} ref={canvasRef}></canvas>
+            <canvas id="canvas1" {...size} style={{ display: visualiserHidden.hidden ? 'none' : null }} ref={canvasRef}></canvas>
         </div>
     );
 }

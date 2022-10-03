@@ -2,6 +2,7 @@ import React from "react";
 import "./mainNavbar.css";
 import "../../../../variables.css";
 import { Link } from "react-router-dom";
+import * as mainAxios from "../../mainAxios";
 
 const MainNavbar = () => {
   return (
@@ -16,7 +17,7 @@ const MainNavbar = () => {
       <div className="mainNavbar-button-container">
         <button className="sub-button shine">Subscribe</button>
         <div className="v-breakline-main"></div>
-        <button className="logout-button shine">Log out</button>
+        <button className="logout-button shine" onClick={() => { mainAxios.logout(); }}>Log out</button>
       </div>
     </nav>
   );
