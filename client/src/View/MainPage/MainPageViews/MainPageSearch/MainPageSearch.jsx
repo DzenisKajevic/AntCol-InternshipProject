@@ -22,28 +22,38 @@ const MainPageSearch = () => {
       </h1>
       <form
         className="search-form"
-        onSubmit={ (e) => {
+        onSubmit={(e) => {
           e.preventDefault();
-        } }
+        }}
       >
         <input
           type="search"
           id="search-bar"
           name="search-bar"
-          value={ searchText }
-          onChange={ (event) => { setSearchText(event.target.value); } }
+          value={searchText}
+          onChange={(event) => {
+            setSearchText(event.target.value);
+          }}
           placeholder="Search for your favorite songs"
           className="search-bar"
           incremental="true"
         />
-        <button className="search-bar-button" onClick={ async () => { // set song list under the search bar and edit the redux state
-          let result = await mainAxios.getAllFiles({ 'metadata.songName': searchText });
-          result['playedFrom'] = 'SEARCH';
-          result['index'] = songIndex;
-          dispatch(setSearchResults(result.data));
-          songIndex = 0;
-        } } type="button">
-          <FontAwesomeIcon icon={ faMagnifyingGlass } className="search-icon" />
+        <button
+          className="search-bar-button"
+          onClick={async () => {
+            // set song list under the search bar and edit the redux state
+            let result = await mainAxios.getAllFiles({
+              "metadata.songName": searchText,
+            });
+            result["playedFrom"] = "SEARCH";
+            result["index"] = songIndex;
+            console.log(result);
+            dispatch(setSearchResults(result.data));
+            songIndex = 0;
+          }}
+          type="button"
+        >
+          <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
         </button>
       </form>
       <nav className="search-buttons-container">
@@ -60,7 +70,7 @@ const MainPageSearch = () => {
           Playlist
         </button> */}
       </nav>
-      {/* <SongContainer /> */ }
+      {/* <SongContainer /> */}
       <SongCard></SongCard>
     </section>
   );
