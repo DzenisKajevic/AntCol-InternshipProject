@@ -154,18 +154,39 @@ async function getAllFiles(user, queryParams, callback) {
     if (user.role !== 'Admin') filters['reviewed'] = true;
     else if (queryParams['reviewed'] === 'true' || queryParams['reviewed'] === 'false') filters['reviewed'] = queryParams['reviewed'];
     Object.keys(queryParams).forEach(key => {
-        console.log(key, typeof (queryParams[key]));
+        //console.log(key, typeof (queryParams[key]));
         if (key in util.fileSearchFilters) filters[key] = queryParams[key];
     });
 
     let page = parseInt(queryParams.page) || 1;
     let pageSize = parseInt(queryParams.pageSize) || 4;
-    db.getAudioGfs().find(filters).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
-        if (!files || files.length === 0) {
-            callback(new StatusError(null, 'No files available', 404));
-        }
-        else callback(null, files);
-    });
+    console.log(filters);
+
+    //if songName is present, use regex to find matching songs
+    if (filters['metadata.songName']) {
+        let songNameRegex = filters['metadata.songName'];
+        filters['metadata.songName'] = undefined;
+        delete filters['metadata.songName'];
+
+        console.log(songNameRegex, filters);
+        db.getAudioGfs().find({ $and: [{ 'metadata.songName': { '$regex': new RegExp(songNameRegex, "i") } }, filters] }).skip((page - 1) * pageSize).limit(pageSize)
+            .toArray((err, files) => {
+                if (!files || files.length === 0) {
+                    callback(new StatusError(null, 'No files available', 404));
+                }
+                else callback(null, files);
+            });
+    }
+    // else match exact values
+    else {
+        delete filters['metadata.songName'];
+        db.getAudioGfs().find(filters).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
+            if (!files || files.length === 0) {
+                callback(new StatusError(null, 'No files available', 404));
+            }
+            else callback(null, files);
+        });
+    }
 };
 
 // admin

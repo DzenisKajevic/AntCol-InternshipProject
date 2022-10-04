@@ -9,9 +9,8 @@ import VolumeSlider from './MainPageViews/MainPagePlayer/Components/VolumeSlider
 import MainPageHome from './MainPageViews/MainPageHome/MainPageHome';
 
 
-const MainPage = () =>
-{
-    if ( window.location.pathname === '/main-page' ) window.location.replace( '/main-page/home' );
+const MainPage = () => {
+    if (window.location.pathname === '/main-page') window.location.replace('/main-page/home');
 
     return (
         <section>
@@ -27,7 +26,7 @@ const MainPage = () =>
                     {/* <MusicPlayer /> */ }
                     {/* <SeekSlider /> */ }
                     {/* <VolumeSlider /> */ }
-                    {/* <AudioVisualiser /> */ }
+                    <AudioVisualiser />
                 </div>
             </div>
         </section>

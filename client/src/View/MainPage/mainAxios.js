@@ -58,9 +58,11 @@ export async function getFileInfo(fileId) {
     const response = await audioFiles.getFileInfo(fileId);
     if (response.error) {
         console.log(response.error);
+        return response.error;
     }
     else {
         console.log(response.data);
+        return response.data;
     }
 }
 
@@ -72,9 +74,11 @@ export async function getAllFiles(options) {
     const response = await audioFiles.getAllFiles(options);
     if (response.error) {
         console.log(response.error);
+        return response.error
     }
     else {
         console.log(response.data);
+        return response.data
     }
 }
 

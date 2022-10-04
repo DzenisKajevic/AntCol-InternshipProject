@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const songInfoSlice = createSlice({
     name: 'songInfo',
     initialState: {
-        value: null,
+        song: null,
     },
     reducers: {
         setSongInfo: (state, action) => {
@@ -11,7 +11,7 @@ export const songInfoSlice = createSlice({
             // doesn't actually mutate the state because it uses the Immer library,
             // which detects changes to a "draft state" and produces a brand new
             // immutable state based off those changes
-            state.value = action.payload;
+            state.song = action.payload;
         },
     },
 })

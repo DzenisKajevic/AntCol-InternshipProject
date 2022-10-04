@@ -7,6 +7,7 @@ const generalConfig = require('../configs/general.config');
 fileSearchFilters = {};
 fileSearchFilters["genre"] = true;
 fileSearchFilters["author"] = true;
+fileSearchFilters["metadata.songName"] = true;
 
 reviewSearchFilters = {};
 reviewSearchFilters["genre"] = true;

@@ -12,10 +12,7 @@ import { AudioVisualiser } from './View/MainPage/MainPageViews/MainPagePlayer/Au
 import PageNotFound from './View/MainPage/components/PageNotFound/PageNotFound';
 import { PrivateRoute } from './View/PrivateRoute';
 
-function App ()
-{
-
-
+function App() {
   return (
     <Routes>
       <Route path="/" element={ <LandingPage /> } />

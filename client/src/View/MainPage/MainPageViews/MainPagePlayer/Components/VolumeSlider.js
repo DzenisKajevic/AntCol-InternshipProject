@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux'
-import { setVolumeSliderValue } from '../../../../../slices/sliders/volumeSliderValueSlice'
+import { setVolumeSliderValue } from '../../../../../slices/audioVisualiser/volumeSliderValueSlice'
 import ReactSlider from "react-slider";
 import { volumeNode } from "../AudioVisualiser";
 
@@ -20,11 +20,11 @@ const VolumeSlider = () => {
             className="volumeSlider"
             thumbClassName="customSlider-thumb"
             trackClassName="customSlider-track"
-            min={0}
-            max={100}
-            defaultValue={0}
-            value={volumeSliderValue}
-            onChange={(value) => dispatch(setVolumeSliderValue(value))
+            min={ 0 }
+            max={ 100 } z
+            defaultValue={ 0 }
+            value={ volumeSliderValue }
+            onChange={ (value) => dispatch(setVolumeSliderValue(value))
             }
         />
     );

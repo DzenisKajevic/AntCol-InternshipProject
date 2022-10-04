@@ -22,13 +22,14 @@ export async function uploadFile(audioFile, author, genre, songName, album) {
         }));
 }
 
-export async function getFile(fileId) {
+export async function getFile(fileId, headers) {
+    headers['Authorization'] = 'Bearer ' + window.localStorage.token;
     return await resolve(
         axios({
             method: 'get',
             url: `http://localhost:3001/api/v1/audioFiles/getFile/${fileId}`,
             data: {},
-            headers: { 'Authorization': 'Bearer ' + window.localStorage.token }
+            headers: headers
         }));
 }
 
