@@ -8,7 +8,6 @@ const SeekSlider = () => {
     const songInfo = useSelector((state) => state.songInfo.song);
     const dispatch = useDispatch();
 
-
     return (
         <ReactSlider
             id="seekSlider"
@@ -27,7 +26,6 @@ const SeekSlider = () => {
             } }
             onChange={ (value) => {
                 dispatch(setSeekSliderValue(value));
-                //console.log(value);
             }
             }
         />

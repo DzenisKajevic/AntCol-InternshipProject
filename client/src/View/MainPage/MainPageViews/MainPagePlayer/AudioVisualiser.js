@@ -14,6 +14,7 @@ let volumeNode;
 let source = null;
 let source2 = null;
 let ctx = null;
+let cleanup = null;
 
 const AudioVisualiser = () => {
 
@@ -27,11 +28,11 @@ const AudioVisualiser = () => {
     useEffect(() => {
         if (seekBytes === -1) { return; };
         if (seekBytes) { cleanup(); };
+
         if (songInfo !== null) {
             fileUrl.current = 'http://localhost:3001/api/v1/audioFiles/getFile/' + songInfo['_id'];
             ctx = canvasRef.current.getContext('2d');
             shouldPlay.current = false;
-            playedPreviously.current = true;
 
             async function songPlayContinued() {
                 audioContext.current = new AudioContext();
@@ -47,7 +48,6 @@ const AudioVisualiser = () => {
                     }
                     // else fetch the rest of the file
                     else if (songInfo.length - seekBytes <= 1) {
-                        playedPreviously.current = false;
                         if (source) { source.killed = true; source.stop(); } // killed = terminated by seeking
                         if (source2) { source2.killed = true; source2.stop(); }
                         dispatch(setSeekBytes(null));
@@ -136,7 +136,6 @@ const AudioVisualiser = () => {
     let analyser = useRef(null);
     let shouldPlay = useRef(true);
     let animationId = useRef(null);
-    let playedPreviously = useRef(false);
     let headers = useRef({});
     let fileUrl = useRef('http://localhost:3001/api/v1/audioFiles/getFile/63299fff95f55c20e3e08ae0');
     let fileInfoUrl = useRef('http://localhost:3001/api/v1/audioFiles/getFileInfo/63299fff95f55c20e3e08ae0');
@@ -144,7 +143,7 @@ const AudioVisualiser = () => {
     let audioBuffer = useRef(null);
     let audioContext = useRef(null);
 
-    const cleanup = function () {
+    cleanup = function () {
 
         if (source) { source.killed = true; source.stop(); }
         if (source2) { source2.killed = true; source2.stop(); }
@@ -156,7 +155,6 @@ const AudioVisualiser = () => {
         analyser.current = null;
         source = null;
         source2 = null;
-        playedPreviously.current = null;
         headers.current['Range'] = null;
 
         animationId.current = null;
@@ -234,23 +232,7 @@ const AudioVisualiser = () => {
         }
     }
 
-    const getFile = async function () {
-        let initHeaders = {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzExZTZjNjkyYTJkYjk2YTRiZmJiYjAiLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkFkbWluIiwiaWF0IjoxNjY0NzgzMzM3fQ.hUSf93wIpmTgnruZ99e9fLiOk1l8dqah0tq1dwm7f_w',
-        }
-        headers.current = initHeaders;
-        //        console.log('hed.', headers.current)
-        let response = await axios({
-            method: 'get',
-            url: fileInfoUrl.current,
-            data: {},
-            headers: headers.current
-        });
-        return response.data;
-    }
-
     const apiCall = async function () {
-        playedPreviously.current = true;
         const response = await axios({
             responseType: 'arraybuffer',
             method: 'get',
@@ -311,31 +293,10 @@ const AudioVisualiser = () => {
         }
 
     };
-    const fetchAndPlay = async function () {
-
-        // sample code for hiding the visualiser. Copy / paste into onclick for hiding and delete the "&& !shouldPlay.current" part
-        /* 
-                if (visualiserHidden.hidden && !shouldPlay.current) { dispatch(setVisualiserHidden(false)); console.log("DISPATCH FALSE"); }
-                else if (!visualiserHidden.hidden && !shouldPlay.current) { dispatch(setVisualiserHidden(true)); console.log("DISPATCH TRUE"); }
-         */
-
-        if (playedPreviously.current) {
-            playPause();
-        }
-
-        else {
-            cleanup();
-            dispatch(setSeekSliderValue(0));
-            playedPreviously.current = true;
-            dispatch(setSeekBytes(null));
-            dispatch(setSongInfo(await getFile()));
-        }
-
-    };
 
     return (
         <div id="container" style={ { display: visualiserHidden.hidden ? 'none' : null } }>
-            <button id="button1" onClick={ fetchAndPlay }>Play/Pause</button>
+            <button id="button1" onClick={ playPause }>Play/Pause</button>
             <canvas id="canvas1" { ...size } ref={ canvasRef }></canvas>
             <SeekSlider />
             <VolumeSlider />
@@ -343,6 +304,6 @@ const AudioVisualiser = () => {
     );
 }
 
-export { AudioVisualiser, volumeNode, source, source2 };
+export { AudioVisualiser, volumeNode, source, source2, cleanup };
 
 // useCallback

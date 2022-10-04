@@ -13,7 +13,6 @@ const MainPageSearch = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const searchResults = useSelector((state) => state.searchResults);
-  let songIndex = 0;
 
   return (
     <section>
@@ -38,10 +37,7 @@ const MainPageSearch = () => {
         />
         <button className="search-bar-button" onClick={ async () => { // set song list under the search bar and edit the redux state
           let result = await mainAxios.getAllFiles({ 'metadata.songName': searchText });
-          result['playedFrom'] = 'SEARCH';
-          result['index'] = songIndex;
           dispatch(setSearchResults(result.data));
-          songIndex = 0;
         } } type="button">
           <FontAwesomeIcon icon={ faMagnifyingGlass } className="search-icon" />
         </button>

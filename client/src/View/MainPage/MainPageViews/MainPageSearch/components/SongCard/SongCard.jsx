@@ -1,29 +1,26 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./songCard.css";
-import * as mainAxios from "../../../../mainAxios";
 import { setSongInfo } from "../../../../../../slices/audioVisualiser/songInfoSlice";
+import { cleanup } from "../../../MainPagePlayer/AudioVisualiser";
+import { setSeekBytes } from "../../../../../../slices/audioVisualiser/seekBytesSlice";
 
 const SongCard = ({ img, author, genre, songName, album }) => {
   const searchResults = useSelector((state) => state.searchResults);
   const songInfo = useSelector((state) => state.songInfo.song);
   const dispatch = useDispatch();
 
-
   return (
     <div className="song-cards" /* style={ { display: !searchResults.length ? 'none' : null } } */>
-      { searchResults.songs.map(song => {
+      { searchResults.songs.map((song, index) => {
         return (<div className="song-card" key={ song['_id'] } onClick={ async () => {
-          //let tempSongInfo = song;
-          //let tempSongInfo = await mainAxios.getFileInfo(song['_id']);
-          //console.log(tempSongInfo);
-          /*           song['playedFrom'] = 'SEARCH';
-                    song['index'] = songIndex;
-                    console.log(song);
-                    songIndex++; */
-          console.log(song);
-          //          dispatch(setSongInfo(tempSongInfo.data));
-          dispatch(setSongInfo(song));
+          cleanup();
+          let tempSongInfo = structuredClone(song);
+          tempSongInfo['songIndex'] = index;
+          tempSongInfo['playedFrom'] = 'SEARCH';
+          console.log(tempSongInfo);
+          dispatch(setSongInfo(tempSongInfo));
+          dispatch(setSeekBytes(0));
         } }>
           <img src={ img } alt="author image" className="author-image" />
           <div className="song-card-text">
