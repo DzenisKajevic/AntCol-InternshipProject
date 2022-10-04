@@ -1,0 +1,54 @@
+.created-playlist-container {
+    width: 50%;
+    height: 60px;
+    margin: auto;
+    background: var(--linear-bg);
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+}
+
+.user-image {
+    margin-left: 1rem;
+    border-radius: 10%;
+    border: 2px solid #000;
+}
+
+.playlist-name-title {
+    font-family: var(--title-font);
+    font-size: 2rem;
+    padding-left: 5rem;
+}
+
+.edit-delete-playlist {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100px;
+    height: 100%;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-left: 2px solid #000;
+}
+
+.edit-playlist {
+    cursor: pointer;
+    color: #000;
+}
+
+.edit-playlist:hover {
+    color: var(--purple);
+}
+
+.delete-playlist {
+    cursor: pointer;
+    color: #000;
+}
+
+.delete-playlist:hover {
+    color: var(--purple);
+}

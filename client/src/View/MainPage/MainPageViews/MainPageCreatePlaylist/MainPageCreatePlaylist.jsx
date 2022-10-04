@@ -6,6 +6,7 @@ import {
   faPen,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import CreatedPlaylist from "./components/CreatedPlaylist";
 
 const MainPageCreatePlaylist = () => {
   return (
@@ -20,11 +21,28 @@ const MainPageCreatePlaylist = () => {
         recusandae, id exercitationem
       </p>
       <div className="create-playlist-form">
-        <FontAwesomeIcon icon={faSquarePlus} className="add-playlist-icon" />
+        <FontAwesomeIcon
+          icon={faSquarePlus}
+          className="add-playlist-icon"
+          title="create playlist"
+        />
         <form>
-          <input type="text" />
+          <input
+            type="text"
+            className="create-playlist-input"
+            autoComplete="off"
+            placeholder="Give your playlist a name"
+          />
         </form>
       </div>
+      <CreatedPlaylist
+        userImage="http://placekitten.com/50"
+        playlistName={"Playlist Name"}
+      />
+      <CreatedPlaylist
+        userImage="http://placekitten.com/50"
+        playlistName={"Playlist Name"}
+      />
     </section>
   );
 };
