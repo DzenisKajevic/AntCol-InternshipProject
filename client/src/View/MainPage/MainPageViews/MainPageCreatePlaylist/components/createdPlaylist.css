@@ -21,9 +21,10 @@
     font-family: var(--title-font);
     font-size: 2rem;
     padding-left: 5rem;
+    margin-right: auto;
 }
 
-.edit-delete-playlist {
+.edit-menu {
     margin-left: auto;
     display: flex;
     align-items: center;
@@ -42,6 +43,7 @@
 
 .edit-playlist:hover {
     color: var(--purple);
+    transform: scale(1.1);
 }
 
 .delete-playlist {
@@ -51,4 +53,45 @@
 
 .delete-playlist:hover {
     color: var(--purple);
+    transform: scale(1.1);
+}
+
+.lock-playlist {
+    cursor: pointer;
+    color: #000;
+}
+
+.lock-playlist:hover {
+    color: var(--purple);
+    transform: scale(1.1);
+}
+
+.unlock-playlist {
+    cursor: pointer;
+    color: #000;
+}
+
+.unlock-playlist:hover {
+    color: var(--purple);
+    transform: scale(1.1);
+}
+
+.close-edit-menu {
+    cursor: pointer;
+    color: #000;
+}
+
+.close-edit-menu:hover {
+    color: var(--purple);
+    transform: scale(1.1);
+}
+
+.open-edit-menu {
+    cursor: pointer;
+    color: #000;
+}
+
+.open-edit-menu:hover {
+    color: var(--purple);
+    transform: scale(1.1);
 }
