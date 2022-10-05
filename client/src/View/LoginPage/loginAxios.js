@@ -13,7 +13,7 @@ export async function login(user) {
     else {
         // saves the token into the localStorage. 
         window.localStorage.token = response.data.data.token;
-        window.localStorage.user = response.data.data.loginUser;
+        window.localStorage.user = JSON.stringify(response.data.data.loginUser);
         // .data is needed twice because of initial data / error separation
         console.log(response);
     }
