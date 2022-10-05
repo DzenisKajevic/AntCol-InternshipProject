@@ -7,7 +7,7 @@ import * as mainAxios from "../../../mainAxios";
 import { setReloadPlaylists } from "../../../../../slices/audioVisualiser/songInfoSlice";
 import { deletePlaylist } from "../../../../../slices/playlists/playlistsSlice";
 
-const CreatedPlaylist = ({ userImage, playlistName }) => {
+const CreatedPlaylist = () => {
   const playlists = useSelector((state) => state.playlists.playlists);
   const dispatch = useDispatch();
 
@@ -16,7 +16,7 @@ const CreatedPlaylist = ({ userImage, playlistName }) => {
       {
         playlists.map((playlist, index) => {
           return (<div className="created-playlist-container" key={ playlist['_id'] }>
-            <img src={ userImage } alt="user image" className="user-image" />
+            <img src={ "" } alt="user image" className="user-image" />
             <h1 className="playlist-name-title">{ playlist.playlistName }</h1>
             <div className="edit-delete-playlist">
               <FontAwesomeIcon icon={ faPen } className="edit-playlist" />
