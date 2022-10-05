@@ -18,6 +18,7 @@ export async function getNewUsersCount() {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 //onClick={() => deleteFile("631aed4060c43bb3bf484804")}
@@ -29,6 +30,7 @@ export async function deleteFile(fileId) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 // can't test yet, requires a multipart form for file uploads
@@ -40,6 +42,7 @@ export async function uploadFile(audioFile, author, genre, songName, album) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 //onClick={() => getFile("631aed4060c43bb3bf484804")}
@@ -51,6 +54,7 @@ export async function getFile(fileId) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 //onClick={() => getFileInfo("631aed4060c43bb3bf484804")}
@@ -58,12 +62,11 @@ export async function getFileInfo(fileId) {
     const response = await audioFiles.getFileInfo(fileId);
     if (response.error) {
         console.log(response.error);
-        return response.error;
     }
     else {
         console.log(response.data);
-        return response.data;
     }
+    return response;
 }
 
 // onClick={() => getAllFiles({ 'genre': "Something", 'author': "Someone", 'page': 1, 'pageSize': 1 })}
@@ -74,12 +77,11 @@ export async function getAllFiles(options) {
     const response = await audioFiles.getAllFiles(options);
     if (response.error) {
         console.log(response.error);
-        return response.error
     }
     else {
         console.log(response.data);
-        return response.data
     }
+    return response;
 }
 
 // onClick={() => getNewFilesCount()}
@@ -91,6 +93,7 @@ export async function getNewFilesCount() {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 // onClick={() => getFileReviews({ 'description': 'The file doesn\'t meet the requirements', 'genre': 'Something' })}
@@ -105,6 +108,7 @@ export async function getFileReviews(options = null) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 // onClick={() => handleFileReview("6322fab48ab321a55be1d784", "Accepted", "The file meets the requirements")}
@@ -116,6 +120,7 @@ export async function handleFileReview(fileId, status, description) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 //onClick = {() => addFileToFavourites("6322fab48ab321a55be1d784")}
@@ -127,6 +132,7 @@ export async function addFileToFavourites(fileId) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 // onClick={() => getFavouriteFiles({ 'page': 1, 'pageSize': 4})}
@@ -138,6 +144,7 @@ export async function getFavouriteFiles(options = null) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 //onClick = {() => deleteFavouriteFile("6322fab48ab321a55be1d784")}
@@ -149,6 +156,7 @@ export async function deleteFavouriteFile(fileId) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 //onClick = {() => createEmptyPlaylist("playlist1", 'public')}
@@ -160,6 +168,7 @@ export async function createEmptyPlaylist(playlistName, visibility = 'private') 
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 /* onClick = {() => addFilesToPlaylist({
@@ -176,6 +185,7 @@ export async function addFilesToPlaylist(input) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 /* onClick = {() => removeFilesFromPlaylist({
@@ -192,9 +202,10 @@ export async function removeFilesFromPlaylist(input) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
-//onClick = {() => createEmptyPlaylist("6323044493813cd714991cd5", 'private')}
+//onClick = {() => updatePlaylistVisibility("6323044493813cd714991cd5", 'private')}
 export async function updatePlaylistVisibility(playlistId, visibility) {
     const response = await playlists.updatePlaylistVisibility(playlistId, visibility);
     if (response.error) {
@@ -203,6 +214,19 @@ export async function updatePlaylistVisibility(playlistId, visibility) {
     else {
         console.log(response.data);
     }
+    return response;
+}
+
+//onClick = {() => updatePlaylistName("6323044493813cd714991cd5", 'Playlist1')}
+export async function updatePlaylistName(playlistId, playlistName) {
+    const response = await playlists.updatePlaylistName(playlistId, playlistName);
+    if (response.error) {
+        console.log(response.error);
+    }
+    else {
+        console.log(response.data);
+    }
+    return response;
 }
 
 //onClick = {() => getPlaylistById("6323044493813cd714991cd5")}
@@ -214,6 +238,7 @@ export async function getPlaylistById(playlistId) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 //onClick = {() => getPlaylists({"userId: "6311e6c692a2db96a4bfbbb0", page": 1, "pageSize": 10})}
@@ -225,6 +250,7 @@ export async function getPlaylists(options) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 //onClick = {() => deletePlaylist("6323044493813cd714991cd5")}
@@ -236,6 +262,7 @@ export async function deletePlaylist(playlistId) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 /* onClick={() => sharePlaylist({
@@ -251,6 +278,7 @@ export async function sharePlaylist(input) {
     else {
         console.log(response.data);
     }
+    return response;
 }
 
 /* onClick={() => revokePlaylistShare({
@@ -266,4 +294,5 @@ export async function revokePlaylistShare(input) {
     else {
         console.log(response.data);
     }
+    return response;
 }

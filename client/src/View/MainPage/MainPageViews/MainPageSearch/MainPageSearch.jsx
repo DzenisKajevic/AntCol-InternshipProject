@@ -37,7 +37,7 @@ const MainPageSearch = () => {
         />
         <button className="search-bar-button" onClick={ async () => { // set song list under the search bar and edit the redux state
           let result = await mainAxios.getAllFiles({ 'metadata.songName': searchText });
-          dispatch(setSearchResults(result.data));
+          dispatch(setSearchResults(result.data.data));
         } } type="button">
           <FontAwesomeIcon icon={ faMagnifyingGlass } className="search-icon" />
         </button>
