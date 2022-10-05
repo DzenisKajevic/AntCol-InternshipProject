@@ -23,10 +23,15 @@ export const playlistsSlice = createSlice({
             state.reloadPlaylists = action.payload;
             //console.log(current(state));
         },
+        deletePlaylist: (state, action) => {
+            if (action.payload > -1) { // only splice array when item is found
+                state.playlists.splice(action.payload, 1); // 2nd parameter means remove one item only
+            }
+        }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { setPlaylists, addPlaylistToArray, setReloadPlaylists } = playlistsSlice.actions
+export const { setPlaylists, addPlaylistToArray, setReloadPlaylists, deletePlaylist } = playlistsSlice.actions
 
 export default playlistsSlice.reducer

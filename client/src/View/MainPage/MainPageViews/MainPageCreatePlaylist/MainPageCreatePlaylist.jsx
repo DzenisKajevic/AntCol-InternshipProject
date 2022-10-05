@@ -87,14 +87,15 @@ const MainPageCreatePlaylist = () => {
           />
         </form>
       </div>
-      <CreatedPlaylist
+      <CreatedPlaylist />
+      {/*       <CreatedPlaylist
         userImage="http://placekitten.com/50"
         playlistName={ "Playlist Name" }
       />
       <CreatedPlaylist
         userImage="http://placekitten.com/50"
         playlistName={ "Playlist Name" }
-      />
+      /> */}
     </section>
   );
 };
