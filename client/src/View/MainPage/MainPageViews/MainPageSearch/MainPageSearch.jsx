@@ -13,7 +13,6 @@ const MainPageSearch = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const searchResults = useSelector((state) => state.searchResults);
-  let songIndex = 0;
 
   return (
     <section>
@@ -37,6 +36,7 @@ const MainPageSearch = () => {
           placeholder="Search for your favorite songs"
           className="search-bar"
           incremental="true"
+          autoComplete="off"
         />
         <button
           className="search-bar-button"
