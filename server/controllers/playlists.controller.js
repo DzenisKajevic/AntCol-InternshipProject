@@ -62,6 +62,20 @@ async function updatePlaylistVisibility(req, res, next) {
         next(new StatusError(err.message, 'Error updating playlist visibility'));
     }
 }
+async function updatePlaylistName(req, res, next) {
+    try {
+        res.status(201).send(await playlistService.updatePlaylistName(req.user, req.body.playlistId, req.body.playlistName));
+    }
+    catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
+        console.log(err);
+        next(new StatusError(err.message, 'Error updating playlist visibility'));
+    }
+}
+
 
 async function getPlaylistById(req, res, next) {
     try {
@@ -138,6 +152,7 @@ module.exports = {
     addFilesToPlaylist,
     removeFilesFromPlaylist,
     updatePlaylistVisibility,
+    updatePlaylistName,
     getPlaylistById,
     getPlaylists,
     deletePlaylist,

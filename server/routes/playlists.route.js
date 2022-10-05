@@ -168,6 +168,48 @@ router.delete('/removeFilesFromPlaylist', playlistsController.removeFilesFromPla
 */
 router.put('/updatePlaylistVisibility', playlistsController.updatePlaylistVisibility);
 
+
+// updates playlist visibility
+/**
+* @swagger
+* /api/v1/playlists/updatePlaylistName:
+*   put:
+*     tags:
+*      - playlists
+*     description: Updates the name of a given playlist
+*     operationId: updatePlaylistName
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     requestBody:
+*      content:
+*       application/x-www-form-urlencoded:
+*        schema:
+*          type: object
+*          properties:
+*           playlistName:
+*            description: New name of the playlist
+*            required: true
+*            example: Playlist1
+*            type: string
+*           playlistId:
+*            required: true
+*            example: 6319cff93d2d3593b1e53174
+*            description: ID of the playlist to change the name of
+*            type: string
+*     responses:
+*       201:
+*         description: Successfully changed the name
+*       401: 
+*         description: Missing authorization
+*       404:
+*         description: Playlist not found
+*       500:
+*         description: Error updating playlist name
+*/
+router.put('/updatePlaylistName', playlistsController.updatePlaylistName);
+
 // returns a specific playlist
 /** 
 * @swagger
