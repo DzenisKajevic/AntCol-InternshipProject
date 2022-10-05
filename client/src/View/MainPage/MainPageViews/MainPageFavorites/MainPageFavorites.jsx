@@ -23,7 +23,7 @@ const MainPageFavorites = () => {
       fetchFavourites()
         .catch(console.error);
     }
-    //console.log(reloadFavouriteSongs);
+    console.log("Favourite songs: ", favouriteSongs);
   }, [reloadFavouriteSongs]);
 
   const sortByAuthor = function () {
