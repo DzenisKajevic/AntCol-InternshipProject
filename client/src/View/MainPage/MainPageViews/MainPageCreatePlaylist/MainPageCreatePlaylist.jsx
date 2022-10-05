@@ -34,20 +34,6 @@ const MainPageCreatePlaylist = () => {
     console.log("Playlists: ", playlists);
   }, [reloadPlaylists]);
 
-  /*   useEffect(() => {
-      if (reloadPlaylists) {
-        const fetchPlaylists = async function () {
-          let result = await mainAxios.getPlaylists();
-          dispatch(setPlaylists(result.data.data));
-          dispatch(setReloadPlaylists(false));
-          //console.log(result);
-        }
-        fetchPlaylists()
-          .catch(console.error);
-      }
-      console.log("Playlists: ", playlists);
-    }, [reloadPlaylists]); */
-
   return (
 
     <section className="create-playlist-container">
@@ -88,14 +74,6 @@ const MainPageCreatePlaylist = () => {
         </form>
       </div>
       <CreatedPlaylist />
-      {/*       <CreatedPlaylist
-        userImage="http://placekitten.com/50"
-        playlistName={ "Playlist Name" }
-      />
-      <CreatedPlaylist
-        userImage="http://placekitten.com/50"
-        playlistName={ "Playlist Name" }
-      /> */}
     </section>
   );
 };

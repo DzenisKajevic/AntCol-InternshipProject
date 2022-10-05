@@ -22,6 +22,7 @@
     font-size: 2rem;
     padding-left: 5rem;
     margin-right: auto;
+    width: 80%;
 }
 
 .edit-menu {
@@ -94,4 +95,15 @@
 .open-edit-menu:hover {
     color: var(--purple);
     transform: scale(1.1);
+}
+
+.edit-menu-closed {
+    display: none;
+}
+
+.expand-shrink-button {
+    border: none;
+    background: none;
+    outline: none;
+    padding-right: 1rem;
 }

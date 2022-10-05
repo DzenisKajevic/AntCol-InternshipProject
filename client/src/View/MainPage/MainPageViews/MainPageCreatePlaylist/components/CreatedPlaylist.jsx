@@ -1,5 +1,6 @@
 import React from "react";
 import "./createdPlaylist.css";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPen,
@@ -14,20 +15,40 @@ import * as mainAxios from "../../../mainAxios";
 import { setReloadPlaylists } from "../../../../../slices/audioVisualiser/songInfoSlice";
 import { deletePlaylist } from "../../../../../slices/playlists/playlistsSlice";
 
-const CreatedPlaylist = ({ userImage, playlistName }) => {
+const CreatedPlaylist = () => {
   const playlists = useSelector((state) => state.playlists.playlists);
   const dispatch = useDispatch();
+  // state for opening and closing the edit menu
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className="Some container idk">
       {playlists.map((playlist, index) => {
         return (
           <div className="created-playlist-container" key={playlist["_id"]}>
-            {/* <img src={userImage} alt="user image" className="user-image" /> */}
+            {/* <img src={""} alt="user image" className="user-image" /> */}
             <h1 className="playlist-name-title">{playlist.playlistName}</h1>
-            <FontAwesomeIcon icon={faAnglesRight} className="close-edit-menu" />
-            {/* <FontAwesomeIcon icon={faAnglesLeft} className="open-edit-menu" /> */}
-            <div className="edit-menu">
+            <button
+              className="expand-shrink-button"
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? (
+                <FontAwesomeIcon
+                  icon={faAnglesLeft}
+                  className="open-edit-menu"
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faAnglesRight}
+                  className="close-edit-menu"
+                />
+              )}
+            </button>
+            <div
+              className={isOpen ? "edit-menu-closed" : "edit-menu"}
+              onClick={() => setIsOpen(false)}
+            >
               <FontAwesomeIcon icon={faLock} className="lock-playlist" />
               <FontAwesomeIcon icon={faLockOpen} className="unlock-playlist" />
               <FontAwesomeIcon icon={faPen} className="edit-playlist" />

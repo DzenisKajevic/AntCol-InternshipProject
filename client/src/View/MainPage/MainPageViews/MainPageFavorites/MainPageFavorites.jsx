@@ -4,11 +4,12 @@ import { setSearchResults } from "../../../../slices/search/searchResultsSlice";
 import { setReloadFavouriteSongs } from "../../../../slices/favourites/favouriteSongsSlice";
 import { setFavouriteSongs } from "../../../../slices/favourites/favouriteSongsSlice";
 import * as mainAxios from "../../mainAxios";
+import SongCard from "../MainPageSearch/components/SongCard/SongCard";
 
 const MainPageFavorites = () => {
   const dispatch = useDispatch();
   const reloadFavouriteSongs = useSelector((state) => state.favouriteSongs.reloadFavourites);
-  const favouriteSongs = useSelector((state) => state.favouriteSongs.songs)
+  const favouriteSongs = useSelector((state) => state.favouriteSongs.songs);
   const sortSongAsc = useRef(true);
   const sortAuthorAsc = useRef(true);
 
@@ -56,9 +57,12 @@ const MainPageFavorites = () => {
   }
 
   return (
-    <>
-      <h1>fav</h1>
-    </>
+    <section>
+      <h1 className="main-page-search-title">
+        Favourite songs
+      </h1>
+      <SongCard source="FAVOURITES" />
+    </section>
   );
 };
 
