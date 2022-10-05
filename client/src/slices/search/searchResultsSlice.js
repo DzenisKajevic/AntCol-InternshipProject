@@ -4,7 +4,6 @@ export const searchResultsSlice = createSlice({
     name: 'searchResults',
     initialState: {
         songs: [],
-        index: 0
     },
     reducers: {
         setSearchResults: (state, action) => {

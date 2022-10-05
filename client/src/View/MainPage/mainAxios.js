@@ -127,7 +127,8 @@ export async function handleFileReview(fileId, status, description) {
 export async function addFileToFavourites(fileId) {
     const response = await favouriteFiles.addFileToFavourites(fileId);
     if (response.error) {
-        console.log(response.error);
+        //console.log(response.error);
+        console.log(response.error.response.data);
     }
     else {
         console.log(response.data);
@@ -139,10 +140,10 @@ export async function addFileToFavourites(fileId) {
 export async function getFavouriteFiles(options = null) {
     const response = await favouriteFiles.getFavouriteFiles(options);
     if (response.error) {
-        console.log(response.error);
+        //console.log(response.error.response.data);
     }
     else {
-        console.log(response.data);
+        //console.log(response.data);
     }
     return response;
 }

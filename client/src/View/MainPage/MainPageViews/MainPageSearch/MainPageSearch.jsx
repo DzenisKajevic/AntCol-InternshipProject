@@ -1,18 +1,49 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./mainPageSearch.css";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SongContainer from "./components/SongContainer/SongContainer";
+import SongContainer from "./components/SongContainer/SongContainer"; // SongContainer is not in use. Delete(?)
 import * as mainAxios from "../../mainAxios";
 import SongCard from "./components/SongCard/SongCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchResults } from "../../../../slices/search/searchResultsSlice";
-import { useEffect } from "react";
 
 const MainPageSearch = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const searchResults = useSelector((state) => state.searchResults);
+  const sortSongAsc = useRef(true);
+  const sortAuthorAsc = useRef(true);
+
+  const sortByAuthor = function () {
+    let tempSearchResults = structuredClone(searchResults.songs);
+    // check author a > b, if equal, check songName a > b.
+    if (sortAuthorAsc.current)
+      tempSearchResults.sort((a, b) => (a.metadata.author > b.metadata.author) ? 1 : (a.metadata.author === b.metadata.author) ?
+        ((a.metadata.songName > b.metadata.songName) ? 1 : -1) : -1);
+
+    else
+      tempSearchResults.sort((a, b) => (a.metadata.author > b.metadata.author) ? -1 : (a.metadata.author === b.metadata.author) ?
+        ((a.metadata.songName > b.metadata.songName) ? -1 : 1) : 1);
+
+    sortAuthorAsc.current = !sortAuthorAsc.current;
+    dispatch(setSearchResults(tempSearchResults)); // invoke rerender
+  }
+
+  const sortBySong = function () {
+    let tempSearchResults = structuredClone(searchResults.songs);
+    // check author a > b, if equal, check songName a > b.
+    if (sortSongAsc.current)
+      tempSearchResults.sort((a, b) => (a.metadata.songName > b.metadata.songName) ? 1 : (a.metadata.songName === b.metadata.songName) ?
+        ((a.metadata.author > b.metadata.author) ? 1 : -1) : -1);
+    else
+      tempSearchResults.sort((a, b) => (a.metadata.songName > b.metadata.songName) ? -1 : (a.metadata.songName === b.metadata.songName) ?
+        ((a.metadata.author > b.metadata.author) ? -1 : 1) : 1);
+
+    sortSongAsc.current = !sortSongAsc.current;
+    dispatch(setSearchResults(tempSearchResults));
+  }
+
 
   return (
     <section>
@@ -43,13 +74,13 @@ const MainPageSearch = () => {
         </button>
       </form>
       <nav className="search-buttons-container">
-        <button className="search-buttons" type="button">
+        {/* <button className="search-buttons" type="button">
           All
-        </button>
-        <button className="search-buttons" type="button">
+        </button> */}
+        <button className="search-buttons" type="button" onClick={ () => { sortByAuthor(); } }>
           Artist
         </button>
-        <button className="search-buttons" type="button">
+        <button className="search-buttons" type="button" onClick={ () => { sortBySong(); } }>
           Song
         </button>
         {/* <button className="search-buttons" type="button">
