@@ -79,6 +79,17 @@ async function updatePlaylistVisibility(user, playlistId, visibility) {
     return playlist;
 };
 
+// this function and updateVisibility could be merged into a single function, but that's not the priority currently.
+async function updatePlaylistName(user, playlistId, playlistName) {
+    let playlist = await Playlist.findOneAndUpdate({ '_id': playlistId, 'userId': user.userId }, { 'playlistName': playlistName }, { new: true });
+    if (!playlist) {
+        throw new StatusError(null, 'Playlist not found', 404);
+    }
+    console.log(playlist);
+    return playlist;
+};
+
+
 async function getPlaylistById(user, playlistId) {
     const playlist = await Playlist.findOne({ '_id': playlistId }).populate('files').populate('sharedWith', 'username _id');
     if (!playlist) throw new StatusError("Playlist not found", 404);
@@ -160,6 +171,7 @@ module.exports = {
     addFilesToPlaylist,
     removeFilesFromPlaylist,
     updatePlaylistVisibility,
+    updatePlaylistName,
     getPlaylistById,
     getPlaylists,
     deletePlaylist,

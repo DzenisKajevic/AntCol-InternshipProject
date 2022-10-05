@@ -52,6 +52,21 @@ export async function updatePlaylistVisibility(playlistId, visibility) {
         }));
 }
 
+export async function updatePlaylistName(playlistId, playlistName) {
+    return await resolve(
+        axios({
+            method: 'put',
+            url: 'http://localhost:3001/api/v1/playlists/updatePlaylistName',
+            data: {
+                playlistId,
+                playlistName
+            },
+            headers: {
+                'Authorization': 'Bearer ' + window.localStorage.token
+            }
+        }));
+}
+
 export async function getPlaylistById(playlistId) {
     return await resolve(
         axios({

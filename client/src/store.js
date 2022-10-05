@@ -5,6 +5,8 @@ import volumeSliderValueReducer from './slices/audioVisualiser/volumeSliderValue
 import seekBytesReducer from './slices/audioVisualiser/seekBytesSlice'
 import visualiserHiddenReducer from './slices/audioVisualiser/visualiserHiddenSlice'
 import searchResultsReducer from './slices/search/searchResultsSlice'
+import favouriteSongsReducer from './slices/favourites/favouriteSongsSlice'
+import playlistsReducer from './slices/playlists/playlistsSlice'
 
 export default configureStore({
     reducer: {
@@ -14,5 +16,7 @@ export default configureStore({
         seekBytes: seekBytesReducer,
         visualiserHidden: visualiserHiddenReducer,
         searchResults: searchResultsReducer,
+        favouriteSongs: favouriteSongsReducer,
+        playlists: playlistsReducer,
     },
 })

@@ -4,6 +4,7 @@ export const songInfoSlice = createSlice({
     name: 'songInfo',
     initialState: {
         song: null,
+        reloadPlaylists: false
     },
     reducers: {
         setSongInfo: (state, action) => {
@@ -13,11 +14,14 @@ export const songInfoSlice = createSlice({
             // immutable state based off those changes
             state.song = action.payload;
         },
+        setReloadPlaylists: (state, action) => {
+            state.reloadPlaylists = action.payload;
+        }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { setSongInfo } = songInfoSlice.actions
+export const { setSongInfo, setReloadPlaylists } = songInfoSlice.actions
 
 export default songInfoSlice.reducer
 

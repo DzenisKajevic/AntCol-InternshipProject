@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./mainPageCreatePlaylist.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,9 +7,49 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import CreatedPlaylist from "./components/CreatedPlaylist";
+import * as mainAxios from "../../mainAxios";
+import { useDispatch, useSelector } from "react-redux";
+import { setPlaylists, setReloadPlaylists, addPlaylistToArray } from "../../../../slices/playlists/playlistsSlice";
 
 const MainPageCreatePlaylist = () => {
+
+  const [playlistNameInput, setPlaylistNameInput] = useState("");
+  const reloadPlaylists = useSelector((state) => state.playlists.reloadPlaylists);
+  const dispatch = useDispatch();
+  const playlists = useSelector((state) => state.playlists.playlists);
+  const sortSongAsc = useRef(true);
+  const sortAuthorAsc = useRef(true);
+
+  useEffect(() => {
+    if (reloadPlaylists) {
+      const fetchPlaylists = async function () {
+        let result = await mainAxios.getPlaylists();
+        dispatch(setPlaylists(result.data.data));
+        dispatch(setReloadPlaylists(false));
+        //console.log(result);
+      }
+      fetchPlaylists()
+        .catch(console.error);
+    }
+    console.log("Playlists: ", playlists);
+  }, [reloadPlaylists]);
+
+  /*   useEffect(() => {
+      if (reloadPlaylists) {
+        const fetchPlaylists = async function () {
+          let result = await mainAxios.getPlaylists();
+          dispatch(setPlaylists(result.data.data));
+          dispatch(setReloadPlaylists(false));
+          //console.log(result);
+        }
+        fetchPlaylists()
+          .catch(console.error);
+      }
+      console.log("Playlists: ", playlists);
+    }, [reloadPlaylists]); */
+
   return (
+
     <section className="create-playlist-container">
       <h1 className="main-page-create-playlist-title">
         Create your own playlists
@@ -22,27 +62,40 @@ const MainPageCreatePlaylist = () => {
       </p>
       <div className="create-playlist-form">
         <FontAwesomeIcon
-          icon={faSquarePlus}
+          icon={ faSquarePlus }
           className="add-playlist-icon"
           title="create playlist"
+          onClick={ async () => { // set song list under the search bar and edit the redux state
+            let result = await mainAxios.createEmptyPlaylist(playlistNameInput, "private");
+            if (result.data) {
+              dispatch(addPlaylistToArray(result.data.data));
+              dispatch(setReloadPlaylists(true));
+            }
+            //console.log(result);
+          } }
         />
-        <form>
+        <form onSubmit={ (e) => {
+          e.preventDefault();
+        } }>
           <input
             type="text"
             className="create-playlist-input"
             autoComplete="off"
             placeholder="Give your playlist a name"
+            value={ playlistNameInput }
+            onChange={ (event) => { setPlaylistNameInput(event.target.value); } }
           />
         </form>
       </div>
-      <CreatedPlaylist
+      <CreatedPlaylist />
+      {/*       <CreatedPlaylist
         userImage="http://placekitten.com/50"
-        playlistName={"Playlist Name"}
+        playlistName={ "Playlist Name" }
       />
       <CreatedPlaylist
         userImage="http://placekitten.com/50"
-        playlistName={"Playlist Name"}
-      />
+        playlistName={ "Playlist Name" }
+      /> */}
     </section>
   );
 };

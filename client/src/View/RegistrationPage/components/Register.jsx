@@ -121,47 +121,47 @@ const Register = () => {
       setSuccess("Successfuly Registered!");
 
       setTimeout(() => {
-        navigate("/login");
+        navigate("/main-page/home");
       }, 3000);
     }
   };
 
   return (
     <>
-      {success ? (
+      { success ? (
         <section className="success-register-page">
           <h1 className="success-register-title">Successfuly Registered!</h1>
         </section>
       ) : (
         <section className="registrationpage-container">
-          <p ref={errRef} className={errMsg ? "reg-errmsg" : "offscreen"}>
-            {errMsg}
+          <p ref={ errRef } className={ errMsg ? "reg-errmsg" : "offscreen" }>
+            { errMsg }
           </p>
           <div className="register-bg-color-wrapper">
-            <form onSubmit={submitHandler} className="register-form">
+            <form onSubmit={ submitHandler } className="register-form">
               <h1 className="register-title">Sign up for a new account</h1>
-              <p ref={errRef} className={errMsg ? "reg-errmsg" : "offscreen"}>
-                {errMsg}
+              <p ref={ errRef } className={ errMsg ? "reg-errmsg" : "offscreen" }>
+                { errMsg }
               </p>
               <label htmlFor="username" className="register-label">
                 Username:
-                <span className={validName ? "reg-valid" : "hide"}>
-                  <FontAwesomeIcon icon={faCheck} />
+                <span className={ validName ? "reg-valid" : "hide" }>
+                  <FontAwesomeIcon icon={ faCheck } />
                 </span>
                 <span
-                  className={validName || !username ? "hide" : "reg-invalid"}
+                  className={ validName || !username ? "hide" : "reg-invalid" }
                 >
-                  <FontAwesomeIcon icon={faTimes} />
+                  <FontAwesomeIcon icon={ faTimes } />
                 </span>
               </label>
               <input
                 type="text"
                 id="username"
-                ref={userRef}
+                ref={ userRef }
                 autoComplete="off"
-                onChange={(e) => setUsername(e.target.value)}
-                onFocus={() => setUsernameFocus(true)}
-                onBlur={() => setUsernameFocus(false)}
+                onChange={ (e) => setUsername(e.target.value) }
+                onFocus={ () => setUsernameFocus(true) }
+                onBlur={ () => setUsernameFocus(false) }
                 className="register-input"
                 placeholder="Choose a username"
                 required
@@ -174,7 +174,7 @@ const Register = () => {
                     : "offscreen"
                 }
               >
-                <FontAwesomeIcon icon={faInfoCircle} />
+                <FontAwesomeIcon icon={ faInfoCircle } />
                 5 to 23 characters, <br />
                 Must begin with a letter, <br />
                 Letters, numbers, hyphens and underscores are allowed
@@ -182,19 +182,19 @@ const Register = () => {
 
               <label htmlFor="email" className="register-label">
                 Email:
-                <span className={validEmail ? "reg-valid" : "hide"}>
-                  <FontAwesomeIcon icon={faCheck} />
+                <span className={ validEmail ? "reg-valid" : "hide" }>
+                  <FontAwesomeIcon icon={ faCheck } />
                 </span>
-                <span className={validEmail || !email ? "hide" : "reg-invalid"}>
-                  <FontAwesomeIcon icon={faTimes} />
+                <span className={ validEmail || !email ? "hide" : "reg-invalid" }>
+                  <FontAwesomeIcon icon={ faTimes } />
                 </span>
               </label>
               <input
                 type="email"
                 id="email"
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setEmailFocus(true)}
-                onBlur={() => setEmailFocus(false)}
+                onChange={ (e) => setEmail(e.target.value) }
+                onFocus={ () => setEmailFocus(true) }
+                onBlur={ () => setEmailFocus(false) }
                 className="register-input"
                 placeholder="Type in your e-mail address"
                 required
@@ -206,25 +206,25 @@ const Register = () => {
                   emailFocus && !validEmail ? "reg-instructions" : "offscreen"
                 }
               >
-                <FontAwesomeIcon icon={faInfoCircle} />
+                <FontAwesomeIcon icon={ faInfoCircle } />
                 Enter a valid e-mail address!
               </p>
 
               <label htmlFor="password" className="register-label">
                 Password:
-                <span className={validPass ? "reg-valid" : "hide"}>
-                  <FontAwesomeIcon icon={faCheck} />
+                <span className={ validPass ? "reg-valid" : "hide" }>
+                  <FontAwesomeIcon icon={ faCheck } />
                 </span>
-                <span className={validPass || !pass ? "hide" : "reg-invalid"}>
-                  <FontAwesomeIcon icon={faTimes} />
+                <span className={ validPass || !pass ? "hide" : "reg-invalid" }>
+                  <FontAwesomeIcon icon={ faTimes } />
                 </span>
               </label>
               <input
                 type="password"
                 id="password"
-                onChange={(e) => setPass(e.target.value)}
-                onFocus={() => setPassFocus(true)}
-                onBlur={() => setPassFocus(false)}
+                onChange={ (e) => setPass(e.target.value) }
+                onFocus={ () => setPassFocus(true) }
+                onBlur={ () => setPassFocus(false) }
                 className="register-input"
                 placeholder="Choose a password"
                 required
@@ -235,7 +235,7 @@ const Register = () => {
                   passFocus && !validPass ? "reg-instructions" : "offscreen"
                 }
               >
-                <FontAwesomeIcon icon={faInfoCircle} />
+                <FontAwesomeIcon icon={ faInfoCircle } />
                 8 to 24 characters, <br />
                 Must include at least one uppercase letter, lowercase letter and
                 a number.
@@ -256,7 +256,7 @@ const Register = () => {
             </form>
           </div>
         </section>
-      )}
+      ) }
     </>
   );
 };

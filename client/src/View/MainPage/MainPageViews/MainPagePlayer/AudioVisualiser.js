@@ -1,11 +1,8 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import './AudioVisualiser.css';
 import axios from 'axios';
-import { setSongInfo } from '../../../../slices/audioVisualiser/songInfoSlice';
 import { setSeekBytes } from '../../../../slices/audioVisualiser/seekBytesSlice';
 import { setSeekSliderValue } from '../../../../slices/audioVisualiser/seekSliderValueSlice';
-import { setVisualiserHidden } from '../../../../slices/audioVisualiser/visualiserHiddenSlice';
-import { setSearchResults } from '../../../../slices/search/searchResultsSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import SeekSlider from './Components/SeekSlider';
 import VolumeSlider from './Components/VolumeSlider';
@@ -152,8 +149,7 @@ const AudioVisualiser = () =>
     let shouldPlay = useRef( true );
     let animationId = useRef( null );
     let headers = useRef( {} );
-    let fileUrl = useRef( 'http://localhost:3001/api/v1/audioFiles/getFile/63299fff95f55c20e3e08ae0' );
-    let fileInfoUrl = useRef( 'http://localhost:3001/api/v1/audioFiles/getFileInfo/63299fff95f55c20e3e08ae0' );
+    let fileUrl = useRef( null );
 
     let audioBuffer = useRef( null );
     let audioContext = useRef( null );
