@@ -162,6 +162,7 @@ async function getAllFiles(user, queryParams, callback) {
     let page = parseInt(queryParams.page) || 1;
     let pageSize = parseInt(queryParams.pageSize) || 4;
     console.log(filters);
+    console.log("Pg", page, "PgSz", pageSize);
 
     //if songName is present, use regex to find matching songs
     if (filters['metadata.songName']) {
@@ -170,22 +171,38 @@ async function getAllFiles(user, queryParams, callback) {
         delete filters['metadata.songName'];
 
         console.log(songNameRegex, filters);
+        let matchingCount = await AudioFile.count({ $and: [{ 'metadata.songName': { '$regex': new RegExp(songNameRegex, "i") } }, filters] });
         db.getAudioGfs().find({ $and: [{ 'metadata.songName': { '$regex': new RegExp(songNameRegex, "i") } }, filters] }).skip((page - 1) * pageSize).limit(pageSize)
             .toArray((err, files) => {
                 if (!files || files.length === 0) {
                     callback(new StatusError(null, 'No files available', 404));
                 }
-                else callback(null, files);
+                else {
+                    let returnObject = {
+                        'searchResults': files,
+                        'pageCount': Math.ceil(matchingCount / pageSize)
+                    }
+                    console.log(returnObject);
+                    callback(null, returnObject);
+                }
             });
     }
     // else match exact values
     else {
         delete filters['metadata.songName'];
+        let matchingCount = await AudioFile.count({ filters });
         db.getAudioGfs().find(filters).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
             if (!files || files.length === 0) {
                 callback(new StatusError(null, 'No files available', 404));
             }
-            else callback(null, files);
+            else {
+                let returnObject = {
+                    'searchResults': files,
+                    'pageCount': Math.ceil(matchingCount / pageSize)
+                }
+                console.log(returnObject);
+                callback(null, returnObject);
+            }
         });
     }
 };

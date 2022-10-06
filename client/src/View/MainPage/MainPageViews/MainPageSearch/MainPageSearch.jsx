@@ -14,8 +14,23 @@ const MainPageSearch = () => {
   const searchResults = useSelector((state) => state.searchResults);
   const sortSongAsc = useRef(true);
   const sortAuthorAsc = useRef(true);
+  const pagination = useRef({
+    'page': '1',
+    'pageSize': '4'
+  });
+
+  const updateSearch = function (result) {
+    if (result.data)
+      dispatch(setSearchResults(result.data.data));
+
+    else
+      dispatch(setSearchResults({ searchResults: [], pageCount: 0 }));
+    window.location.hash = "nonExistantHashUsedForRefreshing";
+    window.location.hash = "#card-container";
+  };
 
   const sortByAuthor = function () {
+    console.log(searchResults.songs);
     let tempSearchResults = structuredClone(searchResults.songs);
     // check author a > b, if equal, check songName a > b.
     if (sortAuthorAsc.current)
@@ -27,7 +42,8 @@ const MainPageSearch = () => {
         ((a.metadata.songName > b.metadata.songName) ? -1 : 1) : 1);
 
     sortAuthorAsc.current = !sortAuthorAsc.current;
-    dispatch(setSearchResults(tempSearchResults)); // invoke rerender
+    console.log(tempSearchResults);
+    dispatch(setSearchResults({ searchResults: tempSearchResults, pageCount: searchResults.pageCount })); // invoke rerender
   }
 
   const sortBySong = function () {
@@ -41,7 +57,7 @@ const MainPageSearch = () => {
         ((a.metadata.author > b.metadata.author) ? -1 : 1) : 1);
 
     sortSongAsc.current = !sortSongAsc.current;
-    dispatch(setSearchResults(tempSearchResults));
+    dispatch(setSearchResults({ searchResults: tempSearchResults, pageCount: searchResults.pageCount })); // invoke rerender
   }
 
 
@@ -67,8 +83,8 @@ const MainPageSearch = () => {
           incremental="true"
         />
         <button className="search-bar-button" onClick={ async () => { // set song list under the search bar and edit the redux state
-          let result = await mainAxios.getAllFiles({ 'metadata.songName': searchText });
-          dispatch(setSearchResults(result.data.data));
+          let result = await mainAxios.getAllFiles({ 'metadata.songName': searchText, 'page': pagination.current.page, 'pageSize': pagination.current.pageSize });
+          updateSearch(result);
         } } type="button">
           <FontAwesomeIcon icon={ faMagnifyingGlass } className="search-icon" />
         </button>
@@ -89,6 +105,24 @@ const MainPageSearch = () => {
       </nav>
       {/* <SongContainer /> */ }
       <SongCard source="SEARCH" />
+      <button id="previousPage" style={ { backgroundColor: '#4CAF50', display: pagination.current.page - 1 <= 0 ? 'none' : null } } onClick={ async () => {
+        pagination.current.page--;
+        let result = await mainAxios.getAllFiles({
+          'metadata.songName': searchText, 'page': pagination.current.page, 'pageSize': pagination.current.pageSize
+        });
+        updateSearch(result);
+      } }>{ Number(pagination.current.page) - 1 }
+      </button>
+
+      <button id="currentPage" style={ { backgroundColor: '#FF0000', display: (!searchResults.songs || searchResults.songs.length) ? null : 'none' } }>{ pagination.current.page }</button>
+
+      <button id="nextPage" style={ { backgroundColor: '#4CAF50', display: Number(pagination.current.page) + 1 > searchResults.pageCount ? 'none' : null } } onClick={ async () => {
+        pagination.current.page++;
+        let result = await mainAxios.getAllFiles({
+          'metadata.songName': searchText, 'page': pagination.current.page, 'pageSize': pagination.current.pageSize
+        });
+        updateSearch(result);
+      } }>{ Number(pagination.current.page) + 1 }</button>
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, current } from '@reduxjs/toolkit'
 
 export const songInfoSlice = createSlice({
     name: 'songInfo',
@@ -13,6 +13,7 @@ export const songInfoSlice = createSlice({
             // which detects changes to a "draft state" and produces a brand new
             // immutable state based off those changes
             state.song = action.payload;
+            console.log(current(state));
         },
         setReloadPlaylists: (state, action) => {
             state.reloadPlaylists = action.payload;

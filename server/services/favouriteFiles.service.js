@@ -28,6 +28,9 @@ async function getFavouriteFiles(userId, { page, pageSize }) {
 
     // for now, this line is useless, since the userId is extracted from the JWT. Favourite files are private for now
     if (!userId || userId === 'undefined') throw new StatusError(undefined, 'User ID was not provided', 422);
+
+
+    let favouritesCount = await FavouriteFile.count({ 'userId': userId });
     const files = await FavouriteFile.find({ 'userId': userId }).skip((page - 1) * pageSize).limit(pageSize).populate('fileId');
     if (!files || files.length === 0) {
         throw new StatusError(null, 'No files available', 404);
@@ -36,7 +39,13 @@ async function getFavouriteFiles(userId, { page, pageSize }) {
         this[index].userId = undefined;
         delete this[index].userId;
     }, files);
-    return files;
+
+    let returnObject = {
+        'favourites': files,
+        'pageCount': Math.ceil(favouritesCount / pageSize)
+    }
+
+    return returnObject;
 };
 
 module.exports = {
