@@ -55,6 +55,18 @@ export async function getAllFiles(options = null) {
         }));
 }
 
+export async function getAllGenres(options = null) {
+    return await resolve(
+        axios({
+            method: 'get',
+            url: `http://localhost:3001/api/v1/audioFiles/getAllGenres`,
+            data: {}, // data = body parameters
+            // params = query parameters
+            params: options,
+            headers: { 'Authorization': 'Bearer ' + window.localStorage.token }
+        }));
+}
+
 export async function getNewFilesCount() {
     return await resolve(
         axios({

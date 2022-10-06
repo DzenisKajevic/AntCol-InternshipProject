@@ -210,9 +210,14 @@ async function getAllGenres(user, queryParams) {
             }); */
 
     let genres = await AudioFile.find().distinct('metadata.genre');//.skip((page - 1) * pageSize).limit(pageSize);
+    let numberOfGenres = genres.length;
     genres = genres.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize)
-    return genres;
-
+    let returnObject = {
+        'genres': genres,
+        'pageCount': Math.ceil(numberOfGenres / pageSize)
+    }
+    console.log(returnObject);
+    return returnObject;
 };
 
 

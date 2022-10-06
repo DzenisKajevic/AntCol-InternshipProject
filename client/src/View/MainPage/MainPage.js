@@ -10,7 +10,7 @@ import MainPageHome from './MainPageViews/MainPageHome/MainPageHome';
 
 
 const MainPage = () => {
-    if (window.location.pathname === '/main-page') window.location.replace('/main-page/home');
+    if (window.location.pathname === '/main-page' || window.location.pathname === '/main-page/') window.location.replace('/main-page/home');
 
     return (
         <section>

@@ -22,40 +22,40 @@ const CreatedPlaylist = () => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="Some container idk">
-      {playlists.map((playlist, index) => {
+    <div className="playlistContainer">
+      { playlists.map((playlist, index) => {
         return (
-          <div className="created-playlist-container" key={playlist["_id"]}>
-            {/* <img src={""} alt="user image" className="user-image" /> */}
-            <h1 className="playlist-name-title">{playlist.playlistName}</h1>
+          <div className="created-playlist-container" key={ playlist["_id"] }>
+            {/* <img src={""} alt="user image" className="user-image" /> */ }
+            <h1 className="playlist-name-title">{ playlist.playlistName }</h1>
             <button
               className="expand-shrink-button"
               type="button"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={ () => setIsOpen(!isOpen) }
             >
-              {isOpen ? (
+              { isOpen ? (
                 <FontAwesomeIcon
-                  icon={faAnglesLeft}
+                  icon={ faAnglesLeft }
                   className="open-edit-menu"
                 />
               ) : (
                 <FontAwesomeIcon
-                  icon={faAnglesRight}
+                  icon={ faAnglesRight }
                   className="close-edit-menu"
                 />
-              )}
+              ) }
             </button>
             <div
-              className={isOpen ? "edit-menu-closed" : "edit-menu"}
-              onClick={() => setIsOpen(false)}
+              className={ isOpen ? "edit-menu-closed" : "edit-menu" }
+              onClick={ () => setIsOpen(false) }
             >
-              <FontAwesomeIcon icon={faLock} className="lock-playlist" />
-              <FontAwesomeIcon icon={faLockOpen} className="unlock-playlist" />
-              <FontAwesomeIcon icon={faPen} className="edit-playlist" />
+              <FontAwesomeIcon icon={ faLock } className="lock-playlist" />
+              <FontAwesomeIcon icon={ faLockOpen } className="unlock-playlist" />
+              <FontAwesomeIcon icon={ faPen } className="edit-playlist" />
               <FontAwesomeIcon
-                icon={faTrash}
+                icon={ faTrash }
                 className="delete-playlist"
-                onClick={async () => {
+                onClick={ async () => {
                   const result = await mainAxios.deletePlaylist(
                     playlist["_id"]
                   );
@@ -65,12 +65,12 @@ const CreatedPlaylist = () => {
                     dispatch(deletePlaylist(index));
                     dispatch(setReloadPlaylists(true));
                   }
-                }}
+                } }
               />
             </div>
           </div>
         );
-      })}
+      }) }
     </div>
   );
 };

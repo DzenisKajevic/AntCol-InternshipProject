@@ -84,6 +84,17 @@ export async function getAllFiles(options) {
     return response;
 }
 
+export async function getAllGenres(options) {
+    const response = await audioFiles.getAllGenres(options);
+    if (response.error) {
+        console.log(response.error);
+    }
+    else {
+        console.log(response.data);
+    }
+    return response;
+}
+
 // onClick={() => getNewFilesCount()}
 export async function getNewFilesCount() {
     const response = await audioFiles.getNewFilesCount();

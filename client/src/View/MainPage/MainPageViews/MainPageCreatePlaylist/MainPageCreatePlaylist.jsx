@@ -31,7 +31,6 @@ const MainPageCreatePlaylist = () => {
       fetchPlaylists()
         .catch(console.error);
     }
-    console.log("Playlists: ", playlists);
   }, [reloadPlaylists]);
 
   return (
