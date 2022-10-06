@@ -74,6 +74,21 @@ async function getAllFiles(req, res, next) {
         next(new StatusError(err.message, `Error fetching files`, err.statusCode || 500));
     }
 };
+
+async function getAllGenres(req, res, next) {
+    try {
+        res.status(200).send(await audioFilesService.getAllGenres(req.user, req.query));
+    }
+    catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
+        console.error('Error fetching genres\n', err);
+        next(new StatusError(err.message, 'Error fetching genres\n', 500));
+    }
+}
+
 // admin
 async function getNewFilesCount(req, res, next) {
     try {
@@ -125,6 +140,7 @@ module.exports = {
     getFile,
     getFileInfo,
     getAllFiles,
+    getAllGenres,
     getNewFilesCount,
     getFileReviews,
     handleFileReview,
