@@ -23,8 +23,10 @@ const MainPageSearch = () => {
     if (result.data)
       dispatch(setSearchResults(result.data.data));
 
-    else
+    else {
+      pagination.current.page = 1;
       dispatch(setSearchResults({ searchResults: [], pageCount: 0 }));
+    }
     window.location.hash = "nonExistantHashUsedForRefreshing";
     window.location.hash = "#card-container";
   };
@@ -114,7 +116,7 @@ const MainPageSearch = () => {
       } }>{ Number(pagination.current.page) - 1 }
       </button>
 
-      <button id="currentPage" style={ { backgroundColor: '#FF0000', display: (!searchResults.songs || searchResults.songs.length) ? null : 'none' } }>{ pagination.current.page }</button>
+      <button id="currentPage" style={ { backgroundColor: '#FF0000', display: (!searchResults.songs || !searchResults.songs.length) ? 'none' : null } }>{ pagination.current.page }</button>
 
       <button id="nextPage" style={ { backgroundColor: '#4CAF50', display: Number(pagination.current.page) + 1 > searchResults.pageCount ? 'none' : null } } onClick={ async () => {
         pagination.current.page++;

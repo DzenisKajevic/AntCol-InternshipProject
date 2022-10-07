@@ -76,7 +76,7 @@ router.delete('/deleteFile', profilePicController.deleteFile);
 // returns a specific file
 /** 
 * @swagger
-*  /api/v1/profilePics/getFile/{fileId}: 
+*  /api/v1/profilePics/getFile: 
 *   get: 
 *    tags:
 *      - profilePics
@@ -90,10 +90,16 @@ router.delete('/deleteFile', profilePicController.deleteFile);
 *    description: Use to fetch a single file with the specified id
 *    parameters:
 *       - in: path
-*         name: fileId
-*         schema:
+*         name: input
+*       schema:
+*         type: object
+*         properties:
+*          userId:
 *           type: string
-*           example: 632979b58b7dc897ce305e3a
+*           description: Fetch profile picture based on userId
+*          fileId:
+*           type: string
+*           description: Fetch profile picture based on fileId
 *    responses: 
 *      200: 
 *          description: Successful response
@@ -104,6 +110,6 @@ router.delete('/deleteFile', profilePicController.deleteFile);
 *      500:
 *          description: Error fetching file info (invalid input?)
 */
-router.get('/getFile/:id', profilePicController.getFile);
+router.get('/getFile', profilePicController.getFile);
 
 module.exports = router;
