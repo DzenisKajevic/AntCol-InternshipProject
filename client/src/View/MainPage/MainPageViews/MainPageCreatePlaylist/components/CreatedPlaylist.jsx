@@ -21,6 +21,15 @@ const CreatedPlaylist = () => {
   // state for opening and closing the edit menu
   const [isOpen, setIsOpen] = useState(true);
 
+  // let array = [];
+
+  // playlists.map((item) => {
+  //   array.push({
+  //     item,
+  //     value: false,
+  //   });
+  // });
+
   return (
     <div className="Some container idk">
       {playlists.map((playlist, index) => {

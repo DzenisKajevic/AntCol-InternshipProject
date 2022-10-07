@@ -19,31 +19,57 @@ const MainPageSearch = () => {
     let tempSearchResults = structuredClone(searchResults.songs);
     // check author a > b, if equal, check songName a > b.
     if (sortAuthorAsc.current)
-      tempSearchResults.sort((a, b) => (a.metadata.author > b.metadata.author) ? 1 : (a.metadata.author === b.metadata.author) ?
-        ((a.metadata.songName > b.metadata.songName) ? 1 : -1) : -1);
-
+      tempSearchResults.sort((a, b) =>
+        a.metadata.author > b.metadata.author
+          ? 1
+          : a.metadata.author === b.metadata.author
+          ? a.metadata.songName > b.metadata.songName
+            ? 1
+            : -1
+          : -1
+      );
     else
-      tempSearchResults.sort((a, b) => (a.metadata.author > b.metadata.author) ? -1 : (a.metadata.author === b.metadata.author) ?
-        ((a.metadata.songName > b.metadata.songName) ? -1 : 1) : 1);
+      tempSearchResults.sort((a, b) =>
+        a.metadata.author > b.metadata.author
+          ? -1
+          : a.metadata.author === b.metadata.author
+          ? a.metadata.songName > b.metadata.songName
+            ? -1
+            : 1
+          : 1
+      );
 
     sortAuthorAsc.current = !sortAuthorAsc.current;
     dispatch(setSearchResults(tempSearchResults)); // invoke rerender
-  }
+  };
 
   const sortBySong = function () {
     let tempSearchResults = structuredClone(searchResults.songs);
     // check author a > b, if equal, check songName a > b.
     if (sortSongAsc.current)
-      tempSearchResults.sort((a, b) => (a.metadata.songName > b.metadata.songName) ? 1 : (a.metadata.songName === b.metadata.songName) ?
-        ((a.metadata.author > b.metadata.author) ? 1 : -1) : -1);
+      tempSearchResults.sort((a, b) =>
+        a.metadata.songName > b.metadata.songName
+          ? 1
+          : a.metadata.songName === b.metadata.songName
+          ? a.metadata.author > b.metadata.author
+            ? 1
+            : -1
+          : -1
+      );
     else
-      tempSearchResults.sort((a, b) => (a.metadata.songName > b.metadata.songName) ? -1 : (a.metadata.songName === b.metadata.songName) ?
-        ((a.metadata.author > b.metadata.author) ? -1 : 1) : 1);
+      tempSearchResults.sort((a, b) =>
+        a.metadata.songName > b.metadata.songName
+          ? -1
+          : a.metadata.songName === b.metadata.songName
+          ? a.metadata.author > b.metadata.author
+            ? -1
+            : 1
+          : 1
+      );
 
     sortSongAsc.current = !sortSongAsc.current;
     dispatch(setSearchResults(tempSearchResults));
-  }
-
+  };
 
   return (
     <section>
@@ -52,42 +78,64 @@ const MainPageSearch = () => {
       </h1>
       <form
         className="search-form"
-        onSubmit={ (e) => {
+        onSubmit={(e) => {
           e.preventDefault();
-        } }
+        }}
       >
         <input
           type="search"
           id="search-bar"
           name="search-bar"
-          value={ searchText }
-          onChange={ (event) => { setSearchText(event.target.value); } }
+          autoComplete="off"
+          value={searchText}
+          onChange={(event) => {
+            setSearchText(event.target.value);
+          }}
           placeholder="Search for your favorite songs"
           className="search-bar"
           incremental="true"
         />
-        <button className="search-bar-button" onClick={ async () => { // set song list under the search bar and edit the redux state
-          let result = await mainAxios.getAllFiles({ 'metadata.songName': searchText });
-          dispatch(setSearchResults(result.data.data));
-        } } type="button">
-          <FontAwesomeIcon icon={ faMagnifyingGlass } className="search-icon" />
+        <button
+          className="search-bar-button"
+          onClick={async () => {
+            // set song list under the search bar and edit the redux state
+            let result = await mainAxios.getAllFiles({
+              "metadata.songName": searchText,
+            });
+            dispatch(setSearchResults(result.data.data));
+          }}
+          type="button"
+        >
+          <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
         </button>
       </form>
       <nav className="search-buttons-container">
         {/* <button className="search-buttons" type="button">
           All
         </button> */}
-        <button className="search-buttons" type="button" onClick={ () => { sortByAuthor(); } }>
+        <button
+          className="search-buttons"
+          type="button"
+          onClick={() => {
+            sortByAuthor();
+          }}
+        >
           Artist
         </button>
-        <button className="search-buttons" type="button" onClick={ () => { sortBySong(); } }>
+        <button
+          className="search-buttons"
+          type="button"
+          onClick={() => {
+            sortBySong();
+          }}
+        >
           Song
         </button>
         {/* <button className="search-buttons" type="button">
           Playlist
         </button> */}
       </nav>
-      {/* <SongContainer /> */ }
+      {/* <SongContainer /> */}
       <SongCard source="SEARCH" />
     </section>
   );
