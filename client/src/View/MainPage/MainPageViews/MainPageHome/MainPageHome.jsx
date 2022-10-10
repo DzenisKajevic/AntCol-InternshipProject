@@ -6,7 +6,10 @@ import "./mainPageHome.css";
 import {
   setGenres,
   setReloadGenres,
+  unhideGenres,
+  reloadGenres
 } from "../../../../slices/genres/genresSlice";
+import { SongCard } from "../MainPageSearch/components/SongCard/SongCard";
 
 const MainPageHome = () => {
   useEffect(() => {
@@ -20,7 +23,6 @@ const MainPageHome = () => {
     }
   }, []);
 
-  const genreCardsRef = useRef(null);
   const genres = useSelector((state) => state.genres);
   const reloadGenres = useSelector((state) => state.genres.reloadGenres);
   const dispatch = useDispatch();
@@ -29,11 +31,16 @@ const MainPageHome = () => {
     pageSize: "8",
   });
 
+  const songPagination = useRef({
+    page: "1",
+    pageSize: "4",
+  });
+
   return (
     <section>
       <h1 className="main-page-home-title">Find your favorite genres</h1>
-      {/* old cards */}
-      <div className="card-container" id="card-container" ref={genreCardsRef}>
+      {/* old cards */ }
+      <div className="card-container" id="card-container" style={ { display: genres.genresHidden ? 'none' : null } }>
         {/*         <GenreCard title="Pop" />
         <GenreCard title="Hip-Hop" />
         <GenreCard title="Rock" />
@@ -44,44 +51,97 @@ const MainPageHome = () => {
         <GenreCard title="K-Pop" /> */}
         <GenreCard />
       </div>
+      <button style={ { display: genres.songsHidden ? 'none' : null } } onClick={ () => { dispatch(unhideGenres()); } }>Back</button>
+      <SongCard source="GENRES" />
       <div className="mainPage-button-container">
         <button
-          id="previousPage"
-          style={{ display: pagination.current.page - 1 <= 0 ? "none" : null }}
-          onClick={async () => {
+          id="previousPage" className="previousPage"
+          style={ { display: (pagination.current.page - 1 <= 0 || (!genres.songsHidden)) ? "none" : null } }
+          onClick={ async () => {
             pagination.current.page--;
             let result = await mainAxios.getAllGenres(pagination.current);
             dispatch(setGenres(result.data.data));
             window.location.hash = "nonExistantHashUsedForRefreshing";
             window.location.hash = "#card-container";
-          }}
+          } }
         >
-          {Number(pagination.current.page) - 1}
+          { Number(pagination.current.page) - 1 }
         </button>
 
-        <button id="currentPage">{pagination.current.page}</button>
+        <button id="currentPage" className="currentPage" style={ { display: !genres.songsHidden ? 'none' : null } }>{ pagination.current.page }</button>
 
         <button
-          id="nextPage"
-          style={{
+          id="nextPage" className="nextPage"
+          style={ {
             display:
-              Number(pagination.current.page) + 1 > genres.pageCount
+              (Number(pagination.current.page) + 1 > genres.genresPageCount || (!genres.songsHidden))
                 ? "none"
                 : null,
-          }}
-          onClick={async () => {
+          } }
+          onClick={ async () => {
             pagination.current.page++;
             let result = await mainAxios.getAllGenres(pagination.current);
             dispatch(setGenres(result.data.data));
             window.location.hash = "nonExistantHashUsedForRefreshing";
             window.location.hash = "#card-container";
-          }}
+          } }
         >
-          {Number(pagination.current.page) + 1}
+          { Number(pagination.current.page) + 1 }
         </button>
       </div>
 
-      {/* new cards  */}
+      {
+        // song buttons}
+      }
+      <div className="mainPage-button-container">
+        <button
+          id="previousSongPage" className="previousPage"
+          style={ { display: (songPagination.current.page - 1 <= 0 || (genres.songsHidden)) ? "none" : null } }
+          onClick={ async () => {
+            pagination.current.page--;
+            console.log(genres);
+            const filters = {
+              'page': songPagination.current.page,
+              'pageSize': songPagination.current.pageSize,
+              'genre': genres.currentGenre
+            }
+            let result = await mainAxios.getAllFiles(filters);
+            dispatch(setGenres(result.data.data));
+            window.location.hash = "nonExistantHashUsedForRefreshing";
+            window.location.hash = "#card-container";
+          } }
+        >
+          { Number(pagination.current.page) - 1 }
+        </button>
+
+        <button id="currentSongPage" className="currentPage" style={ { display: genres.songsHidden ? 'none' : null } }>{ songPagination.current.page }</button>
+
+        <button
+          id="nextSongPage" className="nextPage"
+          style={ {
+            display:
+              ((Number(songPagination.current.page) + 1 > Number(genres.songsPageCount)) || (genres.songsHidden))
+                ? "none"
+                : null
+          } }
+          onClick={ async () => {
+            pagination.current.page++;
+            const filters = {
+              'page': songPagination.current.page,
+              'pageSize': songPagination.current.pageSize,
+              'genre': genres.currentGenre
+            }
+            let result = await mainAxios.getAllFiles(filters);
+            dispatch(setGenres(result.data.data));
+            window.location.hash = "nonExistantHashUsedForRefreshing";
+            window.location.hash = "#card-container";
+          } }
+        >
+          { Number(pagination.current.page) + 1 }
+        </button>
+      </div>
+
+      {/* new cards  */ }
       {/* <div class="container">
         <div class="box">
           <span></span>

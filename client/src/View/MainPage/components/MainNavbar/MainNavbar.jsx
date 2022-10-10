@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./mainNavbar.css";
-import { Buffer } from "buffer";
 import "../../../../variables.css";
 import { Link } from "react-router-dom";
 import logo from "./navbarImages/music-app-logo.png";
@@ -13,6 +12,7 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import UploadImgPopup from "./components/UploadImgPopup";
+import * as mainNavbarAxios from "./mainNavbarAxios";
 
 const MainNavbar = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -44,37 +44,37 @@ const MainNavbar = () => {
       <Link to="/main-page/home">
         <img
           className="mainNavbar-app-logo"
-          src={logo}
+          src={ logo }
           alt="application logo"
         />
       </Link>
       <div className="user-info-container">
-        <p className="mainNavbar-username">username</p>
+        <p className="mainNavbar-username">{ JSON.parse(window.localStorage.user).username }</p>
         <div className="username-img-container">
-          <img src={logo} width="50px" alt="" />
+          <img src={ profilePic } style={ { borderRadius: "50%" } } width="50px" alt="" />
         </div>
         <div className="dropdown">
           <button className="dropdown-button">
             <FontAwesomeIcon
-              icon={faEllipsisVertical}
+              icon={ faEllipsisVertical }
               className="three-dots-icon"
             />
           </button>
           <div className="dropdown-menu">
-            <button onClick={<UploadImgPopup trigger={true} />}>
-              Change picture{" "}
-              <FontAwesomeIcon icon={faPlus} className="dropdown-icons" />
+            <button onClick={ () => { <UploadImgPopup trigger={ true } /> } }>
+              Change picture{ " " }
+              <FontAwesomeIcon icon={ faPlus } className="dropdown-icons" />
             </button>
             <div className="dropdown-breakline"></div>
             <p>
-              Change username{" "}
-              <FontAwesomeIcon icon={faPen} className="dropdown-icons" />
+              Change username{ " " }
+              <FontAwesomeIcon icon={ faPen } className="dropdown-icons" />
             </p>
             <div className="dropdown-breakline"></div>
             <p>
-              Log out{" "}
+              Log out{ " " }
               <FontAwesomeIcon
-                icon={faRightFromBracket}
+                icon={ faRightFromBracket }
                 className="dropdown-icons"
               />
             </p>
@@ -82,20 +82,11 @@ const MainNavbar = () => {
         </div>
       </div>
       <div className="mainNavbar-button-container">
-        <img
-          style={{ width: "75px", height: "75px", borderRadius: "50%" }}
-          src={`${profilePic}`}
-          alt=":)"
-        />
-        <button className="sub-button shine">
-          {JSON.parse(window.localStorage.user).username}
-        </button>
-        <div className="v-breakline-main"></div>
         <button
           className="logout-button shine"
-          onClick={() => {
+          onClick={ () => {
             mainAxios.logout();
-          }}
+          } }
         >
           Log out
         </button>

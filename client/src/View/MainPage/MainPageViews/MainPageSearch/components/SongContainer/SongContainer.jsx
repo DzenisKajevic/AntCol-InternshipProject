@@ -1,5 +1,5 @@
 import React from "react";
-import SongCard from "../SongCard/SongCard";
+import { SongCard } from "../SongCard/SongCard";
 import "./songContainer.css";
 
 const SongContainer = () => {

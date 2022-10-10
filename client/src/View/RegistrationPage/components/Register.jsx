@@ -116,8 +116,6 @@ const Register = () => {
     //console.log(result.code);
 
     if (result.data) {
-      console.log(result.data.data);
-      localStorage.token = result.data.data.token;
       setSuccess("Successfuly Registered!");
 
       setTimeout(() => {

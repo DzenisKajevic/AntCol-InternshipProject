@@ -1,24 +1,24 @@
 /* old cards */
 .card-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 90%;
-    margin: auto;
-    padding-top: 8rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 90%;
+  margin: auto;
+  padding-top: 8rem;
 }
 
 .main-page-home-title {
-    font-family: var(--title-font);
-    max-width: 600px;
-    font-size: 3rem;
-    background: var(--linear-bg);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-align: center;
-    margin: auto;
-    padding-top: 2rem;
-} 
+  font-family: var(--title-font);
+  max-width: 600px;
+  font-size: 3rem;
+  background: var(--linear-bg);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  margin: auto;
+  padding-top: 2rem;
+}
 
 .mainPage-button-container {
   display: flex;
@@ -31,7 +31,7 @@
 
 
 /* button 1 */
-#previousPage {
+.previousPage {
   width: 30px;
   height: 30px;
   background-color: var(--purple);
@@ -41,7 +41,7 @@
 }
 
 /* button 2  */
-#currentPage {
+.currentPage {
   width: 30px;
   height: 30px;
   background-color: var(--purple);
@@ -51,7 +51,7 @@
 }
 
 /* button 3  */
-#nextPage {
+.nextPage {
   width: 30px;
   height: 30px;
   background-color: var(--purple);
@@ -60,9 +60,9 @@
   cursor: pointer;
 }
 
-#previousPage:hover,
-#currentPage:hover,
-#nextPage:hover {
+.previousPage:hover,
+.currentPage:hover,
+.nextPage:hover {
   background-color: var(--purple-dark);
 }
 
