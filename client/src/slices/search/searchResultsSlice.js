@@ -1,13 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, current } from '@reduxjs/toolkit'
 
 export const searchResultsSlice = createSlice({
     name: 'searchResults',
     initialState: {
         songs: [],
+        pageCount: null,
     },
     reducers: {
         setSearchResults: (state, action) => {
-            state.songs = action.payload;
+            state.songs = action.payload.searchResults;
+            state.pageCount = Number(action.payload.pageCount);
+            //console.log(current(state));
         }
     },
 })

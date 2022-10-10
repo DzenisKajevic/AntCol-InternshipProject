@@ -74,7 +74,19 @@ export async function getFileInfo(fileId) {
 // possible parameters: 
 // genre, author, page, pageSize
 export async function getAllFiles(options) {
+    console.log("OPTIONS", options);
     const response = await audioFiles.getAllFiles(options);
+    if (response.error) {
+        console.log(response.error);
+    }
+    else {
+        console.log(response.data);
+    }
+    return response;
+}
+
+export async function getAllGenres(options) {
+    const response = await audioFiles.getAllGenres(options);
     if (response.error) {
         console.log(response.error);
     }

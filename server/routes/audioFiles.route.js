@@ -255,6 +255,36 @@ router.get('/getFileInfo/:id', audioFileController.getFileInfo);
 */
 router.get('/getAllFiles', audioFileController.getAllFiles);
 
+// lists all available genres (with pagination)
+/** 
+* @swagger
+*  /api/v1/audioFiles/getAllGenres: 
+*   get: 
+*    tags:
+*      - audioFiles
+*    operationId: getAllGenres
+*    security:
+*       - bearerAuth: []
+*    description: Fetches all available genres from the database
+*    parameters:
+*      - in: query
+*        name: pagination
+*        required: false
+*        schema:
+*          type: object
+*          example:
+*            page: 1
+*            pageSize: 8
+*    responses: 
+*      200: 
+*          description: Successful response
+*      401: 
+*          description: Missing authorization
+*      404:
+*          description: No files available
+*/
+router.get('/getAllGenres', audioFileController.getAllGenres);
+
 // deletes a specific file
 /** 
 * @swagger

@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-export const visualiserHiddenSlice = createSlice({
+export const visualiserHiddenSlice = createSlice( {
     name: 'visualiserHidden',
     initialState: {
-        hidden: false,
+        hidden: true,
     },
     reducers: {
-        setVisualiserHidden: (state, action) => {
+        setVisualiserHidden: ( state, action ) =>
+        {
             // Redux Toolkit allows us to write "mutating" logic in reducers. It
             // doesn't actually mutate the state because it uses the Immer library,
             // which detects changes to a "draft state" and produces a brand new
@@ -14,7 +15,7 @@ export const visualiserHiddenSlice = createSlice({
             state.hidden = action.payload;
         },
     },
-})
+} )
 
 // Action creators are generated for each case reducer function
 export const { setVisualiserHidden } = visualiserHiddenSlice.actions

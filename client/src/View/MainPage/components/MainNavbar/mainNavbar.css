@@ -13,6 +13,122 @@
 
 }
 
+.user-info-container {
+    width: 230px;
+    height: 70px;
+    background-color: #000;
+    border: 1px solid var(--yellow);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.4s ease-in-out;
+    margin-right: 26rem;
+}
+
+.username-img-container {
+    border: 1px solid var(--yellow);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+}
+
+.user-info-container:hover {
+    background-color: #323232;
+}
+
+.dropdown-button {
+    border: none;
+    background: none;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    width: 190px;
+    left: 0;
+    top: calc(100% + 0.5em);
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    border: 2px solid #ebebeb;
+    box-shadow: 0 2px 5px var(--purple);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    padding: 5px;
+}
+
+.dropdown-menu > p {
+    color: var(--purple);
+    font-family: var(--text-font1);
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-menu > p:hover {
+    color: var(--purple-dark);
+}
+
+.dropdown-menu > button {
+    color: var(--purple);
+    font-family: var(--text-font1);
+    padding: 10px;
+    cursor: pointer;
+    background-color: inherit;
+    border: none;
+    font-size: 1rem;
+}
+
+.dropdown-menu > button:hover {
+    color: var(--purple-dark);
+}
+
+.dropdown > .dropdown-button:focus + .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.dropdown-icons {
+    padding-left: 5px;
+}
+
+.dropdown-breakline {
+    width: 90%;
+    margin-left: 0.5rem;
+    border: 1px solid #ebebeb;
+}
+
+.mainNavbar-username {
+    font-family: var(--text-font1);
+    color: var(--white-text);
+    padding-left: 1rem;
+    cursor: pointer;
+}
+
+.mainNavbar-username:hover {
+    color: var(--yellow);
+}
+
+.three-dots-icon {
+    color: #fff;
+    cursor: pointer;
+    padding-right: 1rem;
+}
+
+.three-dots-icon:hover {
+    color: var(--purple);
+}
+
 .animated-logo {
     position: relative;
     width: 10vw;

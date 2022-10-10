@@ -7,6 +7,7 @@ import visualiserHiddenReducer from './slices/audioVisualiser/visualiserHiddenSl
 import searchResultsReducer from './slices/search/searchResultsSlice'
 import favouriteSongsReducer from './slices/favourites/favouriteSongsSlice'
 import playlistsReducer from './slices/playlists/playlistsSlice'
+import genresReducer from './slices/genres/genresSlice'
 
 export default configureStore({
     reducer: {
@@ -18,5 +19,6 @@ export default configureStore({
         searchResults: searchResultsReducer,
         favouriteSongs: favouriteSongsReducer,
         playlists: playlistsReducer,
+        genres: genresReducer,
     },
 })

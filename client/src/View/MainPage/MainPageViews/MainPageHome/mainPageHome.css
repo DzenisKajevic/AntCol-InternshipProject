@@ -20,6 +20,53 @@
     padding-top: 2rem;
 } 
 
+.mainPage-button-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100px;
+  margin: auto;
+  margin-top: 2.5rem;
+}
+
+
+/* button 1 */
+#previousPage {
+  width: 30px;
+  height: 30px;
+  background-color: var(--purple);
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* button 2  */
+#currentPage {
+  width: 30px;
+  height: 30px;
+  background-color: var(--purple);
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* button 3  */
+#nextPage {
+  width: 30px;
+  height: 30px;
+  background-color: var(--purple);
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+#previousPage:hover,
+#currentPage:hover,
+#nextPage:hover {
+  background-color: var(--purple-dark);
+}
+
+
 /* new cards */
 
 

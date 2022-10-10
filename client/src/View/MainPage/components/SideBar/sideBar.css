@@ -1,5 +1,5 @@
 .sidebar {
-    height: 100vh;
+    height: 100%;
     background-color: #212121;
     padding-top: 4rem;
     position: -webkit-sticky;
@@ -144,6 +144,7 @@
     font-family: var(--text-font1);
     text-align: center;
     padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 
