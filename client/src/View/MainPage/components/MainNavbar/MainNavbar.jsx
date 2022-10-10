@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import logo from "./navbarImages/music-app-logo.png";
 import * as mainAxios from "../../mainAxios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import * as mainNavbarAxios from "./mainNavbarAxios";
 import {
   faEllipsisVertical,
   faPlus,
@@ -49,7 +50,9 @@ const MainNavbar = () => {
         />
       </Link>
       <div className="user-info-container">
-        <p className="mainNavbar-username">{ JSON.parse(window.localStorage.user).username }</p>
+        <p className="mainNavbar-username">
+          { JSON.parse(window.localStorage.user).username }
+        </p>
         <div className="username-img-container">
           <img src={ profilePic } style={ { borderRadius: "50%" } } width="50px" alt="" />
         </div>
