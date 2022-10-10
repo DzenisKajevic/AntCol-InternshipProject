@@ -55,7 +55,7 @@ const Login = () => {
         <section className="loginpage-container">
           <div className="login-bg-color-wrapper">
             <form onSubmit={submitHandler} className="login-form">
-              <h1 className="login-title">Log in to your account najim</h1>
+              <h1 className="login-title">Log in to your account</h1>
               <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"}>
                 {errMsg}
               </p>
