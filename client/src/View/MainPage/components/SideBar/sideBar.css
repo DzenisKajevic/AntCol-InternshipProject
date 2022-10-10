@@ -54,9 +54,11 @@
     0% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
+
     100% {
         background-position: 0% 50%;
     }
@@ -66,9 +68,11 @@
     0% {
         color: #d800ff;
     }
+
     50% {
         color: #ffe000;
     }
+
     100% {
         color: #d800ff;
     }
@@ -87,11 +91,11 @@
     padding: 10px;
 }
 
-.navigation-icons{
+.navigation-icons {
     color: #d800ff;
 }
 
-.not-active-link h3{
+.not-active-link h3 {
     font-family: var(--text-font1);
     padding-left: 1rem;
     font-size: 20px;
@@ -105,7 +109,7 @@
     color: #fff;
 }
 
-.active-link h3{
+.active-link h3 {
     color: #d800ff;
     font-family: var(--text-font1);
     padding-left: 1rem;
@@ -131,7 +135,7 @@
     font-family: var(--text-font1);
     padding-top: 1rem;
     width: 10%;
-} 
+}
 
 .sidebar-links:hover {
     color: var(--white-text);
@@ -146,5 +150,3 @@
     padding-top: 2rem;
     padding-bottom: 2rem;
 }
-
-

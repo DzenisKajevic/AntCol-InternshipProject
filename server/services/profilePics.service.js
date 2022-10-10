@@ -32,23 +32,46 @@ async function uploadFile(file) {
     return file.id;
 };
 
-async function getFile(fileId, res) {
-    if (!fileId || fileId === 'undefined') throw new StatusError('File id was not provided', 422);
-    const _id = mongoose.Types.ObjectId(fileId);
-    console.log(_id);
+async function getFile(input, res) {
+    // search either by fileId, or by userId, since it's unique
+    // input : { inputType: "fileId | userId", fileId: null, userId: null}
+    console.log(input);
+    //search by fileId, if it's present, otherwise search by userId
+    if (input.fileId) {
+        const _id = mongoose.Types.ObjectId(input.fileId);
+        console.log(_id);
 
-    await db.getProfilePicGfs().find({ '_id': _id }).limit(1).toArray((err, files) => {
-        console.log(files);
-        console.log(err);
-        if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
-        else {
-            //res.setHeader('Content-Disposition', 'attachment');
-            res.setHeader('Content-Type', files[0].contentType);
-            // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
-            // open download stream start stop: could be used for buffering(?)
-            db.getProfilePicGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
-        }
-    });
+        await db.getProfilePicGfs().find({ '_id': _id }).limit(1).toArray((err, files) => {
+            console.log(files);
+            console.log(err);
+            if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
+            else {
+                //res.setHeader('Content-Disposition', 'attachment');
+                res.setHeader('Content-Type', files[0].contentType);
+                // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
+                // open download stream start stop: could be used for buffering(?)
+                db.getProfilePicGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
+            }
+        });
+    }
+    else if (input.userId) {
+        const userId = mongoose.Types.ObjectId(input.userId);
+        console.log(userId);
+
+        await db.getProfilePicGfs().find({ 'metadata.uploadedBy': userId }).limit(1).toArray((err, files) => {
+            console.log("FILE", files);
+            console.log(err);
+            if (!files || files.length === 0) res.status(500).send('A file with that id was not found');
+            else {
+                //res.setHeader('Content-Disposition', 'attachment');
+                res.setHeader('Content-Type', files[0].contentType);
+                // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
+                // open download stream start stop: could be used for buffering(?)
+                db.getProfilePicGfs().openDownloadStream(files[0]['_id']).pipe(res); // streams the data to the user through a stream if successful
+            }
+        });
+    }
+    else throw new StatusError('File id was not provided', 422);
 };
 
 

@@ -19,6 +19,15 @@ export async function login(email, password) {
         }));
 }
 
+export async function renameUser(newUsername) {
+    return await resolve(
+        axios({
+            method: 'put',
+            url: 'http://localhost:3001/api/v1/auth/renameUser',
+            data: { newUsername },
+        }));
+}
+
 export async function getNewUsersCount() {
     return await resolve(
         axios({

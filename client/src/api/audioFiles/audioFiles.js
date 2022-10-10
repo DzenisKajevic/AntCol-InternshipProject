@@ -15,9 +15,9 @@ export async function deleteFile(fileId) {
 export async function uploadFile(audioFile, author, genre, songName, album) {
     return await resolve(
         axios({
-            method: 'delete',
+            method: 'post',
             url: 'http://localhost:3001/api/v1/audioFiles/uploadFile',
-            data: { audioFile, author, genre, songName, album },
+            data: { author, genre, songName, album, audioFile },
             headers: { 'Authorization': 'Bearer ' + window.localStorage.token }
         }));
 }

@@ -26,7 +26,7 @@ async function uploadFile(req, res, next) {
 async function getFile(req, res, next) {
     try {
         // res is required for the .pipe(res) on the DownloadStream
-        await profilePicsService.getFile(req.params.id, res);
+        await profilePicsService.getFile(req.query, res);
     } catch (err) {
         if (err.name === 'StatusError') {
             console.log(err);

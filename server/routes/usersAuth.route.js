@@ -161,6 +161,8 @@ router.route('/login').post(usersAuthController.login);
  */
 router.route('/newUsersCount').get(usersAuthController.getNewUsersCount);
 
+router.route('/renameUser').put(usersAuthController.renameUser);
+
 module.exports = router;
 
 

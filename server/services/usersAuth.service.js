@@ -39,6 +39,18 @@ async function login(loginInfo) {
     }
 }
 
+async function renameUser(user, newUsername) {
+    const updatedUser = await User.findOneAndUpdate(
+        { 'email': user.email }, { 'username': newUsername },
+        { upsert: false, useFindAndModify: false, new: true });
+
+    console.log(updatedUser);
+    if (!updatedUser) throw new StatusError(null, 'Unable to update user', 404);
+    else {
+        return updatedUser;
+    }
+}
+
 // admin
 async function getNewUsersCount() {
     const date = new Date();
@@ -50,5 +62,6 @@ async function getNewUsersCount() {
 module.exports = {
     register: register,
     login: login,
-    getNewUsersCount
+    getNewUsersCount,
+    renameUser
 };

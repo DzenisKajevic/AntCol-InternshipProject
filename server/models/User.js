@@ -45,7 +45,7 @@ UserSchema.pre('save', async function () {
 });
 
 UserSchema.methods.createJWT = function () {
-    return jwt.sign({ 'userId': this._id, 'username': this.username, 'role': this.role }, generalConfig.JWT_SECRET);
+    return jwt.sign({ 'userId': this._id, 'username': this.username, 'email': this.email, 'role': this.role }, generalConfig.JWT_SECRET);
 
     // token with expiration time -> not in use at the moment
     //return jwt.sign({ 'userId': this._id, 'username': this.username, 'role': this.role }, generalConfig.JWT_SECRET, { expiresIn: generalConfig.JWT_LIFETIME });

@@ -21,7 +21,10 @@ const MainPageSearch = () => {
 
   const updateSearch = function (result) {
     if (result.data) dispatch(setSearchResults(result.data.data));
-    else dispatch(setSearchResults({ searchResults: [], pageCount: 0 }));
+    else {
+      pagination.current.page = 1;
+      dispatch(setSearchResults({ searchResults: [], pageCount: 0 }));
+    }
     window.location.hash = "nonExistantHashUsedForRefreshing";
     window.location.hash = "#card-container";
   };

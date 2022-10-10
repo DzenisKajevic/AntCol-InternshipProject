@@ -30,6 +30,20 @@ async function login(req, res, next) {
     }
 }
 
+async function renameUser(req, res, next) {
+    try {
+        res.status(200).send(await users.renameUser(req.user, req.body.newUsername));
+    } catch (err) {
+        if (err.name === 'StatusError') {
+            console.log(err);
+            return res.status(err.statusCode).send(err.additionalMessage);
+        }
+
+        console.error(`Error updating username\n`, err);
+        next(new StatusError(err.message, `Error updating username`, 500));
+    }
+}
+
 // admin
 async function getNewUsersCount(req, res, next) {
     try {
@@ -48,5 +62,6 @@ async function getNewUsersCount(req, res, next) {
 module.exports = {
     register,
     login,
-    getNewUsersCount
+    getNewUsersCount,
+    renameUser
 };
