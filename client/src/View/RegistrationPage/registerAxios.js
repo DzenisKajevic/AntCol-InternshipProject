@@ -12,7 +12,7 @@ export async function register(user) {
     else {
         // saves the token into the localStorage. 
         window.localStorage.token = response.data.data.token;
-        window.localStorage.user = JSON.stringify(response.data.data.loginUser);
+        window.localStorage.user = JSON.stringify(response.data.data.registeredUser);
         console.log(response.data);
 
     }

@@ -31,7 +31,7 @@ export async function getFile(input) {
         console.log(response.error);
     }
     else {
-        console.log(response.data);
+        console.log(response);
     }
     return response;
 }

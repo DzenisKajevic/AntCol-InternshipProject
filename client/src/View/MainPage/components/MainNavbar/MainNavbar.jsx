@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./mainNavbar.css";
-import { Buffer } from "buffer";
 import "../../../../variables.css";
 import { Link } from "react-router-dom";
 import logo from "./navbarImages/music-app-logo.png";
@@ -14,6 +13,7 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import UploadImgPopup from "./components/UploadImgPopup";
+import * as mainNavbarAxios from "./mainNavbarAxios";
 
 const MainNavbar = () => {
   const [profilePic, setProfilePic] = useState(null);

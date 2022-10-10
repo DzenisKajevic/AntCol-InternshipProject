@@ -58,8 +58,8 @@ const CreatedPlaylist = () => {
               className={ isOpen ? "edit-menu-closed" : "edit-menu" }
               onClick={ () => setIsOpen(false) }
             >
-              <FontAwesomeIcon icon={ faLock } className="lock-playlist" />
-              <FontAwesomeIcon icon={ faLockOpen } className="unlock-playlist" />
+              <FontAwesomeIcon icon={ faLock } className="lock-playlist" onClick={ () => { mainAxios.updatePlaylistVisibility(playlist['_id'], "private"); } } />
+              <FontAwesomeIcon icon={ faLockOpen } className="unlock-playlist" onClick={ () => { mainAxios.updatePlaylistVisibility(playlist['_id'], "public"); } } />
               <FontAwesomeIcon icon={ faPen } className="edit-playlist" />
               <FontAwesomeIcon
                 icon={ faTrash }

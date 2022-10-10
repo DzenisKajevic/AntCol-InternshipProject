@@ -163,9 +163,9 @@ async function getAllFiles(user, queryParams, callback) {
     let pageSize = parseInt(queryParams.pageSize) || 4;
     console.log(filters);
     console.log("Pg", page, "PgSz", pageSize);
-
+    console.log(filters['metadata.songName']);
     //if songName is present, use regex to find matching songs
-    if (filters['metadata.songName']) {
+    if (filters['metadata.songName'] !== null) {
         let songNameRegex = filters['metadata.songName'];
         filters['metadata.songName'] = undefined;
         delete filters['metadata.songName'];
@@ -178,6 +178,8 @@ async function getAllFiles(user, queryParams, callback) {
                     callback(new StatusError(null, 'No files available', 404));
                 }
                 else {
+
+                    console.log(files);
                     let returnObject = {
                         'searchResults': files,
                         'pageCount': Math.ceil(matchingCount / pageSize)
@@ -189,8 +191,7 @@ async function getAllFiles(user, queryParams, callback) {
     }
     // else match exact values
     else {
-        delete filters['metadata.songName'];
-        let matchingCount = await AudioFile.count({ filters });
+        let matchingCount = await AudioFile.count(filters);
         db.getAudioGfs().find(filters).skip((page - 1) * pageSize).limit(pageSize).toArray((err, files) => {
             if (!files || files.length === 0) {
                 callback(new StatusError(null, 'No files available', 404));
@@ -200,7 +201,6 @@ async function getAllFiles(user, queryParams, callback) {
                     'searchResults': files,
                     'pageCount': Math.ceil(matchingCount / pageSize)
                 }
-                console.log(returnObject);
                 callback(null, returnObject);
             }
         });

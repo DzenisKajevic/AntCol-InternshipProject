@@ -5,8 +5,8 @@ const generalConfig = require('../configs/general.config');
 
 // object for possible filters (getFiles route)
 fileSearchFilters = {};
-fileSearchFilters["genre"] = true;
-fileSearchFilters["author"] = true;
+fileSearchFilters["metadata.genre"] = true;
+fileSearchFilters["metadata.author"] = true;
 fileSearchFilters["metadata.songName"] = true;
 
 reviewSearchFilters = {};
