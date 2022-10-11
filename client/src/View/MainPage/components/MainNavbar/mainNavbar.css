@@ -52,6 +52,7 @@
 
 .dropdown-menu {
     position: absolute;
+    z-index: 100;
     width: 190px;
     left: 0;
     top: calc(100% + 0.5em);
@@ -60,7 +61,7 @@
     padding: 1rem;
     border: 2px solid #ebebeb;
     box-shadow: 0 2px 5px var(--purple);
-    transform: translateY(-10px);
+    /* transform: translateY(-10px); */
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
     padding: 5px;
 }

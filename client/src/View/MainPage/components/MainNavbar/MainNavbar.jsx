@@ -13,7 +13,6 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import UploadImgPopup from "./components/UploadImgPopup";
-import * as mainNavbarAxios from "./mainNavbarAxios";
 
 const MainNavbar = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -27,9 +26,9 @@ const MainNavbar = () => {
     setMenuVisibility((prevState) => !prevState);
   };
 
-  // const popupCloseHandler = () => {
-  //   setVisibility(false);
-  // };
+  const popupCloseHandler = () => {
+    setVisibility(false);
+  };
 
   const closeDropdownMenu = (e) => {};
   // Converts any given blob into a base64 encoded string.
@@ -93,15 +92,15 @@ const MainNavbar = () => {
                 >
                   Change picture{" "}
                   <FontAwesomeIcon icon={faPlus} className="dropdown-icons" />
-                  {/* {visibility && (
+                  {visibility && (
                     <UploadImgPopup
                       onClick={popupCloseHandler}
                       show={visibility}
                       title="Upload an image"
                     >
-                      <h1>something</h1>
+                      {/* <input type="file" /> */}
                     </UploadImgPopup>
-                  )} */}
+                  )}
                 </button>
                 <div className="dropdown-breakline"></div>
                 <p>
