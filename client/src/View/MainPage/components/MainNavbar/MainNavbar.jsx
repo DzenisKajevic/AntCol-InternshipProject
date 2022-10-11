@@ -13,7 +13,6 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import UploadImgPopup from "./components/UploadImgPopup";
-import * as mainNavbarAxios from "./mainNavbarAxios";
 
 const MainNavbar = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -31,7 +30,7 @@ const MainNavbar = () => {
   //   setVisibility(false);
   // };
 
-  const closeDropdownMenu = (e) => {};
+  const closeDropdownMenu = (e) => { };
   // Converts any given blob into a base64 encoded string.
   function convertBlobToBase64(blob) {
     return new Promise((resolve, reject) => {
@@ -64,35 +63,35 @@ const MainNavbar = () => {
         <Link to="/main-page/home">
           <img
             className="mainNavbar-app-logo"
-            src={logo}
+            src={ logo }
             alt="application logo"
           />
         </Link>
         <div className="user-info-container">
           <p className="mainNavbar-username">
-            {JSON.parse(window.localStorage.user).username}
+            { JSON.parse(window.localStorage.user).username }
           </p>
           <div className="username-img-container">
-            <img src={`${profilePic}`} width="50px" alt="" />
+            <img src={ `${profilePic}` } width="50px" style={ { borderRadius: "50%" } } alt="" />
           </div>
           <div className="dropdown">
-            <button className="dropdown-button" onClick={toggleMenuVisibility}>
+            <button className="dropdown-button" onClick={ toggleMenuVisibility }>
               <FontAwesomeIcon
-                icon={faEllipsisVertical}
+                icon={ faEllipsisVertical }
                 className="three-dots-icon"
               />
             </button>
-            {menuVisibility && (
+            { menuVisibility && (
               <div className="dropdown-menu">
                 <button
-                  onClick={(event) => {
+                  onClick={ (event) => {
                     event.stopPropagation();
                     setVisibility(!visibility);
                     console.log("usao sam");
-                  }}
+                  } }
                 >
-                  Change picture{" "}
-                  <FontAwesomeIcon icon={faPlus} className="dropdown-icons" />
+                  Change picture{ " " }
+                  <FontAwesomeIcon icon={ faPlus } className="dropdown-icons" />
                   {/* {visibility && (
                     <UploadImgPopup
                       onClick={popupCloseHandler}
@@ -105,23 +104,23 @@ const MainNavbar = () => {
                 </button>
                 <div className="dropdown-breakline"></div>
                 <p>
-                  Change username{" "}
-                  <FontAwesomeIcon icon={faPen} className="dropdown-icons" />
+                  Change username{ " " }
+                  <FontAwesomeIcon icon={ faPen } className="dropdown-icons" />
                 </p>
                 <div className="dropdown-breakline"></div>
                 <button
-                  onClick={() => {
+                  onClick={ () => {
                     mainAxios.logout();
-                  }}
+                  } }
                 >
-                  Log out{" "}
+                  Log out{ " " }
                   <FontAwesomeIcon
-                    icon={faRightFromBracket}
+                    icon={ faRightFromBracket }
                     className="dropdown-icons"
                   />
                 </button>
               </div>
-            )}
+            ) }
           </div>
         </div>
         <div className="mainNavbar-button-container">
@@ -129,9 +128,9 @@ const MainNavbar = () => {
           <div className="v-breakline-main"></div>
           <button
             className="logout-button shine"
-            onClick={() => {
+            onClick={ () => {
               mainAxios.logout();
-            }}
+            } }
           >
             Log out
           </button>

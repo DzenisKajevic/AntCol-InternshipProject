@@ -18,22 +18,20 @@ const SongCard = (source, style) => {
   const genres = useSelector((state) => state.genres);
   const searchResults = useSelector((state) => state.searchResults);
   const favouriteSongs = useSelector((state) => state.favouriteSongs);
+  const songInfo = useSelector((state) => state.songInfo.song);
   const dispatch = useDispatch();
 
   playSong = function (song, index) {
     cleanup();
     let tempSongInfo = structuredClone(song);
-    console.log(index);
-    console.log(song);
-    console.log(tempSongInfo);
     tempSongInfo["songIndex"] = index;
-    tempSongInfo["playedFrom"] = source.source;
+    if (!song["playedFrom"])
+      tempSongInfo["playedFrom"] = source.source;
     dispatch(setSongInfo(tempSongInfo));
     dispatch(setSeekBytes(0));
   }
 
   if (source.source === "SEARCH") {
-    console.log(searchResults.songs);
     return (
       <div className="song-cards">
         { searchResults.songs.map((song, index) => {
@@ -84,7 +82,6 @@ const SongCard = (source, style) => {
                 alt="author image"
                 className="author-image"
                 onClick={ async () => {
-                  console.log(song["fileId"]);
                   await playSong(song["fileId"], index);
                 } }
               />
@@ -116,8 +113,6 @@ const SongCard = (source, style) => {
     );
   }
   else if (source.source === "GENRES") {
-    console.log(genres);
-    console.log(genres.songs);
     return (
       <div className="song-cards" style={ { display: genres.songsHidden ? 'none' : null } }>
         { genres.songs.map((song, index) => {
