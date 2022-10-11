@@ -2,9 +2,15 @@ import React from "react";
 import "./mainContent.css";
 import "../../../../variables.css";
 import { Outlet } from "react-router-dom";
-import { AudioVisualiser, playPause } from '../../MainPageViews/MainPagePlayer/AudioVisualiser';
+import MainPageHome from "../../MainPageViews/MainPageHome/MainPageHome";
+import {
+  AudioVisualiser,
+  playPause,
+} from "../../MainPageViews/MainPagePlayer/AudioVisualiser";
+import songInfoSlice from "../../../../slices/audioVisualiser/songInfoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { playSong } from "../../MainPageViews/MainPageSearch/components/SongCard/SongCard";
+import UploadImgPopup from "../MainNavbar/components/UploadImgPopup";
 
 const MainContent = () => {
   const songInfo = useSelector((state) => state.songInfo.song);
@@ -37,38 +43,39 @@ const MainContent = () => {
   return (
     <>
       <section className="main-content">
+        <button
+          id="previousSong"
+          onClick={ async () => {
+            // check where the song is located (search / playlists / favourites / genres)
 
-        <button id="previousSong" onClick={ async () => {
-          // check where the song is located (search / playlists / favourites / genres)
-
-          console.log(songInfo.playedFrom);
-          let song = {};
-          if (songInfo.playedFrom === "SEARCH") {
-            if (Number(songInfo.songIndex - 1) >= 0) {
-              song = { ...searchResults.songs[Number(songInfo.songIndex) - 1], playedFrom: "SEARCH" }
-              map1.set('searchResultsPrevious', song);
+            console.log(songInfo.playedFrom);
+            let song = {};
+            if (songInfo.playedFrom === "SEARCH") {
+              if (Number(songInfo.songIndex - 1) >= 0) {
+                song = { ...searchResults.songs[Number(songInfo.songIndex) - 1], playedFrom: "SEARCH" }
+                map1.set('searchResultsPrevious', song);
+              }
+              else {
+                song = { ...searchResults.songs[Number(searchResults.songs.length) - 1], playedFrom: "SEARCH" }
+                map1.set('searchResultsPreviousFinal', song);
+              }
+              await playPrevious("searchResultsPrevious", Number(searchResults.songs.length) - 1);
             }
-            else {
-              song = { ...searchResults.songs[Number(searchResults.songs.length) - 1], playedFrom: "SEARCH" }
-              map1.set('searchResultsPreviousFinal', song);
+            else if (songInfo.playedFrom === "FAVOURITES") {
+              console.log("ADLALSDM", songInfo.songIndex);
+              if (Number(songInfo.songIndex - 1) >= 0) {
+                song = { ...favouriteSongs.songs[Number(songInfo.songIndex) - 1].fileId, playedFrom: "FAVOURITES" }
+                map1.set('favouriteSongsPrevious', song);
+              }
+              else {
+                song = { ...favouriteSongs.songs[favouriteSongs.songs.length - 1].fileId, playedFrom: "FAVOURITES" }
+                map1.set('favouriteSongsPreviousFinal', song);
+              }
+              await playPrevious("favouriteSongsPrevious", Number(favouriteSongs.songs.length) - 1);
             }
-            await playPrevious("searchResultsPrevious", Number(searchResults.songs.length) - 1);
-          }
-          else if (songInfo.playedFrom === "FAVOURITES") {
-            console.log("ADLALSDM", songInfo.songIndex);
-            if (Number(songInfo.songIndex - 1) >= 0) {
-              song = { ...favouriteSongs.songs[Number(songInfo.songIndex) - 1].fileId, playedFrom: "FAVOURITES" }
-              map1.set('favouriteSongsPrevious', song);
-            }
-            else {
-              song = { ...favouriteSongs.songs[favouriteSongs.songs.length - 1].fileId, playedFrom: "FAVOURITES" }
-              map1.set('favouriteSongsPreviousFinal', song);
-            }
-            await playPrevious("favouriteSongsPrevious", Number(favouriteSongs.songs.length) - 1);
-          }
 
 
-        } }>Previous</button>
+          } }>Previous</button>
         <button id="button1" onClick={ playPause }>Play/Pause</button>
         <button id="nextSong" onClick={ async () => {
           let song = {};

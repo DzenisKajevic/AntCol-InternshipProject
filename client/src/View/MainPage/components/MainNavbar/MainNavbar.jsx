@@ -26,9 +26,9 @@ const MainNavbar = () => {
     setMenuVisibility((prevState) => !prevState);
   };
 
-  // const popupCloseHandler = () => {
-  //   setVisibility(false);
-  // };
+  const popupCloseHandler = () => {
+    setVisibility(false);
+  };
 
   const closeDropdownMenu = (e) => { };
   // Converts any given blob into a base64 encoded string.
@@ -92,15 +92,15 @@ const MainNavbar = () => {
                 >
                   Change picture{ " " }
                   <FontAwesomeIcon icon={ faPlus } className="dropdown-icons" />
-                  {/* {visibility && (
+                  { visibility && (
                     <UploadImgPopup
-                      onClick={popupCloseHandler}
-                      show={visibility}
+                      onClick={ popupCloseHandler }
+                      show={ visibility }
                       title="Upload an image"
                     >
-                      <h1>something</h1>
+                      {/* <input type="file" /> */ }
                     </UploadImgPopup>
-                  )} */}
+                  ) }
                 </button>
                 <div className="dropdown-breakline"></div>
                 <p>

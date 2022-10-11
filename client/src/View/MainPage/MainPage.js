@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import MainNavbar from './components/MainNavbar/MainNavbar';
 import SideBar from './components/SideBar/SideBar';
 import MainContent from './components/MainContent/MainContent';
@@ -8,7 +7,6 @@ import { AudioVisualiser, playPause } from './MainPageViews/MainPagePlayer/Audio
 import SeekSlider from './MainPageViews/MainPagePlayer/Components/SeekSlider';
 import VolumeSlider from './MainPageViews/MainPagePlayer/Components/VolumeSlider';
 import MainPageHome from './MainPageViews/MainPageHome/MainPageHome';
-import UploadImgPopup from './components/MainNavbar/components/UploadImgPopup';
 import { useSelector } from 'react-redux';
 
 
@@ -18,24 +16,11 @@ const MainPage = () =>
 
     const visualiserHidden = useSelector( ( state ) => state.visualiserHidden );
 
-    const [ visibility, setVisibility ] = useState( false );
-
-    const popupCloseHandler = () =>
-    {
-        setVisibility( false );
-    };
-
     return (
         <section>
             <div className='grid'>
                 <div className='grid-navbar'>
                     <MainNavbar />
-                    <UploadImgPopup
-                        onClick={ popupCloseHandler }
-                        show={ visibility }
-                        title="Upload an image"
-                    >
-                    </UploadImgPopup>
                 </div>
                 <div className='grid-sidebar'>
                     <SideBar />
