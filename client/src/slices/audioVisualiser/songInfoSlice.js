@@ -4,7 +4,8 @@ export const songInfoSlice = createSlice({
     name: 'songInfo',
     initialState: {
         song: null,
-        reloadPlaylists: false
+        reloadPlaylists: false,
+        isPlaying: false,
     },
     reducers: {
         setSongInfo: (state, action) => {
@@ -13,16 +14,20 @@ export const songInfoSlice = createSlice({
             // which detects changes to a "draft state" and produces a brand new
             // immutable state based off those changes
             state.song = action.payload;
+            state.isPlaying = true;
             console.log(current(state));
         },
         setReloadPlaylists: (state, action) => {
             state.reloadPlaylists = action.payload;
+        },
+        setIsPlaying: (state, action) => {
+            state.isPlaying = action.payload;
         }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { setSongInfo, setReloadPlaylists } = songInfoSlice.actions
+export const { setSongInfo, setReloadPlaylists, setIsPlaying } = songInfoSlice.actions
 
 export default songInfoSlice.reducer
 

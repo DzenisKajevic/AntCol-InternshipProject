@@ -35,6 +35,7 @@ const GenreCard = () => {
             page: pagination.current.page,
             pageSize: pagination.current.pageSize,
           });
+          result.data.data.currentGenre = genre;
           console.log("RESULT", result);
           updateGenreSongs(result);
         } }>

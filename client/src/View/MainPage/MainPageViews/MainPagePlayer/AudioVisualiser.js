@@ -3,10 +3,11 @@ import './AudioVisualiser.css';
 import axios from 'axios';
 import { setSeekBytes } from '../../../../slices/audioVisualiser/seekBytesSlice';
 import { setSeekSliderValue } from '../../../../slices/audioVisualiser/seekSliderValueSlice';
+import { setIsPlaying } from '../../../../slices/audioVisualiser/songInfoSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import SeekSlider from './Components/SeekSlider';
 import VolumeSlider from './Components/VolumeSlider';
-import { preparePlayNext } from '../../components/MainContent/MainContent';
+import { preparePlayNext, preparePlayPrevious } from '../../components/MainContent/MainContent';
 import
 {
     faArrowLeft,
@@ -29,7 +30,7 @@ const AudioVisualiser = () =>
 {
 
     const dispatch = useDispatch();
-    const [ isPlaying, setIsPlaying ] = useState( false );
+    const isPlaying = useSelector( ( state ) => state.songInfo.isPlaying );
     const volumeSliderValue = useSelector( ( state ) => state.volumeSliderValue.value );
     const seekBytes = useSelector( ( state ) => state.seekBytes.start );
     const songInfo = useSelector( ( state ) => state.songInfo.song );
@@ -203,22 +204,25 @@ const AudioVisualiser = () =>
 
     playPause = function ()
     {
-        setIsPlaying( !isPlaying );
-        if ( shouldPlay.current )
+        if ( songInfo )
         {
-            if ( !visualiserHidden.hidden )
+            dispatch( setIsPlaying( !isPlaying ) );
+            if ( shouldPlay.current )
             {
-                animate();
+                if ( !visualiserHidden.hidden )
+                {
+                    animate();
+                }
+                source.playbackRate.value = 1;
+                shouldPlay.current = false;
             }
-            source.playbackRate.value = 1;
-            shouldPlay.current = false;
-        }
-        else
-        {
-            if ( animationId.current ) cancelAnimationFrame( animationId.current );
-            //ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-            source.playbackRate.value = 0;
-            shouldPlay.current = true;
+            else
+            {
+                if ( animationId.current ) cancelAnimationFrame( animationId.current );
+                //ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+                source.playbackRate.value = 0;
+                shouldPlay.current = true;
+            }
         }
     }
 
@@ -347,7 +351,7 @@ const AudioVisualiser = () =>
             {/* <div id="container"> */ }
             <canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef }></canvas>
             <div className='musicPlayer-button-container'>
-                <button className="forward-backward" onClick={ () => { console.log( "." ); } }>
+                <button className="forward-backward" onClick={ () => { preparePlayPrevious(); } }>
                     <FontAwesomeIcon icon={ faArrowLeft } />
                 </button>
                 <button className="play-pause" onClick={ () => { playPause() } }>
@@ -357,16 +361,23 @@ const AudioVisualiser = () =>
                         <FontAwesomeIcon icon={ faPlay } />
                     ) }
                 </button>
-                <button className="forward-backward" onClick={ console.log( "." ) }>
+                <button className="forward-backward" onClick={ () => { preparePlayNext(); } }>
                     <FontAwesomeIcon icon={ faArrowRight } />
                 </button>
             </div>
-            <div className='song-information'>
-                <p className='author-name'>author</p>
-                <p className='song-name'>song name</p>
-                <p className='played-from'>played from</p>
+            { songInfo ?
+                <div className='song-information'>
+                    <p className='author-name'>{ songInfo.metadata.author }</p>
+                    <p className='song-name'>{ songInfo.metadata.songName }</p>
+                    <p className='played-from'>{ songInfo.playedFrom }</p>
+                </div>
+                :
+                <div className='song-information'>
+                    <p className='author-name'>author</p>
+                    <p className='song-name'>song name</p>
+                    <p className='played-from'>played from</p>
+                </div> }
 
-            </div>
             <div className='slider-container'>
 
                 <SeekSlider />

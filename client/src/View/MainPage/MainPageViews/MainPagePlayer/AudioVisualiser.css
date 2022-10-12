@@ -102,7 +102,7 @@
     align-items: center;
     background: linear-gradient(-45deg, var(--yellow-dark), var(--purple-dark));
 	background-size: 400% 400%;
-	animation: gradient 5s ease infinite;
+	animation: gradient 15s ease infinite;
 	height: 100vh;
 }
 
