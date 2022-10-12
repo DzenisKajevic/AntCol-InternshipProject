@@ -18,17 +18,29 @@ const MainPageFavorites = () => {
     pageSize: "4",
   });
 
-  useEffect(() => {
+  useEffect(() => {/* 
+    console.log(favouriteSongs.songs);
+    favouriteSongs.songs.map((song, index) => {
+      console.log(song)
+    }); */
     if (reloadFavouriteSongs) {
       const fetchFavourites = async function () {
         let result = await mainAxios.getFavouriteFiles({
           page: 1,
           pageSize: 10,
         });
-        dispatch(setFavouriteSongs(result.data.data));
-        dispatch(setReloadFavouriteSongs(false));
+        console.log(result);
+        if (result.error) {
+          let emptyArray = [];
+          dispatch(setFavouriteSongs(emptyArray));
+          dispatch(setReloadFavouriteSongs(false));
+        }
+        else {
+          dispatch(setFavouriteSongs(result.data.data));
+          dispatch(setReloadFavouriteSongs(false));
+        }
       };
-      fetchFavourites().catch(console.error);
+      fetchFavourites();
     }
   }, [reloadFavouriteSongs]);
 

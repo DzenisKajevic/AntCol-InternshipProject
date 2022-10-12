@@ -139,25 +139,6 @@ const MainContent = () => {
   return (
     <>
       <section className="main-content">
-        {/* <button
-          id="previousSong"
-          onClick={async () => {
-            preparePlayPrevious();
-          }}
-        >
-          Previous
-        </button>
-        <button id="button1" onClick={playPause}>
-          Play/Pause
-        </button>
-        <button
-          id="nextSong"
-          onClick={async () => {
-            preparePlayNext();
-          }}
-        >
-          Next
-        </button> */}
         <Outlet />
       </section>
     </>
