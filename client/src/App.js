@@ -20,15 +20,15 @@ function App ()
       <Route path="/" element={ <LandingPage /> } />
       <Route path="/login" element={ <LoginPage /> } />
       <Route path="/registration" element={ <RegistrationPage /> } />
+      <Route path="/music-player" element={
+        <PrivateRoute>
+          <MusicPlayerPage />
+        </PrivateRoute>
+      } />
       <Route path="/main-page" element={
         <PrivateRoute>
           <MainPage />
         </PrivateRoute> }>
-        <Route path="/music-player" element={
-          <PrivateRoute>
-            <MusicPlayerPage />
-          </PrivateRoute>
-        } />
         <Route path="/main-page/home" element={
           <PrivateRoute>
             <MainPageHome />
