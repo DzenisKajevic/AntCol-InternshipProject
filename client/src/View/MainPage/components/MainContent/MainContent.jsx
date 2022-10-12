@@ -14,6 +14,7 @@ import UploadImgPopup from "../MainNavbar/components/UploadImgPopup";
 
 
 let preparePlayNext;
+let preparePlayPrevious;
 
 const MainContent = () => {
   const songInfo = useSelector((state) => state.songInfo.song);
@@ -24,7 +25,7 @@ const MainContent = () => {
   const dispatch = useDispatch();
   const map1 = new Map();
 
-  const preparePlayPrevious = async function () {
+  preparePlayPrevious = async function () {
 
     // check where the song is located (search / playlists / favourites / genres)
 
@@ -134,4 +135,4 @@ const MainContent = () => {
   );
 };
 
-export { MainContent, preparePlayNext };
+export { MainContent, preparePlayNext, preparePlayPrevious };

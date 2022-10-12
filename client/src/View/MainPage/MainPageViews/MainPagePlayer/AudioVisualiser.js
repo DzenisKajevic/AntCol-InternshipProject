@@ -3,10 +3,11 @@ import './AudioVisualiser.css';
 import axios from 'axios';
 import { setSeekBytes } from '../../../../slices/audioVisualiser/seekBytesSlice';
 import { setSeekSliderValue } from '../../../../slices/audioVisualiser/seekSliderValueSlice';
+import { setIsPlaying } from '../../../../slices/audioVisualiser/songInfoSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import SeekSlider from './Components/SeekSlider';
 import VolumeSlider from './Components/VolumeSlider';
-import { preparePlayNext } from '../../components/MainContent/MainContent';
+import { preparePlayNext, preparePlayPrevious } from '../../components/MainContent/MainContent';
 import {
     faArrowLeft,
     faArrowRight,
@@ -26,7 +27,7 @@ let playPause = null;
 const AudioVisualiser = () => {
 
     const dispatch = useDispatch();
-    const [isPlaying, setIsPlaying] = useState(false);
+    const isPlaying = useSelector((state) => state.songInfo.isPlaying);
     const volumeSliderValue = useSelector((state) => state.volumeSliderValue.value);
     const seekBytes = useSelector((state) => state.seekBytes.start);
     const songInfo = useSelector((state) => state.songInfo.song);
@@ -38,7 +39,6 @@ const AudioVisualiser = () => {
         if (seekBytes) { cleanup(); };
 
         if (songInfo !== null) {
-            console.log("SONG INFO", songInfo);
             fileUrl.current = 'http://localhost:3001/api/v1/audioFiles/getFile/' + songInfo['_id'];
             ctx = canvasRef.current.getContext('2d');
             shouldPlay.current = false;
@@ -183,19 +183,21 @@ const AudioVisualiser = () => {
     }
 
     playPause = function () {
-        setIsPlaying(!isPlaying);
-        if (shouldPlay.current) {
-            if (!visualiserHidden.hidden) {
-                animate();
+        if (songInfo) {
+            dispatch(setIsPlaying(!isPlaying));
+            if (shouldPlay.current) {
+                if (!visualiserHidden.hidden) {
+                    animate();
+                }
+                source.playbackRate.value = 1;
+                shouldPlay.current = false;
             }
-            source.playbackRate.value = 1;
-            shouldPlay.current = false;
-        }
-        else {
-            if (animationId.current) cancelAnimationFrame(animationId.current);
-            //ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
-            source.playbackRate.value = 0;
-            shouldPlay.current = true;
+            else {
+                if (animationId.current) cancelAnimationFrame(animationId.current);
+                //ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+                source.playbackRate.value = 0;
+                shouldPlay.current = true;
+            }
         }
     }
 
@@ -308,7 +310,7 @@ const AudioVisualiser = () => {
         <section className="music-player">
             {/* <div id="container"> */ }
             <canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef }></canvas>
-            <button className="forward-backward" onClick={ () => { console.log("."); } }>
+            <button className="forward-backward" onClick={ () => { preparePlayPrevious(); } }>
                 <FontAwesomeIcon icon={ faArrowLeft } />
             </button>
             <button className="play-pause" onClick={ () => { playPause() } }>
@@ -318,7 +320,7 @@ const AudioVisualiser = () => {
                     <FontAwesomeIcon icon={ faPlay } />
                 ) }
             </button>
-            <button className="forward-backward" onClick={ console.log(".") }>
+            <button className="forward-backward" onClick={ () => { preparePlayNext(); } }>
                 <FontAwesomeIcon icon={ faArrowRight } />
             </button>
             {/*             <input
