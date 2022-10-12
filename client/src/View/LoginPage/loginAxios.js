@@ -5,7 +5,6 @@ import * as userAuth from "../../api/auth/userAuth"
 
 // onClick={() => login("email@gmail.com", "pass123")}
 export async function login(user) {
-    console.log(user);
     const response = await userAuth.login(user.email, user.password);
     if (response.error) {
         console.log(response.error); // response.error.response.data -> error message

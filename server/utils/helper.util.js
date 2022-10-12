@@ -36,7 +36,6 @@ class StatusError extends Error {
 
 function morganFetchUser(req, res, param) {
     const authHeader = req.headers['authorization'];
-    //console.log(authHeader);
     if (!authHeader) {
         return "Empty";
     }
@@ -109,17 +108,6 @@ function readRangeHeader(range, totalLength) {
     return result;
 }
 
-// useless function at the moment. userID is saved in req.user.userId after authenticating anyways
-/* async function extractUserIdFromJWT(req) {
-    const authHeader = req.headers['authorization'];
-    // authorization has already passed (middleware), no need to check again
-    const token = authHeader && authHeader.split(' ')[1];
-    return jwt.verify(token, generalConfig.JWT_SECRET, (err, user) => {
-        //console.log(user); // edit JWT content in User.js
-        return user.userId;
-    });
-} */
-
 module.exports = {
     StatusError,
     morgan,
@@ -127,5 +115,4 @@ module.exports = {
     paginationOptions,
     reviewSearchFilters,
     readRangeHeader,
-    //extractUserIdFromJWT
 };

@@ -22,7 +22,6 @@ const SeekSlider = () => {
             onAfterChange={ (value) => {
                 dispatch(setSeekBytes(value));
                 if (songInfo) {
-                    console.log(songInfo);
                 }
             } }
             onChange={ (value) => {

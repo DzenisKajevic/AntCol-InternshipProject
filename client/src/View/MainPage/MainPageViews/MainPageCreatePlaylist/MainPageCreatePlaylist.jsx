@@ -26,7 +26,6 @@ const MainPageCreatePlaylist = () => {
         let result = await mainAxios.getPlaylists();
         dispatch(setPlaylists(result.data.data));
         dispatch(setReloadPlaylists(false));
-        //console.log(result);
       }
       fetchPlaylists()
         .catch(console.error);
@@ -56,7 +55,6 @@ const MainPageCreatePlaylist = () => {
               dispatch(addPlaylistToArray(result.data.data));
               dispatch(setReloadPlaylists(true));
             }
-            //console.log(result);
           } }
         />
         <form onSubmit={ (e) => {

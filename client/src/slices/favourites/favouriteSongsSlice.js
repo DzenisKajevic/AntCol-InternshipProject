@@ -11,7 +11,6 @@ export const favouriteSongsSlice = createSlice({
         setFavouriteSongs: (state, action) => {
             state.songs = action.payload.favourites;
             state.pageCount = Number(action.payload.pageCount);
-            console.log(current(state));
         },
         setReloadFavouriteSongs: (state, action) => {
             state.reloadFavourites = action.payload;

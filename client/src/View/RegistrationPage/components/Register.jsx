@@ -64,24 +64,18 @@ const Register = () => {
   // setting up effect for the username, validating the username anytime it changes
   useEffect(() => {
     const result = USER_REGEX.test(username);
-    console.log(result);
-    console.log(username);
     setValidName(result);
   }, [username]);
 
   // setting up effeect for the email, validating the email
   useEffect(() => {
     const result = EMAIL_REGEX.test(email);
-    console.log(result);
-    console.log(email);
     setValidEmail(result);
   }, [email]);
 
   // setting up effect for the password, validating the password
   useEffect(() => {
     const result = PWD_REGEX.test(pass);
-    console.log(result);
-    console.log(pass);
     setValidPass(result);
   }, [pass]);
 
@@ -100,7 +94,6 @@ const Register = () => {
       setErrMsg("Invalid entry");
       return;
     }
-    console.log(username, email, pass);
     setSuccess(true);
     // navigate("/login");
   };
@@ -112,8 +105,6 @@ const Register = () => {
     user.email = email;
     user.password = pass;
     const result = await registerAxios.register(user);
-
-    //console.log(result.code);
 
     if (result.data) {
       setSuccess("Successfuly Registered!");
@@ -127,42 +118,42 @@ const Register = () => {
 
   return (
     <>
-      {success ? (
+      { success ? (
         <section className="success-register-page">
-          <h1 className="success-register-title">{success}</h1>
+          <h1 className="success-register-title">{ success }</h1>
         </section>
       ) : (
         <section className="registrationpage-container">
-          <p ref={errRef} className={errMsg ? "reg-errmsg" : "offscreen"}>
-            {errMsg}
+          <p ref={ errRef } className={ errMsg ? "reg-errmsg" : "offscreen" }>
+            { errMsg }
           </p>
           <div className="register-bg-color-wrapper">
-            <form onSubmit={submitHandler} className="register-form">
+            <form onSubmit={ submitHandler } className="register-form">
               <h1 className="register-title">Sign up for a new account</h1>
-              <p ref={errRef} className={errMsg ? "reg-errmsg" : "offscreen"}>
-                {errMsg}
+              <p ref={ errRef } className={ errMsg ? "reg-errmsg" : "offscreen" }>
+                { errMsg }
               </p>
               <label htmlFor="username" className="register-label">
                 Username:
-                {validName && (
-                  <span className={"reg-valid"}>
-                    <FontAwesomeIcon icon={faCheck} />
+                { validName && (
+                  <span className={ "reg-valid" }>
+                    <FontAwesomeIcon icon={ faCheck } />
                   </span>
-                )}
-                {!validName && (
-                  <span className={"reg-invalid"}>
-                    <FontAwesomeIcon icon={faTimes} />
+                ) }
+                { !validName && (
+                  <span className={ "reg-invalid" }>
+                    <FontAwesomeIcon icon={ faTimes } />
                   </span>
-                )}
+                ) }
               </label>
               <input
                 type="text"
                 id="username"
-                ref={userRef}
+                ref={ userRef }
                 autoComplete="off"
-                onChange={(e) => setUsername(e.target.value)}
-                onFocus={() => setUsernameFocus(true)}
-                onBlur={() => setUsernameFocus(false)}
+                onChange={ (e) => setUsername(e.target.value) }
+                onFocus={ () => setUsernameFocus(true) }
+                onBlur={ () => setUsernameFocus(false) }
                 className="register-input"
                 placeholder="Choose a username"
                 required
@@ -173,7 +164,7 @@ const Register = () => {
                   username && !validName ? "reg-instructions" : "offscreen"
                 }
               >
-                <FontAwesomeIcon icon={faInfoCircle} />
+                <FontAwesomeIcon icon={ faInfoCircle } />
                 5 to 23 characters, <br />
                 Must begin with a letter, <br />
                 Letters, numbers, hyphens and underscores are allowed
@@ -181,19 +172,19 @@ const Register = () => {
 
               <label htmlFor="email" className="register-label">
                 Email:
-                <span className={validEmail ? "reg-valid" : "hide"}>
-                  <FontAwesomeIcon icon={faCheck} />
+                <span className={ validEmail ? "reg-valid" : "hide" }>
+                  <FontAwesomeIcon icon={ faCheck } />
                 </span>
-                <span className={validEmail || !email ? "hide" : "reg-invalid"}>
-                  <FontAwesomeIcon icon={faTimes} />
+                <span className={ validEmail || !email ? "hide" : "reg-invalid" }>
+                  <FontAwesomeIcon icon={ faTimes } />
                 </span>
               </label>
               <input
                 type="email"
                 id="email"
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setEmailFocus(true)}
-                onBlur={() => setEmailFocus(false)}
+                onChange={ (e) => setEmail(e.target.value) }
+                onFocus={ () => setEmailFocus(true) }
+                onBlur={ () => setEmailFocus(false) }
                 className="register-input"
                 placeholder="Type in your e-mail address"
                 required
@@ -205,25 +196,25 @@ const Register = () => {
                   emailFocus && !validEmail ? "reg-instructions" : "offscreen"
                 }
               >
-                <FontAwesomeIcon icon={faInfoCircle} />
+                <FontAwesomeIcon icon={ faInfoCircle } />
                 Enter a valid e-mail address!
               </p>
 
               <label htmlFor="password" className="register-label">
                 Password:
-                <span className={validPass ? "reg-valid" : "hide"}>
-                  <FontAwesomeIcon icon={faCheck} />
+                <span className={ validPass ? "reg-valid" : "hide" }>
+                  <FontAwesomeIcon icon={ faCheck } />
                 </span>
-                <span className={validPass || !pass ? "hide" : "reg-invalid"}>
-                  <FontAwesomeIcon icon={faTimes} />
+                <span className={ validPass || !pass ? "hide" : "reg-invalid" }>
+                  <FontAwesomeIcon icon={ faTimes } />
                 </span>
               </label>
               <input
                 type="password"
                 id="password"
-                onChange={(e) => setPass(e.target.value)}
-                onFocus={() => setPassFocus(true)}
-                onBlur={() => setPassFocus(false)}
+                onChange={ (e) => setPass(e.target.value) }
+                onFocus={ () => setPassFocus(true) }
+                onBlur={ () => setPassFocus(false) }
                 className="register-input"
                 placeholder="Choose a password"
                 required
@@ -234,7 +225,7 @@ const Register = () => {
                   passFocus && !validPass ? "reg-instructions" : "offscreen"
                 }
               >
-                <FontAwesomeIcon icon={faInfoCircle} />
+                <FontAwesomeIcon icon={ faInfoCircle } />
                 8 to 24 characters, <br />
                 Must include at least one uppercase letter, lowercase letter and
                 a number.
@@ -255,7 +246,7 @@ const Register = () => {
             </form>
           </div>
         </section>
-      )}
+      ) }
     </>
   );
 };

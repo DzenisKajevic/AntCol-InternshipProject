@@ -14,7 +14,6 @@ export const genresSlice = createSlice({
     },
     reducers: {
         setGenres: (state, action) => {
-            console.log(action.payload);
             state.genres = action.payload.genres;
             state.genresPageCount = Number(action.payload.pageCount);
 

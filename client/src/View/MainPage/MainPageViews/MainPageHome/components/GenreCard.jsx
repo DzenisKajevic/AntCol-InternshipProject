@@ -14,7 +14,6 @@ const GenreCard = () => {
   });
 
   const updateGenreSongs = function (result) {
-    console.log("RESU", result.data);
     if (result.data) dispatch(setGenreSongs(result.data.data));
     else {
       pagination.current.page = 1;
@@ -36,7 +35,6 @@ const GenreCard = () => {
             pageSize: pagination.current.pageSize,
           });
           result.data.data.currentGenre = genre;
-          console.log("RESULT", result);
           updateGenreSongs(result);
         } }>
           <h4 className="card-title" >{ genre }</h4>

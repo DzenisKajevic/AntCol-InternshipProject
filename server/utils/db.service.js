@@ -27,7 +27,6 @@ checkAudioFileType = (file, cb) => {
     cb('Unsupported file type submitted');
 };
 checkMetadata = (req, cb) => {
-    //console.log(req.body);
     let metadata = req.body;
     const requiredMetadata = ["genre", "author", "songName", "album"];
     const hasOwnProperty = Object.hasOwnProperty.bind(metadata)
