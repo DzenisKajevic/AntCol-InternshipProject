@@ -29,35 +29,15 @@
   margin-top: 2.5rem;
 }
 
-
-/* button 1 */
-.previousPage {
+/* buttons  */
+.currentPage, .nextPage, .previousPage {
   width: 30px;
   height: 30px;
   background-color: var(--purple);
   border: none;
   outline: none;
   cursor: pointer;
-}
-
-/* button 2  */
-.currentPage {
-  width: 30px;
-  height: 30px;
-  background-color: var(--purple);
-  border: none;
-  outline: none;
-  cursor: pointer;
-}
-
-/* button 3  */
-.nextPage {
-  width: 30px;
-  height: 30px;
-  background-color: var(--purple);
-  border: none;
-  outline: none;
-  cursor: pointer;
+  margin-bottom: 1rem;
 }
 
 .previousPage:hover,

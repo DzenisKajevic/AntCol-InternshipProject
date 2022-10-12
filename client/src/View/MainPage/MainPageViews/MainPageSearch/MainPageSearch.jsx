@@ -38,20 +38,20 @@ const MainPageSearch = () => {
         a.metadata.author > b.metadata.author
           ? 1
           : a.metadata.author === b.metadata.author
-            ? a.metadata.songName > b.metadata.songName
-              ? 1
-              : -1
+          ? a.metadata.songName > b.metadata.songName
+            ? 1
             : -1
+          : -1
       );
     else
       tempSearchResults.sort((a, b) =>
         a.metadata.author > b.metadata.author
           ? -1
           : a.metadata.author === b.metadata.author
-            ? a.metadata.songName > b.metadata.songName
-              ? -1
-              : 1
+          ? a.metadata.songName > b.metadata.songName
+            ? -1
             : 1
+          : 1
       );
 
     sortAuthorAsc.current = !sortAuthorAsc.current;
@@ -72,20 +72,20 @@ const MainPageSearch = () => {
         a.metadata.songName > b.metadata.songName
           ? 1
           : a.metadata.songName === b.metadata.songName
-            ? a.metadata.author > b.metadata.author
-              ? 1
-              : -1
+          ? a.metadata.author > b.metadata.author
+            ? 1
             : -1
+          : -1
       );
     else
       tempSearchResults.sort((a, b) =>
         a.metadata.songName > b.metadata.songName
           ? -1
           : a.metadata.songName === b.metadata.songName
-            ? a.metadata.author > b.metadata.author
-              ? -1
-              : 1
+          ? a.metadata.author > b.metadata.author
+            ? -1
             : 1
+          : 1
       );
 
     sortSongAsc.current = !sortSongAsc.current;
@@ -104,26 +104,26 @@ const MainPageSearch = () => {
       </h1>
       <form
         className="search-form"
-        onSubmit={ (e) => {
+        onSubmit={(e) => {
           e.preventDefault();
-        } }
+        }}
       >
         <input
           type="search"
           id="search-bar"
           name="search-bar"
           autoComplete="off"
-          value={ searchText }
-          onChange={ (event) => {
+          value={searchText}
+          onChange={(event) => {
             setSearchText(event.target.value);
-          } }
+          }}
           placeholder="Search for your favorite songs"
           className="search-bar"
           incremental="true"
         />
         <button
           className="search-bar-button"
-          onClick={ async () => {
+          onClick={async () => {
             // set song list under the search bar and edit the redux state
             let result = await mainAxios.getAllFiles({
               "metadata.songName": searchText,
@@ -131,10 +131,10 @@ const MainPageSearch = () => {
               pageSize: pagination.current.pageSize,
             });
             updateSearch(result);
-          } }
+          }}
           type="button"
         >
-          <FontAwesomeIcon icon={ faMagnifyingGlass } className="search-icon" />
+          <FontAwesomeIcon icon={faMagnifyingGlass} className="search-icon" />
         </button>
       </form>
       <nav className="search-buttons-container">
@@ -144,18 +144,18 @@ const MainPageSearch = () => {
         <button
           className="search-buttons"
           type="button"
-          onClick={ () => {
+          onClick={() => {
             sortByAuthor();
-          } }
+          }}
         >
           Artist
         </button>
         <button
           className="search-buttons"
           type="button"
-          onClick={ () => {
+          onClick={() => {
             sortBySong();
-          } }
+          }}
         >
           Song
         </button>
@@ -163,15 +163,16 @@ const MainPageSearch = () => {
           Playlist
         </button> */}
       </nav>
-      {/* <SongContainer /> */ }
+      {/* <SongContainer /> */}
       <SongCard source="SEARCH" />
       <div className="mainPage-button-container">
         <button
           id="previousPage"
-          style={ {
+          className="previousPage"
+          style={{
             display: pagination.current.page - 1 <= 0 ? "none" : null,
-          } }
-          onClick={ async () => {
+          }}
+          onClick={async () => {
             pagination.current.page--;
             let result = await mainAxios.getAllFiles({
               "metadata.songName": searchText,
@@ -179,32 +180,34 @@ const MainPageSearch = () => {
               pageSize: pagination.current.pageSize,
             });
             updateSearch(result);
-          } }
+          }}
         >
-          { Number(pagination.current.page) - 1 }
+          {Number(pagination.current.page) - 1}
         </button>
 
         <button
           id="currentPage"
-          style={ {
+          className="currentPage"
+          style={{
             display:
               !searchResults.songs || searchResults.songs.length
                 ? null
                 : "none",
-          } }
+          }}
         >
-          { pagination.current.page }
+          {pagination.current.page}
         </button>
 
         <button
           id="nextPage"
-          style={ {
+          className="nextPage"
+          style={{
             display:
               Number(pagination.current.page) + 1 > searchResults.pageCount
                 ? "none"
                 : null,
-          } }
-          onClick={ async () => {
+          }}
+          onClick={async () => {
             pagination.current.page++;
             let result = await mainAxios.getAllFiles({
               "metadata.songName": searchText,
@@ -212,9 +215,9 @@ const MainPageSearch = () => {
               pageSize: pagination.current.pageSize,
             });
             updateSearch(result);
-          } }
+          }}
         >
-          { Number(pagination.current.page) + 1 }
+          {Number(pagination.current.page) + 1}
         </button>
       </div>
     </section>

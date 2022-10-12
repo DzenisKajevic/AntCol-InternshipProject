@@ -43,20 +43,20 @@ const MainPageFavorites = () => {
         a.metadata.author > b.metadata.author
           ? 1
           : a.metadata.author === b.metadata.author
-            ? a.metadata.songName > b.metadata.songName
-              ? 1
-              : -1
+          ? a.metadata.songName > b.metadata.songName
+            ? 1
             : -1
+          : -1
       );
     else
       tempFavouriteSongs.sort((a, b) =>
         a.metadata.author > b.metadata.author
           ? -1
           : a.metadata.author === b.metadata.author
-            ? a.metadata.songName > b.metadata.songName
-              ? -1
-              : 1
+          ? a.metadata.songName > b.metadata.songName
+            ? -1
             : 1
+          : 1
       );
 
     sortAuthorAsc.current = !sortAuthorAsc.current;
@@ -71,20 +71,20 @@ const MainPageFavorites = () => {
         a.metadata.songName > b.metadata.songName
           ? 1
           : a.metadata.songName === b.metadata.songName
-            ? a.metadata.author > b.metadata.author
-              ? 1
-              : -1
+          ? a.metadata.author > b.metadata.author
+            ? 1
             : -1
+          : -1
       );
     else
       tempFavouriteSongs.sort((a, b) =>
         a.metadata.songName > b.metadata.songName
           ? -1
           : a.metadata.songName === b.metadata.songName
-            ? a.metadata.author > b.metadata.author
-              ? -1
-              : 1
+          ? a.metadata.author > b.metadata.author
+            ? -1
             : 1
+          : 1
       );
 
     sortSongAsc.current = !sortSongAsc.current;
@@ -98,10 +98,11 @@ const MainPageFavorites = () => {
       <div className="mainPage-button-container">
         <button
           id="previousPage"
-          style={ {
+          className="previousPage"
+          style={{
             display: pagination.current.page - 1 <= 0 ? "none" : null,
-          } }
-          onClick={ async () => {
+          }}
+          onClick={async () => {
             pagination.current.page--;
             let result = await mainAxios.getFavouriteFiles({
               page: pagination.current.page,
@@ -111,21 +112,24 @@ const MainPageFavorites = () => {
             dispatch(setReloadFavouriteSongs(true));
             window.location.hash = "nonExistantHashUsedForRefreshing";
             window.location.hash = "#card-container";
-          } }
+          }}
         >
-          { Number(pagination.current.page) - 1 }
+          {Number(pagination.current.page) - 1}
         </button>
 
-        <button id="currentPage">{ pagination.current.page }</button>
+        <button id="currentPage" className="currentPage">
+          {pagination.current.page}
+        </button>
         <button
           id="nextPage"
-          style={ {
+          className="nextPage"
+          style={{
             display:
               Number(pagination.current.page) + 1 > favouriteSongs.pageCount
                 ? "none"
                 : null,
-          } }
-          onClick={ async () => {
+          }}
+          onClick={async () => {
             console.log(favouriteSongs.pageCount);
             pagination.current.page++;
             let result = await mainAxios.getFavouriteFiles({
@@ -137,9 +141,9 @@ const MainPageFavorites = () => {
             dispatch(setReloadFavouriteSongs(true));
             window.location.hash = "nonExistantHashUsedForRefreshing";
             window.location.hash = "#card-container";
-          } }
+          }}
         >
-          { Number(pagination.current.page) + 1 }
+          {Number(pagination.current.page) + 1}
         </button>
       </div>
     </section>
