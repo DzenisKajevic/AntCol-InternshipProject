@@ -6,6 +6,7 @@ import { setSeekSliderValue } from '../../../../slices/audioVisualiser/seekSlide
 import { useSelector, useDispatch } from 'react-redux';
 import SeekSlider from './Components/SeekSlider';
 import VolumeSlider from './Components/VolumeSlider';
+import { preparePlayNext } from '../../components/MainContent/MainContent'
 
 let volumeNode;
 let source = null;
@@ -288,6 +289,7 @@ const AudioVisualiser = () => {
             if (animationId.current)
                 cancelAnimationFrame(animationId.current);
             cleanup();
+            preparePlayNext();
         }
 
     };
