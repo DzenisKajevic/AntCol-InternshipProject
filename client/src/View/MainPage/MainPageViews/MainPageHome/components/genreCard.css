@@ -1,7 +1,7 @@
 .genre-card{
     width: 200px;
     height: 210px;
-    background-color: #fff;
+    background-color: rgb(163, 163, 163);
     border-radius: 10px;
     margin: 1rem 1rem;
     cursor: pointer;
@@ -16,6 +16,7 @@
     -webkit-box-shadow: 10px 10px 0px 2px var(--yellow);
     -moz-box-shadow: 10px 10px 0px 2px var(--yellow);
     transition: all 0.3s ease-in-out;
+    background-color: rgb(201, 201, 201);
 }
 
 .card-title {

@@ -30,7 +30,7 @@
 }
 
 /* buttons  */
-.currentPage, .nextPage, .previousPage {
+.currentPage, .nextPage, .previousPage, .back-button {
   width: 30px;
   height: 30px;
   background-color: var(--purple);
@@ -40,9 +40,19 @@
   margin-bottom: 1rem;
 }
 
+.back-button {
+  margin-left: 3rem;
+}
+
+.back-icon {
+  color: #000;
+  height: 20px;
+}
+
 .previousPage:hover,
 .currentPage:hover,
-.nextPage:hover {
+.nextPage:hover,
+.back-button:hover {
   background-color: var(--purple-dark);
 }
 
