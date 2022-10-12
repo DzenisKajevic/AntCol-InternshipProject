@@ -20,6 +20,15 @@
     margin-top: 2rem;
 }
 
+.seekSlider-icons-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.seekSlider-icons {
+    color: var(--yellow);
+}
+
 .customSlider-track {
     /* Top value to align your track to the center of your thumb */
     top: 8px;
@@ -167,4 +176,9 @@
 .played-from {
     color: var(--yellow);
     font-size: 14px;
+}
+
+.not-playing-p {
+    color: #eaeaea;
+    font-style: italic;
 }

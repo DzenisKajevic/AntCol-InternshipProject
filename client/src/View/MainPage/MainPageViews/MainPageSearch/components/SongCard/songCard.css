@@ -32,8 +32,29 @@
     transform: scale(1.1);
 }
 
+.song-card-play-button {
+    border: 1px solid var(--purple);
+    background: #000;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    margin-left: 1rem;
+    cursor: pointer;
+}
+
+.play-icon {
+    color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+.play-icon:hover {
+    transform: scale(1.2);
+    color: var(--purple);
+}
+
 .song-card-text {
     padding-top: 5px;
+    width: 150px;
 }
 
 .author-name-p {

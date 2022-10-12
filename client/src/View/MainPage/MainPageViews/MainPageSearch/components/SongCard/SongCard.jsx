@@ -10,7 +10,7 @@ import { cleanup, source } from "../../../MainPagePlayer/AudioVisualiser";
 import { setSeekBytes } from "../../../../../../slices/audioVisualiser/seekBytesSlice";
 import * as mainAxios from "../../../../mainAxios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark, faXmark, faPlay } from "@fortawesome/free-solid-svg-icons";
 
 let playSong = null;
 
@@ -36,25 +36,23 @@ const SongCard = (source, style) => {
         {searchResults.songs.map((song, index) => {
           return (
             <div className="song-card" key={song["_id"]}>
-              <img
-                // src={null}
-                src="http://placekitten.com/60"
-                alt="author image"
-                className="author-image"
+              <button
+                className="song-card-play-button"
                 onClick={async () => {
                   playSong(song, index);
                 }}
-              />
+              >
+                <FontAwesomeIcon icon={faPlay} className="play-icon" />
+              </button>
               <div className="song-card-text">
                 <p className="author-name-p">{song.metadata.author}</p>
                 <p className="song-name-p">{song.metadata.songName}</p>
                 <p className="genre-p">{song.metadata.genre}</p>
               </div>
               <img
-                // src={null}
                 src="http://placekitten.com/60"
-                alt="album image"
-                className="album-image"
+                alt="author image"
+                className="author-image"
               />
               <button
                 className="addToFavourites"

@@ -372,9 +372,7 @@ const AudioVisualiser = () =>
                 </div>
                 :
                 <div className='song-information'>
-                    <p></p>
-                    <p></p>
-                    <p></p>
+                    <p className='not-playing-p'>Not playing</p>
                 </div> }
 
             <div className='slider-container'>
