@@ -16,6 +16,7 @@ import {
     faExpand,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NavLink } from "react-router-dom"
 
 let volumeNode;
 let source = null;
@@ -39,6 +40,7 @@ const AudioVisualiser = () => {
         if (seekBytes) { cleanup(); };
 
         if (songInfo !== null) {
+            console.log("SONG INFO", songInfo);
             fileUrl.current = 'http://localhost:3001/api/v1/audioFiles/getFile/' + songInfo['_id'];
             ctx = canvasRef.current.getContext('2d');
             shouldPlay.current = false;
@@ -309,28 +311,36 @@ const AudioVisualiser = () => {
     return (
         <section className="music-player">
             {/* <div id="container"> */ }
-            <canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef }></canvas>
-            <button className="forward-backward" onClick={ () => { preparePlayPrevious(); } }>
-                <FontAwesomeIcon icon={ faArrowLeft } />
-            </button>
-            <button className="play-pause" onClick={ () => { playPause() } }>
-                { isPlaying ? (
-                    <FontAwesomeIcon icon={ faPause } />
-                ) : (
-                    <FontAwesomeIcon icon={ faPlay } />
-                ) }
-            </button>
-            <button className="forward-backward" onClick={ () => { preparePlayNext(); } }>
-                <FontAwesomeIcon icon={ faArrowRight } />
-            </button>
-            {/*             <input
-                type="range"
-                className="progress-bar"
-                defaultValue="0"
-            /> */}
-            <SeekSlider />
-            <VolumeSlider />
-            {/* </div> */ }
+            {/* <canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef }></canvas> */ }
+            <div className='musicPlayer-button-container'>
+                <button className="forward-backward" onClick={ () => { preparePlayPrevious(); } }>
+                    <FontAwesomeIcon icon={ faArrowLeft } />
+                </button>
+                <button className="play-pause" onClick={ () => { playPause() } }>
+                    { isPlaying ? (
+                        <FontAwesomeIcon icon={ faPause } />
+                    ) : (
+                        <FontAwesomeIcon icon={ faPlay } />
+                    ) }
+                </button>
+                <button className="forward-backward" onClick={ () => { preparePlayNext(); } }>
+                    <FontAwesomeIcon icon={ faArrowRight } />
+                </button>
+            </div>
+            <div className='song-information'>
+                <p>author</p>
+                <p>song name</p>
+                <p>played from</p>
+
+            </div>
+            <div className='slider-container'>
+
+                <SeekSlider />
+                <VolumeSlider />
+            </div>
+            <NavLink to="/main-page/audio-player" className="expand-icon">
+                <FontAwesomeIcon icon={ faExpand } />
+            </NavLink>
         </section>
     );
 }
