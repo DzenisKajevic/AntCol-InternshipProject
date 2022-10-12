@@ -15,7 +15,6 @@ export const songInfoSlice = createSlice({
             // immutable state based off those changes
             state.song = action.payload;
             state.isPlaying = true;
-            console.log(current(state));
         },
         setReloadPlaylists: (state, action) => {
             state.reloadPlaylists = action.payload;

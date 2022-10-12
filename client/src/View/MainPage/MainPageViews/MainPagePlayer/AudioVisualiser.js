@@ -40,7 +40,6 @@ const AudioVisualiser = () => {
         if (seekBytes) { cleanup(); };
 
         if (songInfo !== null) {
-            console.log("SONG INFO", songInfo);
             fileUrl.current = 'http://localhost:3001/api/v1/audioFiles/getFile/' + songInfo['_id'];
             ctx = canvasRef.current.getContext('2d');
             shouldPlay.current = false;
@@ -335,9 +334,9 @@ const AudioVisualiser = () => {
                 </div>
                 :
                 <div className='song-information'>
-                    <p>author</p>
-                    <p>song name</p>
-                    <p>played from</p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
                 </div> }
 
             <div className='slider-container'>

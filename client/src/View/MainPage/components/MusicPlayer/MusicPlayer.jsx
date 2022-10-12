@@ -78,41 +78,41 @@ const MusicPlayer = () => {
   return (
     <section className="music-player">
       <audio
-        ref={musicPlayer}
+        ref={ musicPlayer }
         src="https://file-examples.com/storage/fe783a5cbb6323602a28c66/2017/11/file_example_MP3_700KB.mp3"
         preload="metadata"
       ></audio>
-      <button className="forward-backward" onClick={backFifteen}>
-        <FontAwesomeIcon icon={faArrowLeft} />
+      <button className="forward-backward" onClick={ backFifteen }>
+        <FontAwesomeIcon icon={ faArrowLeft } />
         15
       </button>
-      <button className="play-pause" onClick={togglePlayPause}>
-        {isPlaying ? (
-          <FontAwesomeIcon icon={faPause} />
+      <button className="play-pause" onClick={ togglePlayPause }>
+        { isPlaying ? (
+          <FontAwesomeIcon icon={ faPause } />
         ) : (
-          <FontAwesomeIcon icon={faPlay} />
-        )}
+          <FontAwesomeIcon icon={ faPlay } />
+        ) }
       </button>
-      <button className="forward-backward" onClick={forwardFifteen}>
+      <button className="forward-backward" onClick={ forwardFifteen }>
         15
-        <FontAwesomeIcon icon={faArrowRight} />
+        <FontAwesomeIcon icon={ faArrowRight } />
       </button>
 
-      <div className="current-time">{calculateTime(currentTime)}</div>
+      <div className="current-time">{ calculateTime(currentTime) }</div>
       <div>
         <input
           type="range"
           className="progress-bar"
           defaultValue="0"
-          ref={progressBar}
-          onChange={changeRange}
+          ref={ progressBar }
+          onChange={ changeRange }
         />
       </div>
       <div className="duration">
-        {duration && !isNaN(duration) && calculateTime(duration)}
+        { duration && !isNaN(duration) && calculateTime(duration) }
       </div>
       <NavLink to="/main-page/audio-player" className="expand-icon">
-        <FontAwesomeIcon icon={faExpand} />
+        <FontAwesomeIcon icon={ faExpand } />
       </NavLink>
     </section>
   );

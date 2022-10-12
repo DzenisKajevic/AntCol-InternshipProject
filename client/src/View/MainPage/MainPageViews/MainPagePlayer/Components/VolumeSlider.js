@@ -6,18 +6,15 @@ import { volumeNode } from "../AudioVisualiser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeLow, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 
-const VolumeSlider = () =>
-{
-    const volumeSliderValue = useSelector( ( state ) => state.volumeSliderValue.value );
+const VolumeSlider = () => {
+    const volumeSliderValue = useSelector((state) => state.volumeSliderValue.value);
     const dispatch = useDispatch();
 
-    useEffect( () =>
-    {
-        if ( volumeNode )
-        {
-            volumeNode.gain.setValueAtTime( volumeSliderValue / 100, 0 );
+    useEffect(() => {
+        if (volumeNode) {
+            volumeNode.gain.setValueAtTime(volumeSliderValue / 100, 0);
         }
-    }, [ volumeSliderValue ] )
+    }, [volumeSliderValue])
 
     return (
         <>
@@ -39,7 +36,7 @@ const VolumeSlider = () =>
                 max={ 100 } z
                 defaultValue={ 0 }
                 value={ volumeSliderValue }
-                onChange={ ( value ) => dispatch( setVolumeSliderValue( value ) )
+                onChange={ (value) => dispatch(setVolumeSliderValue(value))
                 }
             />
 

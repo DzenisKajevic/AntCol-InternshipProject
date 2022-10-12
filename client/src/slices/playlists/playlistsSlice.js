@@ -9,19 +9,12 @@ export const playlistsSlice = createSlice({
     reducers: {
         setPlaylists: (state, action) => {
             state.playlists = action.payload;
-            /* action.payload.forEach(playlist => {
-                if (!state.playlists.includes(playlist)) {
-                    state.playlists.push(playlist);
-                    //console.log(current(state)); //current() prints the value of the state, not "Proxy"
-                }
-            }) */
         },
         addPlaylistToArray: (state, action) => {
             state.playlists.push(action.payload);
         },
         setReloadPlaylists: (state, action) => {
             state.reloadPlaylists = action.payload;
-            //console.log(current(state));
         },
         deletePlaylist: (state, action) => {
             if (action.payload > -1) { // only splice array when item is found

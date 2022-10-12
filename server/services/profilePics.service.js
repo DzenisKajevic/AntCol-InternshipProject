@@ -35,11 +35,9 @@ async function uploadFile(file) {
 async function getFile(input, res) {
     // search either by fileId, or by userId, since it's unique
     // input : { inputType: "fileId | userId", fileId: null, userId: null}
-    console.log(input);
     //search by fileId, if it's present, otherwise search by userId
     if (input.fileId) {
         const _id = mongoose.Types.ObjectId(input.fileId);
-        console.log(_id);
 
         await db.getProfilePicGfs().find({ '_id': _id }).limit(1).toArray((err, files) => {
             console.log(files);
@@ -56,7 +54,6 @@ async function getFile(input, res) {
     }
     else if (input.userId) {
         const userId = mongoose.Types.ObjectId(input.userId);
-        console.log(userId);
 
         await db.getProfilePicGfs().find({ 'metadata.uploadedBy': userId }).limit(1).toArray((err, files) => {
             console.log("FILE", files);

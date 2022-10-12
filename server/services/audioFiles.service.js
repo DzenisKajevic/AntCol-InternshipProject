@@ -93,12 +93,8 @@ async function getFile(req, res) {
             // if no range is requested, send the whole file
             if (!rangeRequest) {
                 console.log("no range req");
-                //res.setHeader('Content-Disposition', 'attachment');
                 res.setHeader('Content-Type', files[0].contentType);
                 res.setHeader('Accept-Ranges', 'bytes');
-                // https://mongodb.github.io/node-mongodb-native/3.1/api/GridFSBucket.html
-                // open download stream start stop: could be used for buffering(?)
-                //console.log(db.getAudioGfs().openDownloadStream(_id));
                 db.getAudioGfs().openDownloadStream(_id).pipe(res); // streams the data to the user through a stream if successful
             }
             // otherwise send only the requested portion of the file
@@ -115,23 +111,16 @@ async function getFile(req, res) {
                     // Return the 416 'Requested Range Not Satisfiable'.
                     res.status(416).send("Requested bytes are out of range");
                     return;
-                    //console.log("sent");
                 }
-
-                // Indicate the current range. 
-                //res.setHeader('Content-Range', 'bytes ' + start + '-' + end + '/' + fileSize);
-
                 res.setHeader('End-Byte', end);
                 res.setHeader('Access-Control-Expose-Headers', "End-Byte");
-                //res.setHeader('Content-Length', start == end ? 0 : (end - start + 1));
                 res.setHeader('Content-Type', files[0].contentType);
                 res.setHeader('Accept-Ranges', 'bytes');
                 res.setHeader('Cache-Control', 'no-cache');
 
-                // Return the 206 'Partial Content'.
+                // Return 206 'Partial Content'.
                 res.status(206);
                 console.log(files[0]);
-                //console.log(db.getAudioGfs().openDownloadStream(_id, { start: start, end: end }));
                 db.getAudioGfs().openDownloadStream(_id, { start: start, end: end }).pipe(res);
             }
         }
@@ -155,22 +144,17 @@ async function getAllFiles(user, queryParams, callback) {
     if (user.role !== 'Admin') filters['reviewed'] = true;
     else if (queryParams['reviewed'] === 'true' || queryParams['reviewed'] === 'false') filters['reviewed'] = queryParams['reviewed'];
     Object.keys(queryParams).forEach(key => {
-        //console.log(key, typeof (queryParams[key]));
         if (key in util.fileSearchFilters) filters[key] = queryParams[key];
     });
 
     let page = parseInt(queryParams.page) || 1;
     let pageSize = parseInt(queryParams.pageSize) || 4;
-    console.log(filters);
-    console.log("Pg", page, "PgSz", pageSize);
-    console.log(filters['metadata.songName']);
     //if songName is present, use regex to find matching songs
     if (filters['metadata.songName'] !== null) {
         let songNameRegex = filters['metadata.songName'];
         filters['metadata.songName'] = undefined;
         delete filters['metadata.songName'];
 
-        console.log(songNameRegex, filters);
         let matchingCount = await AudioFile.count({ $and: [{ 'metadata.songName': { '$regex': new RegExp(songNameRegex, "i") } }, filters] });
         db.getAudioGfs().find({ $and: [{ 'metadata.songName': { '$regex': new RegExp(songNameRegex, "i") } }, filters] }).skip((page - 1) * pageSize).limit(pageSize)
             .toArray((err, files) => {
@@ -211,22 +195,7 @@ async function getAllGenres(user, queryParams) {
     //{ page, pageSize }
     let page = parseInt(queryParams.page) || 1;
     let pageSize = parseInt(queryParams.pageSize) || 8;
-
-
-    /*     await AudioFile.aggregate(
-            [
-                { "$group": { "_id": "$genre" } },
-                { "$skip": (page - 1) * pageSize },
-                { "$limit": pageSize },
-                { "$project": { "metadata.genre": 1 } }
-            ],
-            function (err, results) {
-                console.log(results);
-                return results;
-                // results skipped and limited in here
-            }); */
-
-    let genres = await AudioFile.find().distinct('metadata.genre');//.skip((page - 1) * pageSize).limit(pageSize);
+    let genres = await AudioFile.find().distinct('metadata.genre');
     let numberOfGenres = genres.length;
     genres = genres.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize)
     let returnObject = {
@@ -252,13 +221,11 @@ async function getFileReviews(queryParams) {
     Object.keys(queryParams).forEach(key => {
         if (key in util.reviewSearchFilters) {
             filters[key] = queryParams[key];
-            //console.log(queryParams[key]);
         }
     });
     const page = parseInt(queryParams.page) || 1;
     const pageSize = parseInt(queryParams.pageSize) || 4;
 
-    //console.log(filters);
     const result = await FileReview.find(filters).skip((page - 1) * pageSize).limit(pageSize).populate('fileId');
     return result;
 };
@@ -269,7 +236,6 @@ async function handleFileReview(user, fileId, status, description = '') {
     filter['fileId'] = fileId;
 
     const file = await AudioFile.findOne({ '_id': fileId });
-    console.log(file);
     if (!file) {
         await FileReview.findOneAndUpdate(
             filter, { 'fileId': fileId, 'reviewStatus': 'Denied', 'adminId': null, 'adminName': null, 'description': 'File was deleted before the review took place' },
@@ -286,7 +252,6 @@ async function handleFileReview(user, fileId, status, description = '') {
     };
 
     if (status === "Accepted") {
-        console.log("Accepted");
         const date = new Date;
         update['reviewed'] = true;
         update['reviewTerminationDate'] = date.toISOString();
@@ -301,7 +266,6 @@ async function handleFileReview(user, fileId, status, description = '') {
     }
 
     else if (status === "Denied") {
-        console.log("Denied");
         const date = new Date;
         update['reviewTerminationDate'] = date.toISOString();
         const file = await AudioFile.findOne(filter);

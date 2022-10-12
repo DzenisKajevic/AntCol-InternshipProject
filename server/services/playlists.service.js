@@ -6,8 +6,6 @@ const User = require('../models/User');
 
 async function createEmptyPlaylist(user, reqBody) {
     const emptyArray = [];
-    console.log(reqBody);
-    console.log(typeof (emptyArray));
     const input = {
         'visibility': reqBody.visibility || 'private',
         'numberOfFiles': 0,
@@ -28,9 +26,7 @@ async function createEmptyPlaylist(user, reqBody) {
 // there is a faster way to add mutliple files to playlists, 
 // but in that case it would be impossible to check if all files are reviewed
 async function addFilesToPlaylist(user, playlistId, fileIDs) {
-    console.log(fileIDs);
     for (let i = 0; i < fileIDs.length; i++) {
-        console.log(mongoose.Types.ObjectId(fileIDs[i]));
         const file = await AudioFile.findOne({ '_id': fileIDs[i], 'reviewed': true });
         console.log(file);
         if (!file) {
@@ -54,7 +50,6 @@ async function addFilesToPlaylist(user, playlistId, fileIDs) {
 
 
 async function removeFilesFromPlaylist(user, playlistId, fileIDs) {
-    console.log(fileIDs);
     let updatedPlaylist;
     updatedPlaylist = await Playlist.findOneAndUpdate({
         '_id': playlistId,

@@ -70,7 +70,6 @@ const CreatedPlaylist = () => {
                   );
                   if (result.data) {
                     const index = playlists.indexOf(playlist);
-                    console.log(index);
                     dispatch(deletePlaylist(index));
                     dispatch(setReloadPlaylists(true));
                   }

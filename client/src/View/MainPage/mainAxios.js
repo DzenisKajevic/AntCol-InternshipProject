@@ -74,7 +74,6 @@ export async function getFileInfo(fileId) {
 // possible parameters: 
 // genre, author, page, pageSize
 export async function getAllFiles(options) {
-    //console.log("OPTIONS", options);
     const response = await audioFiles.getAllFiles(options);
     if (response.error) {
         console.log(response.error);
@@ -139,7 +138,6 @@ export async function handleFileReview(fileId, status, description) {
 export async function addFileToFavourites(fileId) {
     const response = await favouriteFiles.addFileToFavourites(fileId);
     if (response.error) {
-        //console.log(response.error);
         console.log(response.error.response.data);
     }
     else {

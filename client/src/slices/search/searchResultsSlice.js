@@ -10,7 +10,6 @@ export const searchResultsSlice = createSlice({
         setSearchResults: (state, action) => {
             state.songs = action.payload.searchResults;
             state.pageCount = Number(action.payload.pageCount);
-            //console.log(current(state));
         }
     },
 })

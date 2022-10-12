@@ -25,14 +25,11 @@ const MainPageFavorites = () => {
           page: 1,
           pageSize: 10,
         });
-        console.log(result);
         dispatch(setFavouriteSongs(result.data.data));
         dispatch(setReloadFavouriteSongs(false));
-        //console.log(result);
       };
       fetchFavourites().catch(console.error);
     }
-    console.log("Favourite songs: ", favouriteSongs.songs);
   }, [reloadFavouriteSongs]);
 
   const sortByAuthor = function () {
@@ -43,20 +40,20 @@ const MainPageFavorites = () => {
         a.metadata.author > b.metadata.author
           ? 1
           : a.metadata.author === b.metadata.author
-          ? a.metadata.songName > b.metadata.songName
-            ? 1
+            ? a.metadata.songName > b.metadata.songName
+              ? 1
+              : -1
             : -1
-          : -1
       );
     else
       tempFavouriteSongs.sort((a, b) =>
         a.metadata.author > b.metadata.author
           ? -1
           : a.metadata.author === b.metadata.author
-          ? a.metadata.songName > b.metadata.songName
-            ? -1
+            ? a.metadata.songName > b.metadata.songName
+              ? -1
+              : 1
             : 1
-          : 1
       );
 
     sortAuthorAsc.current = !sortAuthorAsc.current;
@@ -71,20 +68,20 @@ const MainPageFavorites = () => {
         a.metadata.songName > b.metadata.songName
           ? 1
           : a.metadata.songName === b.metadata.songName
-          ? a.metadata.author > b.metadata.author
-            ? 1
+            ? a.metadata.author > b.metadata.author
+              ? 1
+              : -1
             : -1
-          : -1
       );
     else
       tempFavouriteSongs.sort((a, b) =>
         a.metadata.songName > b.metadata.songName
           ? -1
           : a.metadata.songName === b.metadata.songName
-          ? a.metadata.author > b.metadata.author
-            ? -1
+            ? a.metadata.author > b.metadata.author
+              ? -1
+              : 1
             : 1
-          : 1
       );
 
     sortSongAsc.current = !sortSongAsc.current;
@@ -99,10 +96,10 @@ const MainPageFavorites = () => {
         <button
           id="previousPage"
           className="previousPage"
-          style={{
+          style={ {
             display: pagination.current.page - 1 <= 0 ? "none" : null,
-          }}
-          onClick={async () => {
+          } }
+          onClick={ async () => {
             pagination.current.page--;
             let result = await mainAxios.getFavouriteFiles({
               page: pagination.current.page,
@@ -112,38 +109,36 @@ const MainPageFavorites = () => {
             dispatch(setReloadFavouriteSongs(true));
             window.location.hash = "nonExistantHashUsedForRefreshing";
             window.location.hash = "#card-container";
-          }}
+          } }
         >
-          {Number(pagination.current.page) - 1}
+          { Number(pagination.current.page) - 1 }
         </button>
 
         <button id="currentPage" className="currentPage">
-          {pagination.current.page}
+          { pagination.current.page }
         </button>
         <button
           id="nextPage"
           className="nextPage"
-          style={{
+          style={ {
             display:
               Number(pagination.current.page) + 1 > favouriteSongs.pageCount
                 ? "none"
                 : null,
-          }}
-          onClick={async () => {
-            console.log(favouriteSongs.pageCount);
+          } }
+          onClick={ async () => {
             pagination.current.page++;
             let result = await mainAxios.getFavouriteFiles({
               page: pagination.current.page,
               pageSize: pagination.current.pageSize,
             });
-            console.log(result);
             dispatch(setFavouriteSongs(result.data.data));
             dispatch(setReloadFavouriteSongs(true));
             window.location.hash = "nonExistantHashUsedForRefreshing";
             window.location.hash = "#card-container";
-          }}
+          } }
         >
-          {Number(pagination.current.page) + 1}
+          { Number(pagination.current.page) + 1 }
         </button>
       </div>
     </section>
