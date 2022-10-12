@@ -42,11 +42,13 @@
 
 .back-button {
   margin-left: 3rem;
+  width: 70px;
 }
 
 .back-icon {
   color: #000;
   height: 20px;
+  /* width: 30px; */
 }
 
 .previousPage:hover,

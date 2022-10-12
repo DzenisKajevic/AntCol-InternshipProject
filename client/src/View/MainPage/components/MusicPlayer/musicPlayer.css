@@ -41,8 +41,12 @@
 }
 
 .expand-icon {
-    color: aliceblue;
+    color: #aeaeae;
     float: right;
+}
+
+.expand-icon:hover {
+    color: var(--yellow);
 }
 
 .current-time {

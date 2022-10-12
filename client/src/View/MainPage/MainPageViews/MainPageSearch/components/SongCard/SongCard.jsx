@@ -25,131 +25,150 @@ const SongCard = (source, style) => {
     cleanup();
     let tempSongInfo = structuredClone(song);
     tempSongInfo["songIndex"] = index;
-    if (!song["playedFrom"])
-      tempSongInfo["playedFrom"] = source.source;
+    if (!song["playedFrom"]) tempSongInfo["playedFrom"] = source.source;
     dispatch(setSongInfo(tempSongInfo));
     dispatch(setSeekBytes(0));
-  }
+  };
 
   if (source.source === "SEARCH") {
     return (
       <div className="song-cards">
-        { searchResults.songs.map((song, index) => {
+        {searchResults.songs.map((song, index) => {
           return (
-            <div className="song-card" key={ song["_id"] }>
+            <div className="song-card" key={song["_id"]}>
               <img
-                src={ null }
+                // src={null}
+                src="http://placekitten.com/60"
                 alt="author image"
                 className="author-image"
-                onClick={ async () => {
+                onClick={async () => {
                   playSong(song, index);
-                } }
+                }}
               />
               <div className="song-card-text">
-                <p className="author-name-p">{ song.metadata.author }</p>
-                <p className="song-name-p">{ song.metadata.songName }</p>
-                <p className="genre-p">{ song.metadata.genre }</p>
+                <p className="author-name-p">{song.metadata.author}</p>
+                <p className="song-name-p">{song.metadata.songName}</p>
+                <p className="genre-p">{song.metadata.genre}</p>
               </div>
-              <img src={ null } alt="album image" className="album-image" />
+              <img
+                // src={null}
+                src="http://placekitten.com/60"
+                alt="album image"
+                className="album-image"
+              />
               <button
                 className="addToFavourites"
-                onClick={ async () => {
+                onClick={async () => {
                   const result = await mainAxios.addFileToFavourites(
                     song["_id"]
                   );
                   if (result.data) dispatch(setReloadFavouriteSongs(true));
-                } }
+                }}
               >
                 <FontAwesomeIcon
-                  icon={ faBookmark }
+                  icon={faBookmark}
                   className="bookmark-icon"
                   title="Add song to favorites"
                 />
               </button>
             </div>
           );
-        }) }
+        })}
       </div>
     );
   } else if (source.source === "FAVOURITES") {
     return (
       <div className="song-cards">
-        { favouriteSongs.songs.map((song, index) => {
+        {favouriteSongs.songs.map((song, index) => {
           return (
-            <div className="song-card" key={ song.fileId["_id"] }>
+            <div className="song-card" key={song.fileId["_id"]}>
               <img
-                src={ null }
+                // src={null}
+                src="http://placekitten.com/60"
                 alt="author image"
                 className="author-image"
-                onClick={ async () => {
+                onClick={async () => {
                   await playSong(song["fileId"], index);
-                } }
+                }}
               />
               <div className="song-card-text">
-                <p className="author-name-p">{ song.fileId.metadata.author }</p>
-                <p className="song-name-p">{ song.fileId.metadata.songName }</p>
-                <p className="genre-p">{ song.fileId.metadata.genre }</p>
+                <p className="author-name-p">{song.fileId.metadata.author}</p>
+                <p className="song-name-p">{song.fileId.metadata.songName}</p>
+                <p className="genre-p">{song.fileId.metadata.genre}</p>
               </div>
-              <img src={ null } alt="album image" className="album-image" />
+              <img
+                // src={null}
+                src="http://placekitten.com/60"
+                alt="album image"
+                className="album-image"
+              />
               <button
                 className="removeFromFavourites"
-                onClick={ async () => {
+                onClick={async () => {
                   const result = await mainAxios.deleteFavouriteFile(
                     song.fileId["_id"]
                   );
                   if (result.data) dispatch(setReloadFavouriteSongs(true));
-                } }
+                }}
               >
                 <FontAwesomeIcon
-                  icon={ faXmark }
+                  icon={faXmark}
                   className="bookmark-icon-remove"
                   title="Remove song from favorites"
                 />
               </button>
             </div>
           );
-        }) }
+        })}
       </div>
     );
-  }
-  else if (source.source === "GENRES") {
+  } else if (source.source === "GENRES") {
     return (
-      <div className="song-cards" style={ { display: genres.songsHidden ? 'none' : null } }>
-        { genres.songs.map((song, index) => {
+      <div
+        className="song-cards"
+        style={{ display: genres.songsHidden ? "none" : null }}
+      >
+        {genres.songs.map((song, index) => {
           return (
-            <div className="song-card" key={ song["_id"] }>
+            <div className="song-card" key={song["_id"]}>
               <img
-                src={ null }
+                // src={null}
+                src="http://placekitten.com/60"
                 alt="author image"
                 className="author-image"
-                onClick={ async () => {
+                onClick={async () => {
                   playSong(song, index);
-                } }
+                }}
               />
               <div className="song-card-text">
-                <p className="author-name-p">{ song.metadata.author }</p>
-                <p className="song-name-p">{ song.metadata.songName }</p>
-                <p className="genre-p">{ song.metadata.genre }</p>
+                <p className="author-name-p">{song.metadata.author}</p>
+                <p className="song-name-p">{song.metadata.songName}</p>
+                <p className="genre-p">{song.metadata.genre}</p>
               </div>
-              <img src={ null } alt="album image" className="album-image" />
+              <img
+                // src={null}
+                src="http://placekitten.com/60"
+                alt="album image"
+                className="album-image"
+              />
               <button
                 className="addToFavourites"
-                onClick={ async () => {
+                onClick={async () => {
                   const result = await mainAxios.addFileToFavourites(
                     song["_id"]
                   );
                   if (result.data) dispatch(setReloadFavouriteSongs(true));
-                } }
+                }}
               >
                 <FontAwesomeIcon
-                  icon={ faBookmark }
+                  icon={faBookmark}
                   className="bookmark-icon"
                   title="Add song to favorites"
                 />
               </button>
             </div>
           );
-        }) }
+        })}
       </div>
     );
   }
