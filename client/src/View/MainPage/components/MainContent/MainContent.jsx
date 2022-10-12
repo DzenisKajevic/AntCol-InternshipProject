@@ -15,6 +15,7 @@ import UploadImgPopup from "../MainNavbar/components/UploadImgPopup";
 const MainContent = () => {
   const songInfo = useSelector((state) => state.songInfo.song);
   const playlists = useSelector((state) => state.playlists.playlists);
+  const genres = useSelector((state) => state.genres);
   const searchResults = useSelector((state) => state.searchResults);
   const favouriteSongs = useSelector((state) => state.favouriteSongs);
   const dispatch = useDispatch();
@@ -32,7 +33,6 @@ const MainContent = () => {
   }
 
   const playNext = async function (source, sourceMaxIndex) {
-    console.log(songInfo.songIndex, sourceMaxIndex);
     if (songInfo.songIndex < sourceMaxIndex) {
       await playSong(map1.get(source), songInfo.songIndex + 1);
     }
@@ -48,7 +48,6 @@ const MainContent = () => {
           onClick={ async () => {
             // check where the song is located (search / playlists / favourites / genres)
 
-            console.log(songInfo.playedFrom);
             let song = {};
             if (songInfo.playedFrom === "SEARCH") {
               if (Number(songInfo.songIndex - 1) >= 0) {
@@ -62,7 +61,6 @@ const MainContent = () => {
               await playPrevious("searchResultsPrevious", Number(searchResults.songs.length) - 1);
             }
             else if (songInfo.playedFrom === "FAVOURITES") {
-              console.log("ADLALSDM", songInfo.songIndex);
               if (Number(songInfo.songIndex - 1) >= 0) {
                 song = { ...favouriteSongs.songs[Number(songInfo.songIndex) - 1].fileId, playedFrom: "FAVOURITES" }
                 map1.set('favouriteSongsPrevious', song);
@@ -73,8 +71,17 @@ const MainContent = () => {
               }
               await playPrevious("favouriteSongsPrevious", Number(favouriteSongs.songs.length) - 1);
             }
-
-
+            else if (songInfo.playedFrom === "GENRES") {
+              if (Number(songInfo.songIndex - 1) >= 0) {
+                song = { ...genres.songs[Number(songInfo.songIndex) - 1], playedFrom: "GENRES" }
+                map1.set('genresPrevious', song);
+              }
+              else {
+                song = { ...genres.songs[genres.songs.length - 1], playedFrom: "GENRES" }
+                map1.set('genresPreviousFinal', song);
+              }
+              await playPrevious("genresPrevious", Number(genres.songs.length) - 1);
+            }
           } }>Previous</button>
         <button id="button1" onClick={ playPause }>Play/Pause</button>
         <button id="nextSong" onClick={ async () => {
@@ -100,6 +107,17 @@ const MainContent = () => {
               map1.set('favouriteSongsNextFirst', song);
             }
             await playNext("favouriteSongsNext", favouriteSongs.songs.length - 1);
+          }
+          else if (songInfo.playedFrom === "GENRES") {
+            if (songInfo.songIndex < genres.songs.length - 1) {
+              song = { ...genres.songs[Number(songInfo.songIndex) + 1], playedFrom: "GENRES" }
+              map1.set('genresNext', song);
+            }
+            else {
+              song = { ...genres.songs[0], playedFrom: "GENRES" }
+              map1.set('genresNextFirst', song);
+            }
+            await playNext("genresNext", genres.songs.length - 1);
           }
         } }>Next</button>
         <Outlet />
