@@ -41,8 +41,8 @@
 }
 
 .expand-icon {
-    color: #aeaeae;
-    float: right;
+    color: #fff;
+    /* float: right; */
 }
 
 .expand-icon:hover {
