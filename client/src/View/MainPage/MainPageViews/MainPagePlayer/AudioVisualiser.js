@@ -311,7 +311,7 @@ const AudioVisualiser = () => {
     return (
         <section className="music-player">
             {/* <div id="container"> */ }
-            {/* <canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef }></canvas> */ }
+            <canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef }></canvas>
             <div className='musicPlayer-button-container'>
                 <button className="forward-backward" onClick={ () => { preparePlayPrevious(); } }>
                     <FontAwesomeIcon icon={ faArrowLeft } />
@@ -327,12 +327,19 @@ const AudioVisualiser = () => {
                     <FontAwesomeIcon icon={ faArrowRight } />
                 </button>
             </div>
-            <div className='song-information'>
-                <p>author</p>
-                <p>song name</p>
-                <p>played from</p>
+            { songInfo ?
+                <div className='song-information'>
+                    <p>{ songInfo.metadata.author }</p>
+                    <p>{ songInfo.metadata.songName }</p>
+                    <p>{ songInfo.playedFrom }</p>
+                </div>
+                :
+                <div className='song-information'>
+                    <p>author</p>
+                    <p>song name</p>
+                    <p>played from</p>
+                </div> }
 
-            </div>
             <div className='slider-container'>
 
                 <SeekSlider />

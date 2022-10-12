@@ -27,13 +27,11 @@ export const genresSlice = createSlice({
             state.songsHidden = false;
         },
         unhideGenres: (state, action) => {
-
-            console.log(action.payload);
             state.genresHidden = false;
             state.songsHidden = true;
+            state.currentGenre = null;
         },
         setReloadGenres: (state, action) => {
-            console.log(action.payload);
             state.reloadGenres = action.payload;
         }
     },
