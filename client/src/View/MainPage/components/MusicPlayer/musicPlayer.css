@@ -1,4 +1,5 @@
 .music-player {
+    flex-wrap: wrap;
     height: 150px;
     width: 100%;
     background-color: #000;
@@ -45,11 +46,11 @@
 }
 
 .current-time {
-color: aliceblue;
+    color: aliceblue;
 }
 
 .duration {
-color: aliceblue;
+    color: aliceblue;
 }
 
 .progress-bar {

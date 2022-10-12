@@ -11,7 +11,8 @@ const SeekSlider = () => {
     return (
         <ReactSlider
             id="seekSlider"
-            className="seekSlider"
+            /* className="seekSlider" */
+            className='progress-bar'
             thumbClassName="customSlider-thumb"
             trackClassName="customSlider-track"
             min={ 0 }

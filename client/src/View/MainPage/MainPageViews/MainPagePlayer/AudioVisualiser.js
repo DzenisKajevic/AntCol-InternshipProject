@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import './AudioVisualiser.css';
 import axios from 'axios';
 import { setSeekBytes } from '../../../../slices/audioVisualiser/seekBytesSlice';
@@ -6,7 +6,15 @@ import { setSeekSliderValue } from '../../../../slices/audioVisualiser/seekSlide
 import { useSelector, useDispatch } from 'react-redux';
 import SeekSlider from './Components/SeekSlider';
 import VolumeSlider from './Components/VolumeSlider';
-import { preparePlayNext } from '../../components/MainContent/MainContent'
+import { preparePlayNext } from '../../components/MainContent/MainContent';
+import {
+    faArrowLeft,
+    faArrowRight,
+    faPlay,
+    faPause,
+    faExpand,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 let volumeNode;
 let source = null;
@@ -18,6 +26,7 @@ let playPause = null;
 const AudioVisualiser = () => {
 
     const dispatch = useDispatch();
+    const [isPlaying, setIsPlaying] = useState(false);
     const volumeSliderValue = useSelector((state) => state.volumeSliderValue.value);
     const seekBytes = useSelector((state) => state.seekBytes.start);
     const songInfo = useSelector((state) => state.songInfo.song);
@@ -174,6 +183,7 @@ const AudioVisualiser = () => {
     }
 
     playPause = function () {
+        setIsPlaying(!isPlaying);
         if (shouldPlay.current) {
             if (!visualiserHidden.hidden) {
                 animate();
@@ -295,11 +305,31 @@ const AudioVisualiser = () => {
     };
 
     return (
-        <div id="container" style={ { display: visualiserHidden.hidden ? 'none' : null } }>
-            <canvas id="canvas1" { ...size } ref={ canvasRef }></canvas>
+        <section className="music-player">
+            {/* <div id="container"> */ }
+            <canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef }></canvas>
+            <button className="forward-backward" onClick={ () => { console.log("."); } }>
+                <FontAwesomeIcon icon={ faArrowLeft } />
+            </button>
+            <button className="play-pause" onClick={ () => { playPause() } }>
+                { isPlaying ? (
+                    <FontAwesomeIcon icon={ faPause } />
+                ) : (
+                    <FontAwesomeIcon icon={ faPlay } />
+                ) }
+            </button>
+            <button className="forward-backward" onClick={ console.log(".") }>
+                <FontAwesomeIcon icon={ faArrowRight } />
+            </button>
+            {/*             <input
+                type="range"
+                className="progress-bar"
+                defaultValue="0"
+            /> */}
             <SeekSlider />
             <VolumeSlider />
-        </div>
+            {/* </div> */ }
+        </section>
     );
 }
 

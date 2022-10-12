@@ -17,7 +17,8 @@ const VolumeSlider = () => {
     return (
         <ReactSlider
             id="volumeSlider"
-            className="volumeSlider"
+            //className="volumeSlider"
+            className="progress-bar"
             thumbClassName="customSlider-thumb"
             trackClassName="customSlider-track"
             min={ 0 }
