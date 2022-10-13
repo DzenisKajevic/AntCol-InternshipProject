@@ -366,7 +366,13 @@ const AudioVisualiser = () => {
                     </button>
                 </div>
                 {
-                    songInfo ?
+                    songInfo ? songInfo.playedFrom === 'GENRES' ?
+                        <div className='song-information'>
+                            <p className='author-name'>{ songInfo.metadata.author }</p>
+                            <p className='song-name'>{ songInfo.metadata.songName }</p>
+                            <p className='played-from'>{ "GENRE: " + songInfo.metadata.genre }</p>
+                        </div>
+                        :
                         <div className='song-information'>
                             <p className='author-name'>{ songInfo.metadata.author }</p>
                             <p className='song-name'>{ songInfo.metadata.songName }</p>

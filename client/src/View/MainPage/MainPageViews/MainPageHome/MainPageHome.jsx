@@ -47,14 +47,6 @@ const MainPageHome = () => {
         id="card-container"
         style={ { display: genres.genresHidden ? "none" : null } }
       >
-        {/*         <GenreCard title="Pop" />
-        <GenreCard title="Hip-Hop" />
-        <GenreCard title="Rock" />
-        <GenreCard title="Metal" />
-        <GenreCard title="Classical" />
-        <GenreCard title="Blue" />
-        <GenreCard title="Funk" />
-        <GenreCard title="K-Pop" /> */}
         <GenreCard />
       </div>
       <button
