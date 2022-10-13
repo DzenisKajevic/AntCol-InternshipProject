@@ -53,8 +53,8 @@ const MainNavbar = () => {
     setProfilePicture();
   }, []);
 
-  useEffect(() => {
-    console.log(visibility, "vidljivost");
+  useEffect(() => {/* 
+    console.log(visibility, "vidljivost"); */
   }, [visibility]);
 
   return (

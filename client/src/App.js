@@ -13,23 +13,17 @@ import { AudioVisualiser } from './View/MainPage/MainPageViews/MainPagePlayer/Au
 import PageNotFound from './View/MainPage/components/PageNotFound/PageNotFound';
 import { PrivateRoute } from './View/PrivateRoute';
 
-function App ()
-{
+function App() {
   return (
     <Routes>
       <Route path="/" element={ <LandingPage /> } />
       <Route path="/login" element={ <LoginPage /> } />
       <Route path="/registration" element={ <RegistrationPage /> } />
-      <Route path="/music-player" element={
-        <PrivateRoute>
-          <MusicPlayerPage />
-        </PrivateRoute>
-      } />
       <Route path="/main-page" element={
         <PrivateRoute>
           <MainPage />
         </PrivateRoute> }>
-        <Route path="/main-page/home" element={
+        <Route path="/main-page/home" exact element={
           <PrivateRoute>
             <MainPageHome />
           </PrivateRoute> } />
@@ -37,6 +31,11 @@ function App ()
           <PrivateRoute>
             <MainPageSearch />
           </PrivateRoute> } />
+        <Route path="/main-page/music-player" element={
+          <PrivateRoute>
+            {/* <MusicPlayerPage /> */ }
+          </PrivateRoute>
+        } />
         <Route
           path="/main-page/create-playlist"
           element={

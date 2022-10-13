@@ -71,7 +71,7 @@ const SongCard = (source, style) => {
               </button>
             </div>
           );
-        }) : <p>Songs not found</p> }
+        }) : <p>{/* Songs not found */ }</p> }
       </div>
     );
   } else if (source.source === "FAVOURITES") {
@@ -80,15 +80,14 @@ const SongCard = (source, style) => {
         { favouriteSongs.songs ? favouriteSongs.songs.map((song, index) => {
           return (
             <div className="song-card" key={ song.fileId["_id"] }>
-              <img
-                // src={null}
-                src="http://placekitten.com/60"
-                alt="author image"
-                className="author-image"
+              <button
+                className="song-card-play-button"
                 onClick={ async () => {
-                  await playSong(song["fileId"], index);
+                  playSong(song, index);
                 } }
-              />
+              >
+                <FontAwesomeIcon icon={ faPlay } className="play-icon" />
+              </button>
               <div className="song-card-text">
                 <p className="author-name-p">{ song.fileId.metadata.author }</p>
                 <p className="song-name-p">{ song.fileId.metadata.songName }</p>
@@ -117,7 +116,7 @@ const SongCard = (source, style) => {
               </button>
             </div>
           );
-        }) : <p>No favorites found</p> }
+        }) : <p>{/* No favorites found */ }</p> }
       </div>
     );
   } else if (source.source === "GENRES") {
@@ -129,15 +128,14 @@ const SongCard = (source, style) => {
         { genres.songs.length ? genres.songs.map((song, index) => {
           return (
             <div className="song-card" key={ song["_id"] }>
-              <img
-                // src={null}
-                src="http://placekitten.com/60"
-                alt="author image"
-                className="author-image"
+              <button
+                className="song-card-play-button"
                 onClick={ async () => {
                   playSong(song, index);
                 } }
-              />
+              >
+                <FontAwesomeIcon icon={ faPlay } className="play-icon" />
+              </button>
               <div className="song-card-text">
                 <p className="author-name-p">{ song.metadata.author }</p>
                 <p className="song-name-p">{ song.metadata.songName }</p>

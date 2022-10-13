@@ -3,6 +3,7 @@ import './AudioVisualiser.css';
 import axios from 'axios';
 import { setSeekBytes } from '../../../../slices/audioVisualiser/seekBytesSlice';
 import { setSeekSliderValue } from '../../../../slices/audioVisualiser/seekSliderValueSlice';
+import { setRedirected, setVisualiserHidden } from '../../../../slices/audioVisualiser/visualiserHiddenSlice';
 import { setIsPlaying } from '../../../../slices/audioVisualiser/songInfoSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import SeekSlider from './Components/SeekSlider';
@@ -27,6 +28,23 @@ let playPause = null;
 
 const AudioVisualiser = () => {
 
+    let windowPopOld = document.location.pathname;
+    let windowPopNew = '';
+    // triggers playPause twice (once in the listener, once in useEffect) for playing the song "seamlessly"
+    onpopstate = (event) => {
+        windowPopNew = document.location.pathname;
+        if (windowPopNew === windowPopOld) {
+            return;
+            //diferent path: not just the hash has changed
+
+        }
+        playPause();
+        if (windowPopNew === '/main-page/music-player' || windowPopNew === '/main-page/music-player/')
+            dispatch(setVisualiserHidden({ hidden: false, redirected: true }));
+        else dispatch(setVisualiserHidden({ hidden: true, redirected: true }));
+        windowPopOld = windowPopNew;
+    };
+
     const dispatch = useDispatch();
     const isPlaying = useSelector((state) => state.songInfo.isPlaying);
     const volumeSliderValue = useSelector((state) => state.volumeSliderValue.value);
@@ -36,18 +54,25 @@ const AudioVisualiser = () => {
     const searchResults = useSelector((state) => state.searchResults);
 
     useEffect(() => {
+        if (visualiserHidden.redirected) {
+            playPause();
+            dispatch(setRedirected(false));
+        }
         if (seekBytes === -1) { return; };
         if (seekBytes) { cleanup(); };
 
         if (songInfo !== null) {
             fileUrl.current = 'http://localhost:3001/api/v1/audioFiles/getFile/' + songInfo['_id'];
-            ctx = canvasRef.current.getContext('2d');
+            if (!visualiserHidden.hidden) {
+                ctx = canvasRef.current.getContext('2d');
+            }
             shouldPlay.current = false;
 
             async function songPlayContinued() {
-                audioContext.current = new AudioContext();
+
                 canvasRef.width = 1080;
                 canvasRef.height = 720;
+                audioContext.current = new AudioContext();
                 if (!seekBytes) {
                     headers.current['Range'] = `bytes=0-${Number(songInfo.chunkSize) - 1}`;
                 }
@@ -117,7 +142,7 @@ const AudioVisualiser = () => {
 
                 shouldPlay.current = false
                 dataObj.current = {
-                    x,
+                    x: barWidth / 2,
                     dataArray,
                     bufferLength,
                     barWidth,
@@ -135,6 +160,7 @@ const AudioVisualiser = () => {
             songPlayContinued();
             dispatch(setSeekBytes(-1));
         }
+
     }, [songInfo, seekBytes, visualiserHidden]);
 
     const canvasRef = useRef(null);
@@ -170,16 +196,26 @@ const AudioVisualiser = () => {
         shouldPlay.current = false;
         audioBuffer.current = null;
         audioContext.current = null;
-        ctx = canvasRef.current.getContext('2d');
-        ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+        if (!visualiserHidden.hidden) {
+            ctx = canvasRef.current.getContext('2d');
+            ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+        }
     };
 
     const animate = () => {
-        dataObj.current.x = 0;
-        ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+        /* dataObj.current.x = 0; */
+        if (!visualiserHidden.hidden) {
+            ctx = canvasRef.current.getContext('2d');
+            ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+        }
         analyser.current.getByteFrequencyData(dataObj.current.dataArray);
         drawWeirdVisualiser(ctx, dataObj.current.bufferLength, dataObj.current.x,
             dataObj.current.barWidth, dataObj.current.barHeight, dataObj.current.dataArray);
+        /* drawBarVisualiser(ctx, dataObj.current.bufferLength, dataObj.current.x,
+           dataObj.current.barWidth, dataObj.current.barHeight, dataObj.current.dataArray); */
+        /* drawCircleVisualiser(ctx, dataObj.current.bufferLength, dataObj.current.x,
+            dataObj.current.barWidth, dataObj.current.barHeight, dataObj.current.dataArray); */
+
         animationId.current = requestAnimationFrame(animate);
     }
 
@@ -206,8 +242,11 @@ const AudioVisualiser = () => {
         for (let i = 0; i < bufferLength; i++) {
             barHeight = dataArray[i];
             ctx.fillStyle = 'hsl(' + barHeight + ', ' + barHeight + '%, ' + barHeight / 4 + '%)';
-            ctx.fillRect(canvasRef.width / 2 + x, canvasRef.height - barHeight, barWidth / 2, barHeight * i / 10); // barHeight for fullsized bars
+            /* ctx.fillRect(canvasRef.width / 2 + x, canvasRef.height - barHeight, barWidth / 2, barHeight * i / 10); // barHeight for fullsized bars
             ctx.fillRect(canvasRef.width / 2 - x, canvasRef.height - barHeight, barWidth / 2, barHeight * i / 10);
+ */
+            ctx.fillRect(canvasRef.width / 2 + x, canvasRef.height - barHeight * 1.5, barWidth / 2, -(barHeight * i / 350)); // barHeight for fullsized bars
+            ctx.fillRect(canvasRef.width / 2 - x, canvasRef.height - barHeight * 1.5, barWidth / 2, -(barHeight * i / 350));
             x += barWidth / 2;
         }
     }
@@ -223,7 +262,7 @@ const AudioVisualiser = () => {
 
             ctx.fillStyle = 'hsl(' + barHeight + ', ' + barHeight + '%, ' + barHeight / 4 + '%)';
             ctx.fillRect(0, 0, barWidth, barHeight);
-            x += barWidth;
+            /* x += barWidth; */
             // restores the canvasRef to the previous save
             ctx.restore();
         }
@@ -239,7 +278,7 @@ const AudioVisualiser = () => {
             ctx.fillStyle = 'hsl(' + barHeight + ', ' + barHeight + '%, ' + barHeight / 4 + '%)';
             ctx.fillRect(canvasRef.width / 64, canvasRef.height / 16, barWidth, barHeight);
             ctx.fillRect(canvasRef.width * 64, canvasRef.height * 16, barWidth, barHeight);
-            x += barWidth / 2;
+            /* x += barWidth / 2; */
             ctx.restore();
         }
     }
@@ -307,48 +346,98 @@ const AudioVisualiser = () => {
 
     };
 
-    return (
-        <section className="music-player" style={ { animationPlayState: isPlaying ? 'running' : 'paused' } }>
-            {/* <div id="container"> */ }
-            < canvas id="canvas1" { ...size } style={ { display: visualiserHidden.hidden ? 'none' : null } } ref={ canvasRef } ></canvas >
-            <div className='musicPlayer-button-container'>
-                <button className="forward-backward" onClick={ () => { preparePlayPrevious(); } }>
-                    <FontAwesomeIcon icon={ faArrowLeft } />
-                </button>
-                <button className="play-pause" onClick={ () => { playPause() } }>
-                    { isPlaying ? (
-                        <FontAwesomeIcon icon={ faPause } />
-                    ) : (
-                        <FontAwesomeIcon icon={ faPlay } />
-                    ) }
-                </button>
-                <button className="forward-backward" onClick={ () => { preparePlayNext(); } }>
-                    <FontAwesomeIcon icon={ faArrowRight } />
-                </button>
-            </div>
-            {
-                songInfo ?
-                    <div className='song-information'>
-                        <p className='author-name'>{ songInfo.metadata.author }</p>
-                        <p className='song-name'>{ songInfo.metadata.songName }</p>
-                        <p className='played-from'>{ songInfo.playedFrom }</p>
-                    </div>
-                    :
-                    <div className='song-information'>
-                        <p className='not-playing-p'>Not playing</p>
-                    </div>
-            }
+    if (visualiserHidden.hidden)
+        return (
+            <section className="music-player" style={ { animationPlayState: isPlaying ? 'running' : 'paused' } }>
+                {/* <div id="container"> */ }
+                <div className='musicPlayer-button-container'>
+                    <button className="forward-backward" onClick={ () => { preparePlayPrevious(); } }>
+                        <FontAwesomeIcon icon={ faArrowLeft } />
+                    </button>
+                    <button className="play-pause" onClick={ () => { playPause() } }>
+                        { isPlaying ? (
+                            <FontAwesomeIcon icon={ faPause } />
+                        ) : (
+                            <FontAwesomeIcon icon={ faPlay } />
+                        ) }
+                    </button>
+                    <button className="forward-backward" onClick={ () => { preparePlayNext(); } }>
+                        <FontAwesomeIcon icon={ faArrowRight } />
+                    </button>
+                </div>
+                {
+                    songInfo ?
+                        <div className='song-information'>
+                            <p className='author-name'>{ songInfo.metadata.author }</p>
+                            <p className='song-name'>{ songInfo.metadata.songName }</p>
+                            <p className='played-from'>{ songInfo.playedFrom }</p>
+                        </div>
+                        :
+                        <div className='song-information'>
+                            <p className='not-playing-p'>Not playing</p>
+                        </div>
+                }
 
-            <div className='slider-container'>
+                <div className='slider-container'>
 
-                <SeekSlider />
-                <VolumeSlider />
-            </div>
-            <NavLink to="/main-page/audio-player" className="expand-icon">
-                <FontAwesomeIcon icon={ faExpand } />
-            </NavLink>
-        </section >
-    );
+                    <SeekSlider />
+                    <VolumeSlider />
+                </div>
+                <NavLink to="/main-page/music-player" className="expand-icon" onClick={ () => {
+                    dispatch(setVisualiserHidden({ hidden: false, redirected: true })); if (isPlaying) {
+                        setTimeout(() => {
+                            playPause();
+                        }, "300")
+                    }
+                } }>
+                    <FontAwesomeIcon icon={ faExpand } />
+                </NavLink>
+            </section >
+        );
+
+    else
+        return (
+            <div>
+                < canvas id="canvas1" { ...size } ref={ canvasRef } ></canvas >
+                <section className="music-player" style={ { animationPlayState: isPlaying ? 'running' : 'paused' } }>
+                    {/* <div id="container"> */ }
+                    <div className='musicPlayer-button-container'>
+                        <button className="forward-backward" onClick={ () => { preparePlayPrevious(); } }>
+                            <FontAwesomeIcon icon={ faArrowLeft } />
+                        </button>
+                        <button className="play-pause" onClick={ () => { playPause() } }>
+                            { isPlaying ? (
+                                <FontAwesomeIcon icon={ faPause } />
+                            ) : (
+                                <FontAwesomeIcon icon={ faPlay } />
+                            ) }
+                        </button>
+                        <button className="forward-backward" onClick={ () => { preparePlayNext(); } }>
+                            <FontAwesomeIcon icon={ faArrowRight } />
+                        </button>
+                    </div>
+                    {
+                        songInfo ?
+                            <div className='song-information'>
+                                <p className='author-name'>{ songInfo.metadata.author }</p>
+                                <p className='song-name'>{ songInfo.metadata.songName }</p>
+                                <p className='played-from'>{ songInfo.playedFrom }</p>
+                            </div>
+                            :
+                            <div className='song-information'>
+                                <p className='not-playing-p'>Not playing</p>
+                            </div>
+                    }
+
+                    <div className='slider-container'>
+
+                        <SeekSlider />
+                        <VolumeSlider />
+                    </div>
+
+                </section >
+            </div >
+        );
 }
 
 export { AudioVisualiser, volumeNode, source, source2, cleanup, playPause };

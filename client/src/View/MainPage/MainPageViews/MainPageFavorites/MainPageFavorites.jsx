@@ -11,25 +11,17 @@ const MainPageFavorites = () => {
     (state) => state.favouriteSongs.reloadFavourites
   );
   const favouriteSongs = useSelector((state) => state.favouriteSongs);
-  const sortSongAsc = useRef(true);
-  const sortAuthorAsc = useRef(true);
   const pagination = useRef({
     page: "1",
     pageSize: "4",
   });
 
-  useEffect(() => {/* 
-    console.log(favouriteSongs.songs);
-    favouriteSongs.songs.map((song, index) => {
-      console.log(song)
-    }); */
+  useEffect(() => {
     if (reloadFavouriteSongs) {
       const fetchFavourites = async function () {
-        let result = await mainAxios.getFavouriteFiles({
-          page: 1,
-          pageSize: 10,
-        });
-        console.log(result);
+        let result = await mainAxios.getFavouriteFiles(
+          pagination.current
+        );
         if (result.error) {
           let emptyArray = [];
           dispatch(setFavouriteSongs(emptyArray));
@@ -43,62 +35,6 @@ const MainPageFavorites = () => {
       fetchFavourites();
     }
   }, [reloadFavouriteSongs]);
-
-  const sortByAuthor = function () {
-    let tempFavouriteSongs = structuredClone(favouriteSongs.songs);
-    // check author a > b, if equal, check songName a > b.
-    if (sortAuthorAsc.current)
-      tempFavouriteSongs.sort((a, b) =>
-        a.metadata.author > b.metadata.author
-          ? 1
-          : a.metadata.author === b.metadata.author
-            ? a.metadata.songName > b.metadata.songName
-              ? 1
-              : -1
-            : -1
-      );
-    else
-      tempFavouriteSongs.sort((a, b) =>
-        a.metadata.author > b.metadata.author
-          ? -1
-          : a.metadata.author === b.metadata.author
-            ? a.metadata.songName > b.metadata.songName
-              ? -1
-              : 1
-            : 1
-      );
-
-    sortAuthorAsc.current = !sortAuthorAsc.current;
-    dispatch(setFavouriteSongs(tempFavouriteSongs)); // invoke rerender
-  };
-
-  const sortBySong = function () {
-    let tempFavouriteSongs = structuredClone(favouriteSongs.songs);
-    // check author a > b, if equal, check songName a > b.
-    if (sortSongAsc.current)
-      tempFavouriteSongs.sort((a, b) =>
-        a.metadata.songName > b.metadata.songName
-          ? 1
-          : a.metadata.songName === b.metadata.songName
-            ? a.metadata.author > b.metadata.author
-              ? 1
-              : -1
-            : -1
-      );
-    else
-      tempFavouriteSongs.sort((a, b) =>
-        a.metadata.songName > b.metadata.songName
-          ? -1
-          : a.metadata.songName === b.metadata.songName
-            ? a.metadata.author > b.metadata.author
-              ? -1
-              : 1
-            : 1
-      );
-
-    sortSongAsc.current = !sortSongAsc.current;
-    dispatch(setFavouriteSongs(tempFavouriteSongs));
-  };
 
   return (
     <section>
@@ -126,7 +62,7 @@ const MainPageFavorites = () => {
           { Number(pagination.current.page) - 1 }
         </button>
 
-        <button id="currentPage" className="currentPage">
+        <button id="currentPage" className="currentPage" style={ { display: favouriteSongs.pageCount ? null : "none" } }>
           { pagination.current.page }
         </button>
         <button
@@ -134,7 +70,7 @@ const MainPageFavorites = () => {
           className="nextPage"
           style={ {
             display:
-              Number(pagination.current.page) + 1 > favouriteSongs.pageCount
+              Number(pagination.current.page) + 1 > favouriteSongs.pageCount || !favouriteSongs.pageCount
                 ? "none"
                 : null,
           } }

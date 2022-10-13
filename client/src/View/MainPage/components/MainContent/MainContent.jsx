@@ -4,6 +4,7 @@ import "../../../../variables.css";
 import { Outlet } from "react-router-dom";
 import MainPageHome from "../../MainPageViews/MainPageHome/MainPageHome";
 import { playPause } from "../../MainPageViews/MainPagePlayer/AudioVisualiser";
+import visualiserHiddenSlice from "../../../../slices/audioVisualiser/visualiserHiddenSlice";
 import songInfoSlice from "../../../../slices/audioVisualiser/songInfoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { playSong } from "../../MainPageViews/MainPageSearch/components/SongCard/SongCard";
@@ -13,6 +14,7 @@ let preparePlayNext;
 let preparePlayPrevious;
 
 const MainContent = () => {
+  const visualiserHidden = useSelector((state) => state.visualiserHidden.hidden);
   const songInfo = useSelector((state) => state.songInfo.song);
   const playlists = useSelector((state) => state.playlists.playlists);
   const genres = useSelector((state) => state.genres);
@@ -136,13 +138,14 @@ const MainContent = () => {
     } else await playSong(map1.get(source + "First"), 0);
   };
 
-  return (
-    <>
-      <section className="main-content">
-        <Outlet />
-      </section>
-    </>
-  );
+  if (visualiserHidden)
+    return (
+      <>
+        <section className="main-content">
+          <Outlet />
+        </section>
+      </>
+    );
 };
 
 export { MainContent, preparePlayNext, preparePlayPrevious };

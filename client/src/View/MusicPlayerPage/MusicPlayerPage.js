@@ -1,9 +1,9 @@
 import React from 'react';
 import MainNavbar from '../MainPage/components/MainNavbar/MainNavbar';
+import { AudioVisualiser } from '../MainPage/MainPageViews/MainPagePlayer/AudioVisualiser';
 import MPSidebar from './components/MPSidebar/MPSidebar';
 
-const MusicPlayerPage = () =>
-{
+const MusicPlayerPage = () => {
     return (
         <section>
             <div className='grid'>
@@ -21,7 +21,7 @@ const MusicPlayerPage = () =>
                     {/* <AudioVisualiser /> */ }
                 </div>
             </div>
-        </section > );
+        </section >);
 }
 
 export default MusicPlayerPage;
